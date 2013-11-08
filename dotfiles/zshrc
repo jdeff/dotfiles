@@ -1,0 +1,73 @@
+# Path to your oh-my-zsh configuration.
+ZSH=$HOME/.oh-my-zsh
+export ZSH=$ZSH
+
+# Set the path to the battery charge phython script
+BAT_CHARGE=$HOME/bin/batcharge.py
+
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="af-magic"
+
+# Set to this to use case-sensitive completion
+# CASE_SENSITIVE="true"
+
+# Comment this out to disable weekly auto-update checks
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment following line if you want to disable colors in ls
+# DISABLE_LS_COLORS="true"
+
+# Uncomment following line if you want to disable autosetting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Example format: plugins=(rails git textmate ruby lighthouse)
+plugins=(brew git svn vi-mode thor knife)
+
+source $ZSH/oh-my-zsh.sh
+
+# Default editors
+export SVN_EDITOR=vim
+export EDITOR=vim
+export VISUAL=vim
+
+# Python
+export PYTHONSTARTUP=/Users/jaymedeffenbaugh/.pythonrc
+
+# Shortcuts
+alias clearhist='rm "$HISTFILE"; clear'
+alias topcpu='top -o cpu'
+alias topmem='top -o rsize'
+
+# Thanks, but no thanks ZSH
+alias knife='nocorrect knife'
+
+# Command completion options
+setopt auto_list
+setopt complete_aliases
+setopt no_list_ambiguous
+
+# History options
+setopt append_history
+setopt hist_verify
+
+# Directory options
+setopt auto_cd
+setopt no_auto_pushd
+setopt pushd_to_home
+
+# Load machine-specific configuration
+source $HOME/.zsh_profile
+source $HOME/.work_profile
+
+bindkey -v
+
+bindkey "^[[B" history-beginning-search-forward
+bindkey "^[[A" history-beginning-search-backward
+
+# This is so the project rvmrc file is loaded when iTerm2 opens a new window
+# and "Reuse Previous Tab's Directory" option is selected
+__rvm_project_rvmrc

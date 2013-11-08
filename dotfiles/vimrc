@@ -1,0 +1,92 @@
+let mapleader=","
+
+call pathogen#infect()
+
+syntax on
+filetype indent plugin on
+
+""" SIMPLE FILE DIFF PREVIEW """
+
+function! DiffPreview()
+	diffthis | vsplit | enew | set buftype=nofile | read # | 1delete | diffthis
+endfunction
+
+nnoremap <leader>d :call DiffPreview()<CR>
+
+""" END SIMPLE FILE DIFF PREVIEW """
+
+""" HIGHLIGHT BASIC DOCUMENT ISSUES SECTION """
+
+highlight ExtraWhitespace ctermbg=darkred guibg=darkred
+highlight OverLength ctermbg=red guibg=red
+
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+
+2match OverLength /\%81v.*/
+
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkred guibg=darkred
+autocmd ColorScheme * highlight OverLength ctermbg=darkred guibg=darkred
+
+""" END HIGHLIGHT BASIC DOCUMENT ISSUES SECTION """
+
+set nocompatible
+set tabstop=4
+set shiftwidth=4
+set nocindent
+set nosmartindent
+set autoindent
+set bs=indent,eol,start
+set hls is ic scs
+set gdefault
+set ruler
+set textwidth=78
+set visualbell
+set formatoptions=rcn1
+set equalalways
+set autoread
+set number
+set foldlevelstart=99
+set foldmethod=indent
+set foldnestmax=10
+set nofoldenable
+set foldlevel=1
+
+noremap <silent> <C-o> :FSSplitRight<CR>
+noremap <silent> <C-Down>  <ESC><C-w>j
+noremap <silent> <C-Up>    <ESC><C-w>k
+noremap <silent> <C-Left>  <ESC><C-w>h
+noremap <silent> <C-Right> <ESC><C-w>l
+noremap <leader>p "0p
+noremap <leader>P "0P
+noremap <leader>gs :CommandTFlush<cr>\|:CommandT ../spec<cr>
+noremap t :NERDTree<CR>
+
+nnoremap ; :
+nnoremap / /\v
+nnoremap <silent> <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+nnoremap <silent> <C-n> :noh<CR>
+nnoremap <Down> <C-w>j
+nnoremap <Up> <C-w>k
+nnoremap <Left> <C-w>h
+nnoremap <Right> <C-w>l
+nnoremap <tab> %
+nnoremap <leader>w <C-w>s<C-w>k
+nnoremap <leader>= <C-W>=
+nnoremap <leader>e :e
+nnoremap <leader>s :%s/\v
+nnoremap <leader>` :e ~/.vimrc<CR>
+nnoremap <leader>_ <C-w>_
+nnoremap <leader>h :noh<CR>
+nnoremap <leader>H :syntax sync fromstart<CR>
+nnoremap <leader>c /<<<<<<<\\|=======\\|>>>>>>><CR>
+nnoremap <leader>y "*y
+
+" Reverse the the selected lines
+vnoremap <leader>r :g/^/m'<-1<Bar>:noh<CR>
+vnoremap <tab> %
+
+inoremap jj <ESC>
+
+set background=dark
+colorscheme solarized

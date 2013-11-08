@@ -1,4 +1,4 @@
 dotfiles
 ========
 
-My dot files
+Jayme Deffenbaugh's dot files.

@@ -1,0 +1,38 @@
+[user]
+	name = Jayme Deffenbaugh
+	email = jdeffenbaugh@me.com
+[color]
+	ui = true
+[color "branch"]
+	current = yellow reverse
+	local = yellow 
+	remote = green
+[color "diff"]
+	meta = green
+	frag = blue
+	old = yellow
+	new = cyan
+[color "status"]
+	added = green
+	changed = yellow
+	untracked = cyan
+[alias]
+	co = checkout
+	ci = commit
+	st = status
+	br = branch
+	hist = log --pretty=immersion --graph --date=short
+	type = cat-file -t
+	dump = cat-file -p
+	filter = log --pretty=immersion --graph --date=short --first-parent --no-merges
+[push]
+	default = tracking
+[pull]
+	default = rebase
+[credential]
+	helper = osxkeychain
+[pretty]
+	immersion = %h %ad | %s%d [%an]
+[core]
+	autocrlf = input
+	excludesfile = /Users/jaymedeffenbaugh/.gitignore_global

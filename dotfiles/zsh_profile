@@ -1,0 +1,25 @@
+# Put machine-specific settings here
+MY_DIRS=".:$HOME/bin"
+BREW_DIRS="/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin"
+RVM_DIRS="$HOME/.rvm/bin"
+
+export PATH="$MY_DIRS:$BREW_DIRS:$RVM_DIRS:$PATH"
+
+alias ll="ls -ltr"
+alias la="ls -la"
+alias m="mvim"
+alias h="history"
+alias g="git"
+alias go="git checkout"
+alias vi="vim"
+
+export SIM="$HOME/Library/Application Support/iPhone Simulator"
+
+# AWS EC2 API TOOLS
+export JAVA_HOME="$(/usr/libexec/java_home)"
+export EC2_HOME="/usr/local/Library/LinkedKegs/ec2-api-tools/jars"
+export AWS_RDS_HOME="/usr/local/Cellar/rds-command-line-tools/1.12.002/libexec"
+
+# Set location of the Android SDK
+export ANDROID_SDK_ROOT='/usr/local/opt/android-sdk'
+export ANDROID_HOME=$ANDROID_SDK_ROOT
