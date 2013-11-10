@@ -61,7 +61,7 @@ set hls is ic scs
 set gdefault
 set ruler
 set textwidth=78
-set visualbell
+set novisualbell
 set formatoptions=rcn1
 set equalalways
 set autoread
@@ -79,8 +79,9 @@ noremap <silent> <C-Left>  <ESC><C-w>h
 noremap <silent> <C-Right> <ESC><C-w>l
 noremap <leader>p "0p
 noremap <leader>P "0P
-noremap <leader>gs :CommandTFlush<cr>\|:CommandT ../spec<cr>
-noremap t :NERDTree<CR>
+noremap <leader>Y :YRShow<CR>
+noremap <leader>gs :CommandTFlush<CR>\|:CommandT ../spec<CR>
+noremap <leader>t :NERDTree<CR>
 
 nnoremap ; :
 nnoremap / /\v
