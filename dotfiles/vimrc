@@ -28,7 +28,27 @@ autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkred guibg=darkred
 autocmd ColorScheme * highlight OverLength ctermbg=darkred guibg=darkred
 
+" Set the vim gitgutter column to clear
+autocmd ColorScheme * highlight SignColumn ctermbg=NONE guibg=NONE
+
+
 """ END HIGHLIGHT BASIC DOCUMENT ISSUES SECTION """
+
+let g:airline_theme = 'solarized'
+let g:airline_powerline_fonts = 1
+
+" Enable support for tablines
+let g:airline#extensions#tabline#enabled = 1
+
+" Enable airline support for syntastic
+let g:airline#extensions#syntastic#enabled = 1
+
+" Enable airline support for vim-gitgutter
+let g:airline#extensions#hunks#enabled = 1
+let g:airline#extensions#hunks#hunk_symbols = ['+', '~', '-']
+
+" vim-airline doesn't appear until you create a new split
+set laststatus=2
 
 set nocompatible
 set tabstop=4
