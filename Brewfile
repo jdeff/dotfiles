@@ -20,6 +20,7 @@ brew "eza"         # ls
 brew "bat"         # cat
 brew "fd"          # find
 brew "ripgrep"     # grep
+brew "lazygit"     # terminal git UI (driven by nvim's lazygit.nvim)
 
 # Editor
 brew "neovim"

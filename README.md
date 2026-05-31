@@ -58,8 +58,11 @@ Terminal **Ghostty** (Kanagawa Wave theme, Lilex Nerd Font) · editor
 **neovim** — a modular [lazy.nvim](https://github.com/folke/lazy.nvim) config
 (no distro): LSP via Mason (ruby-lsp, vtsls, eslint, graphql, sqlls, …),
 blink.cmp completion, treesitter, telescope, conform (rubocop/oxfmt→prettier),
-gitsigns + fugitive, neotest (RSpec + Vitest), vim-rails, and vim-dadbod-ui for
-Postgres. Leader is `,`. First launch installs plugins automatically.
+neotest (RSpec + Vitest), vim-rails, and vim-dadbod-ui for Postgres. Git via
+gitsigns + fugitive + diffview + **lazygit** (`,gg`). Yank history with
+**yanky.nvim**, ReplaceWithRegister via **substitute.nvim** (`gr` / `grr` /
+visual `gr`), plus Tim Pope's repeat, sleuth, unimpaired, abolish, and eunuch.
+Leader is `,`. First launch installs plugins automatically.
 
 Runtime versions (ruby, node) are managed by **asdf** via `~/.tool-versions`.
 

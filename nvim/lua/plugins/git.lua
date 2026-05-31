@@ -35,12 +35,23 @@ return {
     },
   },
 
-  -- Heavyweight git operations: :Git, :Gdiffsplit, :Gblame, etc.
+  -- Primary git UI: pops the lazygit TUI in a floating window.
+  {
+    "kdheepak/lazygit.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "LazyGit", "LazyGitConfig", "LazyGitFilterCurrentFile" },
+    keys = {
+      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+      { "<leader>gG", "<cmd>LazyGitFilterCurrentFile<cr>", desc = "LazyGit (current file history)" },
+    },
+  },
+
+  -- Heavyweight git operations from the editor: :Git, :Gdiffsplit, :Gblame, etc.
   {
     "tpope/vim-fugitive",
     cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Gblame" },
     keys = {
-      { "<leader>gg", "<cmd>Git<cr>", desc = "Git status (fugitive)" },
+      { "<leader>gf", "<cmd>Git<cr>", desc = "Git status (fugitive)" },
       { "<leader>gl", "<cmd>Git log --oneline<cr>", desc = "Git log" },
     },
   },

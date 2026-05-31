@@ -104,7 +104,7 @@ return {
           local tb = require("telescope.builtin")
 
           nmap("gd", tb.lsp_definitions, "Definitions")
-          nmap("gr", tb.lsp_references, "References")
+          nmap("<leader>cR", tb.lsp_references, "References") -- gr is ReplaceWithRegister
           nmap("gI", tb.lsp_implementations, "Implementations")
           nmap("gy", tb.lsp_type_definitions, "Type definitions")
           nmap("gD", vim.lsp.buf.declaration, "Declaration")
