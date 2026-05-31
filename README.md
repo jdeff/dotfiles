@@ -43,8 +43,10 @@ exec zsh -l         # load it
 ## Tools
 
 Prompt **starship** · plugins **zsh-syntax-highlighting**, **zsh-autosuggestions**,
-**zsh-completions** · navigation **fzf** (Ctrl-R / Ctrl-T / Alt-C), **zoxide**
-(`z`) · modern CLI **git-delta**, **eza**, **bat**, **fd**, **ripgrep**.
+**zsh-completions**, **zsh-history-substring-search** (↑/↓ search history for
+lines containing the typed text; `k`/`j` in vi normal mode) · navigation **fzf**
+(Ctrl-R / Ctrl-T / Alt-C), **zoxide** (`z`) · modern CLI **git-delta**, **eza**,
+**bat**, **fd**, **ripgrep**.
 
 Runtime versions (ruby, node) are managed by **asdf** via `~/.tool-versions`.
 

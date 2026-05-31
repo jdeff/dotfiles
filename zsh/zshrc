@@ -23,7 +23,21 @@ unset _zmod
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
 # ── Interactive plugins — MUST be last ───────────────────────────────────
-# Order matters: autosuggestions first, then syntax-highlighting absolutely
-# last (it must wrap every ZLE widget defined above, including fzf's).
+# Order matters: autosuggestions first, then syntax-highlighting, then
+# history-substring-search dead last (both must load after highlighting).
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# history-substring-search: Up/Down search history for entries CONTAINING the
+# typed text (not just prefix). Bindings must follow the source above so the
+# widgets exist. Bound for emacs keys, vi insert, and vi normal (k/j).
+source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey -M viins '^[[A' history-substring-search-up
+bindkey -M viins '^[[B' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+# Also bind the terminal's own Up/Down keycodes (covers application mode).
+[[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up
+[[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" history-substring-search-down

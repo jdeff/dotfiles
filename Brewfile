@@ -8,6 +8,7 @@ brew "starship"
 brew "zsh-syntax-highlighting"
 brew "zsh-autosuggestions"
 brew "zsh-completions"
+brew "zsh-history-substring-search"
 
 # Navigation / fuzzy finding
 brew "fzf"
