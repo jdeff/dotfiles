@@ -1,6 +1,7 @@
 # ~/.config/ghostty/config — Ghostty terminal configuration.
 
-theme = Kanagawa Wave
+# Follows the macOS system appearance: Lotus (light) / Wave (dark).
+theme = light:Kanagawa Lotus,dark:Kanagawa Wave
 
 font-family = Lilex Nerd Font Mono
 font-style = ExtraLight
