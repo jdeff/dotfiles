@@ -33,3 +33,4 @@ cask "alfred"   # Spotlight replacement
 cask "dash"     # offline documentation browser
 cask "claude"   # Anthropic's Claude desktop app
 cask "shottr"   # screenshot + annotation tool
+cask "bartender" # menu bar icon organizer
