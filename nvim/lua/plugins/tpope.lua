@@ -20,4 +20,7 @@ return {
   -- Unix file commands in the editor: :Rename, :Move, :Delete, :Chmod,
   -- :Mkdir, :SudoWrite.
   { "tpope/vim-eunuch", cmd = { "Rename", "Move", "Delete", "Chmod", "Mkdir", "SudoWrite", "Remove" } },
+
+  -- Auto-insert `end` for ruby/lua/vimscript blocks (treesitter-independent).
+  { "tpope/vim-endwise", event = "InsertEnter" },
 }

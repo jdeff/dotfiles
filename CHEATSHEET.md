@@ -15,7 +15,8 @@ exec zsh -l             # load the new shell
 Then:
 
 - Edit `~/.gitconfig.local` — set name, email, SSH signing key (seeded from the example).
-- Open `nvim` once and wait: lazy.nvim installs plugins, Mason installs LSP
+- Open `nvim` once and wait: lazy.nvim installs plugins, treesitter compiles
+  parsers (via the `tree-sitter` CLI from the Brewfile), and Mason installs LSP
   servers + formatters. `:Lazy` and `:Mason` show progress; `:checkhealth` flags
   anything missing (e.g. `node` for vtsls).
 - macOS: set Appearance (light/dark — Ghostty + nvim follow it), and remap
