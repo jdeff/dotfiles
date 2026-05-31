@@ -73,10 +73,13 @@ return {
       spec = {
         { "<leader>b", group = "buffer" },
         { "<leader>c", group = "code/lsp" },
+        { "<leader>d", group = "debug (with DAP)" },
         { "<leader>f", group = "find" },
         { "<leader>g", group = "git" },
+        { "<leader>r", group = "rails" },
         { "<leader>t", group = "test" },
         { "<leader>x", group = "diagnostics" },
+        { "<leader>D", desc = "database (dadbod-ui)" },
       },
     },
   },

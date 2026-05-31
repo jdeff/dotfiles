@@ -103,14 +103,16 @@ return {
           end
           local tb = require("telescope.builtin")
 
+          -- Navigation stays on the universal `g` prefix.
           nmap("gd", tb.lsp_definitions, "Definitions")
-          nmap("<leader>cR", tb.lsp_references, "References") -- gr is ReplaceWithRegister
           nmap("gI", tb.lsp_implementations, "Implementations")
           nmap("gy", tb.lsp_type_definitions, "Type definitions")
           nmap("gD", vim.lsp.buf.declaration, "Declaration")
           nmap("K", vim.lsp.buf.hover, "Hover docs")
-          nmap("<leader>cr", vim.lsp.buf.rename, "Rename symbol")
-          nmap("<leader>ca", vim.lsp.buf.code_action, "Code action")
+          -- ,c<action> code domain.
+          nmap("<leader>cc", vim.lsp.buf.code_action, "Code action")
+          nmap("<leader>cr", tb.lsp_references, "References") -- gr is ReplaceWithRegister
+          nmap("<leader>cn", vim.lsp.buf.rename, "Rename symbol")
           nmap("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
           nmap("<leader>cs", tb.lsp_document_symbols, "Document symbols")
 

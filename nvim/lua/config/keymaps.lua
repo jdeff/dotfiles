@@ -19,6 +19,7 @@ map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 -- ── Buffers ─────────────────────────────────────────────────────────────────
 map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<leader>bb", "<cmd>buffer #<cr>", { desc = "Alternate buffer" })
 map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 
 -- ── Quality-of-life editing ─────────────────────────────────────────────────
