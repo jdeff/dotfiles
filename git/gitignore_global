@@ -22,3 +22,31 @@
 # Logs / temp
 *.log
 .cache/
+
+# Compiled output
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.py[cod]
+
+# Archives — commit the source, not the packed artifact
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Databases
+*.sql
+*.sqlite
+
+# vim leftovers
+*.un~
+Session.vim
+.netrwhist
