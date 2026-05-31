@@ -1,0 +1,67 @@
+# Starship prompt — https://starship.rs/config/
+# A two-line, git-aware prompt with vi-mode indicator on the prompt character.
+
+add_newline = true
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$git_state\
+$nodejs\
+$ruby\
+$cmd_duration\
+$line_break\
+$character"""
+
+[directory]
+style = "bold cyan"
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[git_status]
+style = "bold yellow"
+# Compact counts: ahead/behind, staged (+), modified (!), untracked (?), etc.
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+staged = "[+${count}](green)"
+modified = "[!${count}](yellow)"
+untracked = "[?${count}](blue)"
+stashed = "[*${count}](cyan)"
+deleted = "[✘${count}](red)"
+conflicted = "[=${count}](red)"
+
+[git_state]
+style = "bold red"
+
+[nodejs]
+symbol = " "
+style = "bold green"
+# Show only inside projects with Node markers, to keep the prompt quiet.
+detect_files = ["package.json", ".nvmrc", ".node-version"]
+
+[ruby]
+symbol = " "
+style = "bold red"
+detect_files = ["Gemfile", ".ruby-version"]
+detect_extensions = ["rb"]
+
+[cmd_duration]
+min_time = 2000
+format = "took [$duration]($style) "
+style = "bold yellow"
+
+# ── Vi-mode indicator on the prompt character ────────────────────────────
+# insert mode  -> green ❯   (success) / red ❯ (last command failed)
+# normal mode  -> yellow ❮  (vimcmd)
+# NOTE: zsh cannot report visual/replace mode to Starship (upstream limit),
+# so those display the same as normal mode.
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold yellow)"

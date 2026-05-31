@@ -1,0 +1,16 @@
+#
+# Checks a boolean variable for "true".
+# Case insensitive: "1", "y", "yes", "t", "true", "o", and "on".
+#
+# From prezto's helper module; vendored here because several git-* helper
+# functions depend on it.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+# function is-true {
+
+[[ -n "$1" && "$1" == (1|[Yy]([Ee][Ss]|)|[Tt]([Rr][Uu][Ee]|)|[Oo]([Nn]|)) ]]
+
+# }

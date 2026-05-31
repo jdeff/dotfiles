@@ -1,0 +1,11 @@
+# ~/.zshenv — loaded for EVERY zsh (interactive, scripts, ssh commands, non-TTY).
+# Keep this fast and quiet: only environment variables and PATH bases.
+# No prompt, aliases, or anything that prints.
+
+# Default tools
+export EDITOR="${EDITOR:-nvim}"
+export VISUAL="$EDITOR"
+
+# Machine-/work-specific env vars (secrets, TORO_* tokens, internal URLs, etc.)
+# Keep this file OUT of your dotfiles repo (it is .gitignored).
+[[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"

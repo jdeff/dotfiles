@@ -1,0 +1,24 @@
+# Template for ~/.gitconfig.local  (NOT tracked — copy to ~/.gitconfig.local).
+#
+# Holds machine-/identity-specific git settings that shouldn't live in the
+# repo: your name/email and the absolute path to your SSH signing key.
+#
+# install.sh seeds ~/.gitconfig.local from this template if it's missing.
+
+[user]
+	name = Your Name
+	email = you@example.com
+	# Absolute path to your SSH public key used for commit/tag signing:
+	signingkey = ~/.ssh/id_ed25519.pub
+
+# ── Optional: split work vs. personal identity by directory ──────────────
+# Instead of a single [user] above, you can keep per-context identities in
+# separate files and switch automatically based on where the repo lives:
+#
+#   [includeIf "gitdir:~/work/"]
+#       path = ~/.gitconfig-work
+#   [includeIf "gitdir:~/personal/"]
+#       path = ~/.gitconfig-personal
+#
+# Each ~/.gitconfig-<context> then contains its own [user] block. The trailing
+# slash matters — it matches everything under that directory.

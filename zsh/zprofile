@@ -1,0 +1,13 @@
+# ~/.zprofile — loaded for LOGIN shells, AFTER /etc/zprofile's path_helper.
+# This is the right place for PATH-mutating tool init, because anything set
+# here lands after macOS reorders PATH, so your tools take precedence.
+
+# Homebrew (sets PATH, MANPATH, INFOPATH, HOMEBREW_*)
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# asdf 0.16+ (Go rewrite): no more asdf.sh — just put the shims on PATH.
+export ASDF_DATA_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
+export PATH="$ASDF_DATA_DIR/shims:$PATH"
+
+# Work-specific login setup (optional, kept out of dotfiles repo)
+[[ -f "$HOME/.zprofile.local" ]] && source "$HOME/.zprofile.local"

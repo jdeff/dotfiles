@@ -1,0 +1,29 @@
+# ~/.zshrc — loaded for INTERACTIVE shells only.
+# This is a thin loader: it pulls in ordered modules from conf.d/, then the
+# alias modules, then the interactive plugins (which must come last).
+
+# Bail out early if somehow sourced non-interactively.
+[[ -o interactive ]] || return
+
+# Stable path to the support tree (install.sh symlinks ~/.config/zsh -> repo/zsh).
+ZSH_DIR="${ZDOTDIR:-$HOME/.config/zsh}"
+
+# ── Autoloaded helper functions (vendored from prezto) ───────────────────
+fpath=("$ZSH_DIR/functions" $fpath)
+autoload -Uz "$ZSH_DIR"/functions/*(:t)
+
+# ── Ordered config modules ───────────────────────────────────────────────
+# 00-options, 10-completion, 20-keybindings, 30-prompt, 40-tools, 50-aliases
+for _zmod in "$ZSH_DIR"/conf.d/*.zsh(N); do
+  source "$_zmod"
+done
+unset _zmod
+
+# ── Personal / work interactive overrides (kept out of the repo) ─────────
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+# ── Interactive plugins — MUST be last ───────────────────────────────────
+# Order matters: autosuggestions first, then syntax-highlighting absolutely
+# last (it must wrap every ZLE widget defined above, including fzf's).
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

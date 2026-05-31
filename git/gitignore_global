@@ -1,0 +1,24 @@
+# Global gitignore (git config --global core.excludesfile ~/.gitignore_global)
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor / IDE
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Environment / secrets
+.env
+.env.local
+.direnv/
+
+# Logs / temp
+*.log
+.cache/
