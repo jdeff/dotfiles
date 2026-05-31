@@ -4,7 +4,7 @@
 theme = light:Kanagawa Lotus,dark:Kanagawa Wave
 
 font-family = Lilex Nerd Font Mono
-font-style = ExtraLight
+font-style = Medium
 font-size = 14
 
 # Slight transparency + blur (macOS).
