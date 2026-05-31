@@ -32,3 +32,4 @@ cask "font-lilex-nerd-font"
 cask "alfred"   # Spotlight replacement
 cask "dash"     # offline documentation browser
 cask "claude"   # Anthropic's Claude desktop app
+cask "shottr"   # screenshot + annotation tool
