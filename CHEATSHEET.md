@@ -102,7 +102,8 @@ and wait — **which-key** shows the menu.
 
 Prefix is **`C-b`** (default). Plugins via TPM (auto-installed by `install.sh`;
 if needed, open tmux and press `prefix + I`). Sessions auto-save/restore
-(resurrect + continuum). Status bar is Kanagawa-themed.
+(resurrect + continuum). Status bar follows the macOS appearance — Kanagawa
+Wave (dark) / Lotus (light) — with a sun/moon indicator on the right.
 
 | Key | Action |
 |-----|--------|
