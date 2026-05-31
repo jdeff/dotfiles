@@ -76,6 +76,7 @@ return {
         { "<leader>d", group = "debug (with DAP)" },
         { "<leader>f", group = "find" },
         { "<leader>g", group = "git" },
+        { "<leader>n", group = "notify/messages" },
         { "<leader>r", group = "rails" },
         { "<leader>t", group = "test" },
         { "<leader>x", group = "diagnostics" },

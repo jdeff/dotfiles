@@ -44,6 +44,7 @@ o.clipboard = "unnamedplus" -- use the system clipboard
 o.timeoutlen = 400
 o.updatetime = 250
 o.confirm = true            -- prompt instead of failing on unsaved changes
+o.cmdheight = 0             -- reclaim the command line; noice floats it
 
 -- Folding via treesitter, all folds open by default
 o.foldmethod = "expr"
