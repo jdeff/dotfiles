@@ -1,0 +1,105 @@
+# Cheatsheet
+
+The basics, for when I set up a new machine or forget a binding. Not exhaustive —
+see the config files for the full story.
+
+## New machine
+
+```sh
+git clone git@github.com:jdeff/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./install.sh            # brew bundle + symlinks (backs up anything in the way)
+exec zsh -l             # load the new shell
+```
+
+Then:
+
+- Edit `~/.gitconfig.local` — set name, email, SSH signing key (seeded from the example).
+- Open `nvim` once and wait: lazy.nvim installs plugins, Mason installs LSP
+  servers + formatters. `:Lazy` and `:Mason` show progress; `:checkhealth` flags
+  anything missing (e.g. `node` for vtsls).
+- macOS: set Appearance (light/dark — Ghostty + nvim follow it), and remap
+  Alfred's hotkey to ⌘Space (disable Spotlight's under Keyboard Shortcuts).
+
+## Neovim
+
+Leader is `,`. Keymaps follow `,<domain><action>`; the **doubled** key is the
+most common action (`,gg`, `,tt`, `,cc`, `,ff`). `g`-prefix = "go to". Press `,`
+and wait — **which-key** shows the menu.
+
+**Files & search**
+
+| Key | Action |
+|-----|--------|
+| `<space><space>` | Toggle file explorer |
+| `,ff` | Find files |
+| `,,` | Live grep |
+| `,/` | Fuzzy find in current buffer |
+| `,fr` / `,fb` | Recent files / open buffers |
+| `,fy` / `,ft` | Yank history / TODOs |
+
+**Navigation (`g`) & code (`,c`)**
+
+| Key | Action |
+|-----|--------|
+| `gd` `gI` `gy` `gD` | Definition / implementation / type / declaration |
+| `K` | Hover docs |
+| `s` | Flash jump (label-based motion) |
+| `,cc` | Code action |
+| `,cr` / `,cn` | References / rename |
+| `,cf` | Format buffer |
+| `,cd` / `,cs` | Line diagnostics / document symbols |
+| `,xx` | Diagnostics list (Trouble) · `[d` `]d` to step |
+
+**Test (`,t`)** — RSpec / Vitest via neotest
+
+| Key | Action |
+|-----|--------|
+| `,tt` | Run nearest test |
+| `,tf` / `,tl` | Run file / last |
+| `,ts` / `,to` | Summary / output |
+| `,tw` | Watch file · `[t` `]t` jump to failed |
+
+**Git (`,g`)**
+
+| Key | Action |
+|-----|--------|
+| `,gg` | lazygit (full TUI) |
+| `]c` `[c` | Next / previous hunk |
+| `,gs` / `,gr` | Stage / reset hunk |
+| `,gp` / `,gb` | Preview hunk / blame line |
+| `,gv` / `,gl` | Diffview / log |
+
+**Rails (`,r`) & DB** — `,ra` alternate file (impl↔spec) · `,rr` related · `,D` toggle dadbod-ui
+
+**Editing**
+
+| Key | Action |
+|-----|--------|
+| `gr` / `grr` / visual `gr` | Replace with register (ReplaceWithRegister) |
+| `<C-p>` / `<C-n>` | Cycle older / newer yank after a put |
+| `ys` `cs` `ds` | Add / change / delete surround |
+| `gc` | Toggle comment (motion or visual) |
+| `jj` | Escape · `;` for `:` · `,h` clear highlight |
+
+`,d` (debug) is reserved for when DAP is added.
+
+## Shell
+
+- `ls`/`ll`/`la`/`lt` → eza · `cat` → bat
+- `z <dir>` jump (zoxide) · `zi` pick interactively
+- `^R` history · `^T` files · `⌥C` cd (fzf) · `**<tab>` fuzzy completion
+- Up/Down — substring-search history; `,` git/ruby/rails aliases from prezto (`g`, `gco`, `glo`, `gp`, …)
+- Per-machine extras (not tracked): `~/.zshrc.local`, `~/.zshenv.local`, `~/.zprofile.local`
+
+## Git aliases (gitconfig)
+
+`git st` status · `git co` checkout · `git ci` commit · `git br` branch ·
+`git hist` graph log · `git filter` linear first-parent log
+
+## Terminal (Ghostty)
+
+- Theme follows macOS appearance: Kanagawa **Lotus** (light) / **Wave** (dark).
+- Reload config: ⌘⇧, — but the light/dark theme split only re-binds on a full
+  relaunch (⌘Q) or an OS appearance change, not on reload.
+- Font: Lilex Nerd Font Mono, Medium.

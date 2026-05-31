@@ -4,6 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A framework-free zsh + git + starship dotfiles repo. Plain config files, organized into modules, deployed to `$HOME` by symlink. No oh-my-zsh / prezto / plugin manager.
 
+`CHEATSHEET.md` is the human-facing quick reference (new-machine setup + the keymaps/aliases worth remembering). It is intentionally **not** exhaustive. When a change adds or renames something a person would reach for from memory — a new keymap domain, a changed leader binding, an install step, a headline alias — update the relevant `CHEATSHEET.md` section in the same change. Don't mirror every binding there; if it's only discoverable via which-key or the config, it doesn't need a cheatsheet line.
+
 ## Commands
 
 - `./install.sh` — runs `brew bundle`, seeds untracked local files, then symlinks everything into `$HOME`. Idempotent: skips already-correct links, backs up anything in the way to `<file>.bak.<timestamp>` (gitignored).
