@@ -31,3 +31,4 @@ cask "font-lilex-nerd-font"
 # Desktop apps
 cask "alfred"   # Spotlight replacement
 cask "dash"     # offline documentation browser
+cask "claude"   # Anthropic's Claude desktop app
