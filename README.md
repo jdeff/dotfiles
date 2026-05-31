@@ -24,8 +24,10 @@ git/
   gitignore_global   -> ~/.gitignore_global
 starship/
   starship.toml      -> ~/.config/starship.toml
-nvim/
-  init.lua           -> ~/.config/nvim/init.lua   minimal neovim (options + keymaps)
+nvim/                -> ~/.config/nvim            modular config (lazy.nvim, no distro)
+  init.lua             leader + load order
+  lua/config/          options, keymaps, autocmds, lazy bootstrap
+  lua/plugins/         one file per concern (lsp, treesitter, telescope, …)
 ghostty/
   config             -> ~/.config/ghostty/config  terminal, Kanagawa theme
 Brewfile             tool dependencies
@@ -53,7 +55,11 @@ lines containing the typed text; `k`/`j` in vi normal mode) · navigation **fzf*
 **bat**, **fd**, **ripgrep**.
 
 Terminal **Ghostty** (Kanagawa Wave theme, Lilex Nerd Font) · editor
-**neovim** (minimal `init.lua` for now; a fuller config follows).
+**neovim** — a modular [lazy.nvim](https://github.com/folke/lazy.nvim) config
+(no distro): LSP via Mason (ruby-lsp, vtsls, eslint, graphql, sqlls, …),
+blink.cmp completion, treesitter, telescope, conform (rubocop/oxfmt→prettier),
+gitsigns + fugitive, neotest (RSpec + Vitest), vim-rails, and vim-dadbod-ui for
+Postgres. Leader is `,`. First launch installs plugins automatically.
 
 Runtime versions (ruby, node) are managed by **asdf** via `~/.tool-versions`.
 

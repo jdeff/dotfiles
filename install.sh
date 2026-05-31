@@ -59,8 +59,8 @@ link "$REPO/git/gitconfig"        "$HOME/.gitconfig"
 link "$REPO/git/gitignore_global" "$HOME/.gitignore_global"
 # Starship
 link "$REPO/starship/starship.toml" "$HOME/.config/starship.toml"
-# Neovim
-link "$REPO/nvim/init.lua"          "$HOME/.config/nvim/init.lua"
+# Neovim (whole config tree: init.lua + lua/)
+link "$REPO/nvim"                   "$HOME/.config/nvim"
 # Ghostty
 link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
 
