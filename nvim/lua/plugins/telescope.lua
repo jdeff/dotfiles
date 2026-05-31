@@ -10,6 +10,7 @@ return {
     keys = {
       { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
       { "<leader><space>", "<cmd>Telescope find_files<cr>", desc = "Find files" },
+      { "<leader><leader>", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
       { "<leader>fw", "<cmd>Telescope grep_string<cr>", desc = "Grep word under cursor" },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
