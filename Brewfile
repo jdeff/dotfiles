@@ -22,9 +22,10 @@ brew "fd"          # find
 brew "ripgrep"     # grep
 brew "lazygit"     # terminal git UI (driven by nvim's lazygit.nvim)
 
-# Editor
+# Editor + terminal multiplexer
 brew "neovim"
 brew "tree-sitter-cli" # nvim-treesitter (main branch) compiles parsers with this
+brew "tmux"
 
 # Terminal + font (font supplies the glyphs Starship's prompt uses)
 cask "ghostty"

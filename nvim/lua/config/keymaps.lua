@@ -10,11 +10,8 @@ map("n", "?", [[?\v]])
 map("n", "<leader>h", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
 
--- ── Window navigation ───────────────────────────────────────────────────────
-map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+-- Window navigation via C-h/j/k/l is provided by vim-tmux-navigator
+-- (lua/plugins/tmux.lua) so it crosses seamlessly into tmux panes.
 
 -- ── Buffers ─────────────────────────────────────────────────────────────────
 map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })

@@ -63,6 +63,22 @@ link "$REPO/starship/starship.toml" "$HOME/.config/starship.toml"
 link "$REPO/nvim"                   "$HOME/.config/nvim"
 # Ghostty
 link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
+# tmux (whole config dir; TPM is bootstrapped below)
+link "$REPO/tmux"                   "$HOME/.config/tmux"
+
+echo "==> Bootstrapping tmux plugin manager (TPM)"
+TPM_DIR="$HOME/.config/tmux/plugins/tpm"
+if [[ ! -d "$TPM_DIR" ]]; then
+  git clone --quiet --depth 1 https://github.com/tmux-plugins/tpm "$TPM_DIR"
+  echo "  clone  $TPM_DIR"
+else
+  echo "  ok    $TPM_DIR (exists)"
+fi
+# Install/update the plugins headlessly so a fresh machine is ready to go.
+if command -v tmux >/dev/null; then
+  "$TPM_DIR/bin/install_plugins" >/dev/null 2>&1 && echo "  tmux plugins installed" \
+    || echo "  (open tmux and press prefix + I to finish installing plugins)"
+fi
 
 echo
 echo "Done. Start a fresh login shell to load everything:"

@@ -98,6 +98,23 @@ and wait — **which-key** shows the menu.
 `git st` status · `git co` checkout · `git ci` commit · `git br` branch ·
 `git hist` graph log · `git filter` linear first-parent log
 
+## tmux
+
+Prefix is **`C-b`** (default). Plugins via TPM (auto-installed by `install.sh`;
+if needed, open tmux and press `prefix + I`). Sessions auto-save/restore
+(resurrect + continuum). Status bar is Kanagawa-themed.
+
+| Key | Action |
+|-----|--------|
+| `C-h/j/k/l` | Move between panes **and** nvim splits (seamless) |
+| `prefix \|` / `prefix -` | Split right / down (inherits cwd) |
+| `prefix c` | New window (inherits cwd) |
+| `prefix H/J/K/L` | Resize pane (repeatable) |
+| `prefix r` | Reload config |
+| `prefix F` | Fuzzy session/window picker (tmux-fzf) |
+| `prefix [` then `v`/`y` | Copy mode: select / yank to clipboard |
+| `prefix C-s` / `C-r` | Save / restore session manually |
+
 ## Terminal (Ghostty)
 
 - Theme follows macOS appearance: Kanagawa **Lotus** (light) / **Wave** (dark).

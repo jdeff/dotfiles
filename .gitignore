@@ -1,2 +1,5 @@
 .DS_Store
 *.bak.*
+
+# tmux plugins are installed by TPM (bootstrapped in install.sh)
+tmux/plugins/
