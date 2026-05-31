@@ -12,8 +12,8 @@ background-opacity = 0.96
 background-blur = 20
 
 # Roomier window without losing the title bar's drag area.
-window-padding-x = 10
-window-padding-y = 8
+window-padding-x = 4
+window-padding-y = 4
 macos-titlebar-style = transparent
 
 # Keep scrollback generous; shell already has fzf/zoxide for navigation.
@@ -21,3 +21,8 @@ scrollback-limit = 10000
 
 # Don't prompt when closing a surface with a running process.
 confirm-close-surface = false
+
+# Clipboard
+copy-on-select = clipboard
+clipboard-trim-trailing-spaces = true
+selection-clear-on-copy = true
