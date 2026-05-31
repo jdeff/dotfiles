@@ -27,3 +27,7 @@ brew "neovim"
 # Terminal + font (font supplies the glyphs Starship's prompt uses)
 cask "ghostty"
 cask "font-lilex-nerd-font"
+
+# Desktop apps
+cask "alfred"   # Spotlight replacement
+cask "dash"     # offline documentation browser
