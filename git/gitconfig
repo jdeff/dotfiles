@@ -8,7 +8,7 @@
 [init]
 	defaultBranch = main
 [pull]
-	ff = only
+	rebase = true
 [gpg]
 	format = ssh
 [commit]
@@ -30,3 +30,18 @@
 	conflictStyle = zdiff3
 [diff]
 	colorMoved = default
+
+[alias]
+	co = checkout
+	ci = commit
+	st = status
+	br = branch
+	type = cat-file -t
+	dump = cat-file -p
+	# Compact, graphed history using the `immersion` pretty format below.
+	hist = log --pretty=immersion --graph --date=short
+	# Same, but first-parent only and no merges — a linear feature view.
+	filter = log --pretty=immersion --graph --date=short --first-parent --no-merges
+
+[pretty]
+	immersion = %h %ad | %s%d [%an]
