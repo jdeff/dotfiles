@@ -32,3 +32,5 @@ Within `zshrc`, **interactive plugins must load last and in a specific order**: 
 ## Tooling
 
 Dependencies are pinned in `Brewfile`. Runtime versions (ruby, node) are managed by **asdf** (Go rewrite, 0.16+: shims on PATH, no `asdf.sh`) via `~/.tool-versions`. Git is configured for SSH commit/tag signing and git-delta as the pager.
+
+`nvim/init.lua` is a deliberately minimal neovim config (options + keymaps, no plugin manager or colorscheme yet) — a fuller setup is planned, so keep additions small until then. `ghostty/config` sets the terminal theme (Kanagawa Wave) and Lilex Nerd Font. Both are linked into `~/.config/` by `install.sh` like the other configs.

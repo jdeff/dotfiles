@@ -1,0 +1,22 @@
+# ~/.config/ghostty/config — Ghostty terminal configuration.
+
+theme = Kanagawa Wave
+
+font-family = Lilex Nerd Font Mono
+font-style = ExtraLight
+font-size = 14
+
+# Slight transparency + blur (macOS).
+background-opacity = 0.96
+background-blur = 20
+
+# Roomier window without losing the title bar's drag area.
+window-padding-x = 10
+window-padding-y = 8
+macos-titlebar-style = transparent
+
+# Keep scrollback generous; shell already has fzf/zoxide for navigation.
+scrollback-limit = 10000
+
+# Don't prompt when closing a surface with a running process.
+confirm-close-surface = false

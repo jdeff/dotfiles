@@ -20,10 +20,14 @@ zsh/
   aliases/    -> prezto-derived alias modules (git, ruby, rails)
   functions/  -> autoloaded helper functions the aliases depend on
 git/
-  gitconfig          -> ~/.gitconfig          identity, SSH signing, git-delta
+  gitconfig          -> ~/.gitconfig          identity, SSH signing, git-delta, aliases
   gitignore_global   -> ~/.gitignore_global
 starship/
   starship.toml      -> ~/.config/starship.toml
+nvim/
+  init.lua           -> ~/.config/nvim/init.lua   minimal neovim (options + keymaps)
+ghostty/
+  config             -> ~/.config/ghostty/config  terminal, Kanagawa theme
 Brewfile             tool dependencies
 install.sh           backs up existing files, then symlinks everything
 ```
@@ -47,6 +51,9 @@ Prompt **starship** · plugins **zsh-syntax-highlighting**, **zsh-autosuggestion
 lines containing the typed text; `k`/`j` in vi normal mode) · navigation **fzf**
 (Ctrl-R / Ctrl-T / Alt-C), **zoxide** (`z`) · modern CLI **git-delta**, **eza**,
 **bat**, **fd**, **ripgrep**.
+
+Terminal **Ghostty** (Kanagawa Wave theme, Lilex Nerd Font) · editor
+**neovim** (minimal `init.lua` for now; a fuller config follows).
 
 Runtime versions (ruby, node) are managed by **asdf** via `~/.tool-versions`.
 

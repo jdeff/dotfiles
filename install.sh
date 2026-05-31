@@ -59,6 +59,10 @@ link "$REPO/git/gitconfig"        "$HOME/.gitconfig"
 link "$REPO/git/gitignore_global" "$HOME/.gitignore_global"
 # Starship
 link "$REPO/starship/starship.toml" "$HOME/.config/starship.toml"
+# Neovim
+link "$REPO/nvim/init.lua"          "$HOME/.config/nvim/init.lua"
+# Ghostty
+link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
 
 echo
 echo "Done. Start a fresh login shell to load everything:"

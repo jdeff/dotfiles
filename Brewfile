@@ -20,3 +20,10 @@ brew "eza"         # ls
 brew "bat"         # cat
 brew "fd"          # find
 brew "ripgrep"     # grep
+
+# Editor
+brew "neovim"
+
+# Terminal + font (font supplies the glyphs Starship's prompt uses)
+cask "ghostty"
+cask "font-lilex-nerd-font"
