@@ -24,26 +24,28 @@ return {
 		},
 		config = function(_, opts)
 			require("kanagawa").setup(opts)
-			vim.o.background = "dark"
+			-- Pick the variant synchronously so the FIRST paint already matches the
+			-- system. dark-notify (below) reads the mode asynchronously, so without
+			-- this the hardcoded default paints first and you get a dark→light flash
+			-- in light mode. `dark-notify --exit` prints the current mode and exits;
+			-- fall back to dark if it's missing (fresh machine / non-macOS).
+			local mode = vim.trim(vim.fn.system("dark-notify --exit"))
+			vim.o.background = (mode == "light" or mode == "dark") and mode or "dark"
 			vim.cmd.colorscheme("kanagawa")
 		end,
 	},
 
 	-- Follow the macOS system appearance and flip the kanagawa variant to match.
+	-- Event-driven (no polling): dark-notify (brew) pushes changes over a pipe,
+	-- and kanagawa picks wave/light from `background` (set in the spec above).
 	{
-		"f-person/auto-dark-mode.nvim",
+		"cormacrelf/dark-notify",
 		lazy = false,
-		priority = 999,
-		opts = {
-			set_dark_mode = function()
-				vim.o.background = "dark"
-				vim.cmd.colorscheme("kanagawa")
-			end,
-			set_light_mode = function()
-				vim.o.background = "light"
-				vim.cmd.colorscheme("kanagawa")
-			end,
-			update_interval = 3000,
-		},
+		priority = 999, -- after kanagawa (1000), so the colorscheme exists
+		config = function()
+			require("dark_notify").run({
+				schemes = { dark = "kanagawa", light = "kanagawa" },
+			})
+		end,
 	},
 }
