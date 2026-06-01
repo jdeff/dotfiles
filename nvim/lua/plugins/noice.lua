@@ -42,17 +42,18 @@ return {
       -- Noice links the cmdline border to DiagnosticSignInfo, which kanagawa
       -- gives the sign-column background (#2a2a37) — so the border looks like
       -- a gutter-colored strip. Keep the border's fg (the colored line) but
-      -- set its bg to the float background so it blends into the popup.
+      -- set its bg to the editor (Normal) background so the framed box matches
+      -- the cmdline input field.
       local groups = {
         "NoiceCmdlinePopupBorder",
         "NoiceCmdlinePopupTitle",
         "NoiceCmdlinePopupBorderSearch",
       }
       local function blend_borders()
-        local float_bg = vim.api.nvim_get_hl(0, { name = "NormalFloat", link = false }).bg
+        local normal_bg = vim.api.nvim_get_hl(0, { name = "Normal", link = false }).bg
         for _, g in ipairs(groups) do
           local cur = vim.api.nvim_get_hl(0, { name = g, link = false })
-          vim.api.nvim_set_hl(0, g, { fg = cur.fg, bg = float_bg, bold = cur.bold })
+          vim.api.nvim_set_hl(0, g, { fg = cur.fg, bg = normal_bg, bold = cur.bold })
         end
       end
       blend_borders()
