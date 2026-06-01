@@ -40,6 +40,9 @@ brew 'cormacrelf/tap/dark-notify'
 cask 'ghostty'
 cask 'font-lilex-nerd-font'
 
+# Secrets / credentials
+cask '1password-cli' # `op` — pull secrets into .local files / shell env
+
 # Desktop apps
 cask 'alfred'   # Spotlight replacement
 cask 'dash'     # offline documentation browser
