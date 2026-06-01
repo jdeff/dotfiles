@@ -4,8 +4,8 @@ return {
     lazy = false,
     priority = 1000, -- load before other plugins so highlights are ready
     opts = {
-      compile = true,
-      dimInactive = true,
+      compile = false,    -- apply opts changes immediately (no stale compiled cache)
+      dimInactive = false, -- keep one uniform bg; dimming made floats/splits look two-tone
       -- Variant chosen by background: Lotus (light) / Wave (dark), matching Ghostty.
       background = { dark = "wave", light = "lotus" },
     },
