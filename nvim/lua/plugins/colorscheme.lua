@@ -8,6 +8,19 @@ return {
 			dimInactive = true,
 			-- Variant chosen by background: Lotus (light) / Wave (dark), matching Ghostty.
 			background = { dark = "wave", light = "lotus" },
+			-- Re-point noice's cmdline border off the sign-column groups (which
+			-- carry the gutter bg) to the plain Diagnostic groups (no bg → inherit
+			-- the popup's Normal). Applied during :colorscheme, before noice's
+			-- ColorScheme handler, which links with default=true and won't clobber.
+			overrides = function()
+				return {
+					NoiceCmdlinePopupBorder = { link = "DiagnosticInfo" },
+					NoiceCmdlinePopupTitle = { link = "DiagnosticInfo" },
+					NoiceCmdlinePopupBorderSearch = { link = "DiagnosticWarn" },
+					NoiceCmdlineIcon = { link = "DiagnosticInfo" },
+					NoiceCmdlineIconSearch = { link = "DiagnosticWarn" },
+				}
+			end,
 		},
 		config = function(_, opts)
 			require("kanagawa").setup(opts)

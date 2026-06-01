@@ -35,28 +35,9 @@ return {
 				},
 				signature = { enabled = true },
 			},
+			-- The cmdline border color is re-pointed in the kanagawa overrides
+			-- (lua/plugins/colorscheme.lua): Noice links those groups with
+			-- default=true, so a theme override wins and needs no autocmd here.
 		},
-		config = function(_, opts)
-			require("noice").setup(opts)
-
-			-- Noice links the cmdline border to DiagnosticSignInfo — the
-			-- sign-column variant, which carries the gutter background (#2a2a37),
-			-- so the border read as a gutter-colored strip. Re-point it at the
-			-- plain Diagnostic groups: same fg, no bg, so the border inherits the
-			-- popup's Normal background. (Noice re-asserts its default links on
-			-- ColorScheme, so re-apply there too — covers the Lotus/Wave switch.)
-			local relinks = {
-				NoiceCmdlinePopupBorder = "DiagnosticInfo",
-				NoiceCmdlinePopupTitle = "DiagnosticInfo",
-				NoiceCmdlinePopupBorderSearch = "DiagnosticWarn",
-			}
-			local function relink()
-				for group, target in pairs(relinks) do
-					vim.api.nvim_set_hl(0, group, { link = target })
-				end
-			end
-			relink()
-			vim.api.nvim_create_autocmd("ColorScheme", { callback = relink })
-		end,
 	},
 }
