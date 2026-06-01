@@ -27,8 +27,13 @@ return {
         lsp_doc_border = true,
       },
       lsp = {
-        -- blink.cmp already renders the signature popup; let it own that.
-        signature = { enabled = false },
+        -- Let Noice own LSP markdown rendering + signature (clears the
+        -- checkhealth warnings; blink.cmp's signature is disabled to match).
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+        },
+        signature = { enabled = true },
       },
     },
   },

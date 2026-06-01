@@ -34,7 +34,7 @@ return {
           dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
         },
       },
-      signature = { enabled = true },
+      signature = { enabled = false }, -- Noice owns signature help (see noice.lua)
     },
   },
 }
