@@ -103,7 +103,9 @@ and wait — **which-key** shows the menu.
 Prefix is **`C-b`** (default). Plugins via TPM (auto-installed by `install.sh`;
 if needed, open tmux and press `prefix + I`). Sessions auto-save/restore
 (resurrect + continuum). Status bar follows the macOS appearance — Kanagawa
-Wave (dark) / Lotus (light) — switched live by the tmux-dark-notify plugin.
+Wave (dark) / Lotus (light) — switched live by the tmux-dark-notify plugin, and
+shows the currently playing Apple Music track (` Artist — Title`, blank when
+nothing's playing) to the left of the clock.
 
 | Key | Action |
 |-----|--------|
