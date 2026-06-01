@@ -27,6 +27,10 @@ brew 'neovim'
 brew 'tree-sitter-cli' # nvim-treesitter (main branch) compiles parsers with this
 brew 'tmux'
 
+# Build toolchain — compiles the workmux fork from source (see workmux/README.md).
+# cargo/rustc; workmux is edition 2024, so needs Rust >= 1.85.
+brew 'rust'
+
 # macOS light/dark watcher (event-driven). Powers the tmux-dark-notify plugin
 # and nvim's dark_notify integration so both follow the system appearance
 # without polling.

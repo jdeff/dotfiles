@@ -65,6 +65,8 @@ link "$REPO/nvim"                   "$HOME/.config/nvim"
 link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
 # tmux (whole config dir; TPM is bootstrapped below)
 link "$REPO/tmux"                   "$HOME/.config/tmux"
+# workmux (global config only; the fork is built from source below)
+link "$REPO/workmux/config.yaml"    "$HOME/.config/workmux/config.yaml"
 
 echo "==> Bootstrapping tmux plugin manager (TPM)"
 TPM_DIR="$HOME/.config/tmux/plugins/tpm"
@@ -79,6 +81,11 @@ if command -v tmux >/dev/null; then
   "$TPM_DIR/bin/install_plugins" >/dev/null 2>&1 && echo "  tmux plugins installed" \
     || echo "  (open tmux and press prefix + I to finish installing plugins)"
 fi
+
+echo "==> Building workmux (jdeff fork) from source"
+# Clones ~/src/workmux on first run and cargo-installs it into ~/.local/bin.
+# Re-runnable; also available as `workmux-update` once the binary is on PATH.
+"$REPO/workmux/install.sh" || echo "  (workmux build skipped/failed — see workmux/README.md)"
 
 echo
 echo "Done. Start a fresh login shell to load everything:"

@@ -1,0 +1,24 @@
+# Global workmux config → symlinked to ~/.config/workmux/config.yaml by install.sh.
+# Per-project overrides (panes, post_create, files) live in each repo's own
+# .workmux.yaml, not here. See workmux/README.md for the from-source build.
+
+agent: claude # `workmux add <name>` opens a focused Claude Code pane
+
+# We render the agent status in the tmux bar ourselves (see
+# tmux/themes/{wave,lotus}.conf), so workmux must NOT take over
+# window-status-format. With this off it only sets the @workmux_status
+# user-option per window, which our themes pick up via #{?@workmux_status,...}.
+status_format: false
+
+# Bare glyphs only — no #[fg=...] here. Color is applied per-theme in the tmux
+# theme files so the segment swaps with macOS light/dark like the rest of the bar.
+status_icons:
+  working: "" # nf-fa-cog     (U+F013) — agent running
+  waiting: "" # nf-fa-comment (U+F075) — needs input
+  done: "" # nf-fa-check   (U+F00C) — finished
+
+# Default window layout for each worktree: Claude focused, a plain shell beside it.
+panes:
+  - command: <agent>
+    focus: true
+  - split: horizontal

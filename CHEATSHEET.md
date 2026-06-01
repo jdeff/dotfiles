@@ -21,6 +21,10 @@ Then:
   anything missing (e.g. `node` for vtsls).
 - macOS: set Appearance (light/dark — Ghostty + nvim follow it), and remap
   Alfred's hotkey to ⌘Space (disable Spotlight's under Keyboard Shortcuts).
+- `install.sh` also builds **workmux** from the `jdeff/workmux` fork into
+  `~/.local/bin` (needs `rust` from the Brewfile + SSH access to the fork). If
+  that step was skipped because SSH keys weren't ready yet, re-run
+  `./workmux/install.sh` once they are. See `workmux/README.md`.
 
 ## Neovim
 
@@ -91,6 +95,7 @@ and wait — **which-key** shows the menu.
 - `z <dir>` jump (zoxide) · `zi` pick interactively
 - `^R` history · `^T` files · `⌥C` cd (fzf) · `**<tab>` fuzzy completion
 - Up/Down — substring-search history; `,` git/ruby/rails aliases from prezto (`g`, `gco`, `glo`, `gp`, …)
+- `wm` → workmux (git-worktree + tmux-window manager, built from the fork). Subcommand shorthands: `wma` add (new worktree+window with a Claude pane), `wmr` remove, `wmm` merge + tear down, `wml` list, `wmo` open, `wmc` close, `wmd` dashboard; `wm init` scaffolds `.workmux.yaml`. `workmux-update` rebuilds the fork after a pull (see `workmux/README.md`).
 - Per-machine extras (not tracked): `~/.zshrc.local`, `~/.zshenv.local`, `~/.zprofile.local`
 
 ## Git aliases (gitconfig)
