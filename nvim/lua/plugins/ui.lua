@@ -9,7 +9,8 @@ return {
       options = {
         theme = "kanagawa",
         globalstatus = true,
-        section_separators = "",
+        -- Powerline "pill" caps: e0b4 () closes left sections, e0b6 () opens right ones.
+        section_separators = { left = vim.fn.nr2char(0xe0b4), right = vim.fn.nr2char(0xe0b6) },
         component_separators = "|",
       },
       sections = {
