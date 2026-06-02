@@ -1,0 +1,6 @@
+# asdf runtime config — https://asdf-vm.com/manage/configuration.html
+
+# Read the per-language legacy version files (.ruby-version, .nvmrc, …) in
+# addition to .tool-versions, so repos that ship only the legacy file still
+# pin the right runtime. Each plugin declares which filename it maps.
+legacy_version_file = yes

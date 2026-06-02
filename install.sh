@@ -57,6 +57,8 @@ link "$REPO/zsh"                  "$HOME/.config/zsh"
 # Git
 link "$REPO/git/gitconfig"        "$HOME/.gitconfig"
 link "$REPO/git/gitignore_global" "$HOME/.gitignore_global"
+# asdf (legacy_version_file = yes, so .ruby-version/.nvmrc are honored)
+link "$REPO/asdf/asdfrc"          "$HOME/.asdfrc"
 # Starship
 link "$REPO/starship/starship.toml" "$HOME/.config/starship.toml"
 # Neovim (whole config tree: init.lua + lua/)
