@@ -12,6 +12,8 @@ A framework-free zsh + git + starship dotfiles repo. Plain config files, organiz
 - `exec zsh -l` — reload a full login shell to test changes (there is no build/test suite).
 - After editing only an interactive module: `source ~/.zshrc`.
 
+**After any change to the dotfiles, re-run `./install.sh` and reload the shell.** There is no separate test suite, so the idempotent install *is* the test: it re-runs `brew bundle` (picking up new `Brewfile` entries), re-seeds `.local` files, and re-verifies every symlink — confirming the change actually deploys cleanly on a real machine rather than just looking right in the repo. Some installs (e.g. casks with `.pkg` payloads) need an interactive `sudo` password, so they can't run in a non-interactive session — surface those to the user to run via `! brew bundle` rather than assuming they succeeded.
+
 ## Load order (the core mental model)
 
 zsh sources files in a fixed sequence, and this repo's structure mirrors it. Putting code in the wrong file is the most common mistake:
@@ -33,7 +35,7 @@ Within `zshrc`, **interactive plugins must load last and in a specific order**: 
 
 ## Tooling
 
-Dependencies are pinned in `Brewfile`. Runtime versions (ruby, node) are managed by **asdf** (Go rewrite, 0.16+: shims on PATH, no `asdf.sh`) via `~/.tool-versions`. Git is configured for SSH commit/tag signing and git-delta as the pager.
+Dependencies are pinned in `Brewfile`. Runtime versions (ruby, node) are managed by **asdf** (Go rewrite, 0.16+: shims on PATH, no `asdf.sh`) via `~/.tool-versions`. `asdf/asdfrc` (symlinked to `~/.asdfrc`) sets `legacy_version_file = yes` so asdf also honors per-language legacy files like `.ruby-version` / `.nvmrc`, not just `.tool-versions`. Git is configured for SSH commit/tag signing and git-delta as the pager. HTTPS remote auth has two helpers in `git/gitconfig`: **`osxkeychain`** is the global default (ships with git on macOS — Apple's and Homebrew's — so no brew dependency), and **github.com/gist.github.com are scoped to the `gh` CLI** (`!gh auth git-credential`), which serves a token from gh's own keyring storage. Each block leads with an empty `helper =` to clear what it inherits (osxkeychain clears the system `/opt/homebrew/etc/gitconfig` entry; the github blocks drop the inherited osxkeychain), so every host resolves through exactly one helper. The actual token is per-machine secret state in the keyring — created by `gh auth login`, never committed (same category as `~/.gitconfig.local`). All of this is orthogonal to commit/tag signing, which uses SSH keys, not the keychain.
 
 The command line is floated by **noice.nvim** (`lua/plugins/noice.lua`, with nui + nvim-notify), and `options.lua` sets `cmdheight = 0` to reclaim the bottom line — so `:`/search appear in a centered popup and messages route through nvim-notify. Note: noice only initializes when a UI is attached, so it no-ops (and `:Noice` won't exist) under `nvim --headless` — verify cmdline/message behavior in a real session.
 
