@@ -20,7 +20,7 @@ truncation_length = 3
 truncate_to_repo = true
 
 [git_branch]
-symbol = " "
+symbol = " "
 style = "bold purple"
 
 [git_status]
@@ -40,13 +40,13 @@ conflicted = "[=${count}](red)"
 style = "bold red"
 
 [nodejs]
-symbol = " "
+symbol = " "
 style = "bold green"
 # Show only inside projects with Node markers, to keep the prompt quiet.
 detect_files = ["package.json", ".nvmrc", ".node-version"]
 
 [ruby]
-symbol = " "
+symbol = " "
 style = "bold red"
 detect_files = ["Gemfile", ".ruby-version"]
 detect_extensions = ["rb"]
