@@ -22,3 +22,7 @@ panes:
   - command: <agent>
     focus: true
   - split: horizontal
+
+sidebar:
+  position: left
+  width: 12%
