@@ -15,6 +15,9 @@ exec zsh -l             # load the new shell
 Then:
 
 - Edit `~/.gitconfig.local` — set name, email, SSH signing key (seeded from the example).
+- `gh auth login` — pick HTTPS and answer "yes" to authenticating git. This caches
+  a token in the keychain; the tracked gitconfig already routes github HTTPS auth
+  through `gh`. (SSH commit signing is separate — that's the key in `~/.gitconfig.local`.)
 - Open `nvim` once and wait: lazy.nvim installs plugins, treesitter compiles
   parsers (via the `tree-sitter` CLI from the Brewfile), and Mason installs LSP
   servers + formatters. `:Lazy` and `:Mason` show progress; `:checkhealth` flags

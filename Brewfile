@@ -21,6 +21,7 @@ brew 'bat'         # cat
 brew 'fd'          # find
 brew 'ripgrep'     # grep
 brew 'lazygit'     # terminal git UI (driven by nvim's lazygit.nvim)
+brew 'gh'          # GitHub CLI; also the git credential helper for github (see git/gitconfig)
 
 # Editor + terminal multiplexer
 brew 'neovim'

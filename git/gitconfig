@@ -16,6 +16,21 @@
 [tag]
 	gpgsign = true
 
+[credential]
+	# Empty value clears any helper inherited from system config, so osxkeychain
+	# is the only one in the list and credentials resolve through it just once.
+	helper =
+	helper = osxkeychain
+# github/gist auth goes through the gh CLI, which returns a token from its own
+# keyring storage. The empty helper here drops the inherited osxkeychain so gh
+# is the sole helper for these hosts (one fresh token, no second cached copy).
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+
 # ── git-delta: syntax-highlighted, navigable diffs ───────────────────────
 [core]
 	pager = delta
