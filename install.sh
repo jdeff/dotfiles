@@ -69,6 +69,8 @@ link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
 link "$REPO/tmux"                   "$HOME/.config/tmux"
 # workmux (global config only; the fork is built from source below)
 link "$REPO/workmux/config.yaml"    "$HOME/.config/workmux/config.yaml"
+# Claude Code global guidance (~/.claude/skills are installed by workmux, not tracked here)
+link "$REPO/claude/CLAUDE.md"       "$HOME/.claude/CLAUDE.md"
 
 echo "==> Bootstrapping tmux plugin manager (TPM)"
 TPM_DIR="$HOME/.config/tmux/plugins/tpm"
