@@ -1,10 +1,11 @@
 # Completion system: fpath sources, compinit (cached), and styling.
 
-# Completion sources: zsh-completions, Homebrew formulae, asdf. Must precede compinit.
+# Completion sources: zsh-completions, Homebrew formulae, asdf, workmux. Must precede compinit.
 fpath=(
   /opt/homebrew/share/zsh-completions
   /opt/homebrew/share/zsh/site-functions
   "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
+  "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions"
   $fpath
 )
 
@@ -12,6 +13,12 @@ fpath=(
 if [[ ! -f "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf" ]]; then
   mkdir -p "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
   asdf completion zsh > "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf"
+fi
+
+# Same for workmux (built from a fork in ~/.local/bin — regenerate after a rebuild).
+if command -v workmux >/dev/null && [[ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions/_workmux" ]]; then
+  mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions"
+  workmux completions zsh > "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions/_workmux"
 fi
 
 # Initialize completion, rebuilding the dump cache at most once a day for speed.

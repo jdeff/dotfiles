@@ -36,7 +36,11 @@ if command -v workmux >/dev/null; then
   workmux-update() {
     emulate -L zsh
     local src="${WORKMUX_SRC:-$HOME/src/workmux}"
-    git -C "$src" pull --ff-only && cargo install --path "$src" --root "$HOME/.local" --force --locked
+    git -C "$src" pull --ff-only && cargo install --path "$src" --root "$HOME/.local" --force --locked || return
+    # Refresh the zsh completion so it tracks the rebuilt binary (10-completion.zsh
+    # only regenerates _workmux when it's missing).
+    local compdir="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions"
+    mkdir -p "$compdir" && workmux completions zsh > "$compdir/_workmux"
   }
 fi
 
