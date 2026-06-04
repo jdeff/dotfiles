@@ -126,6 +126,8 @@ nothing's playing) to the left of the clock.
 | `prefix [` then `v`/`y` | Copy mode: select / yank to clipboard |
 | `prefix C-s` / `C-r` | Save / restore session manually |
 | `prefix h` then `m/g/u/d/s/k` | hotseat: menu / go to session / up / down / status / lazydocker |
+| `prefix w` then `a/m/r/o/c/l/d/s` | workmux: add / merge / remove / open / close / list / dashboard / sidebar |
+| `prefix W` | Window picker (the stock `w`, relocated) |
 
 ## Terminal (Ghostty)
 
