@@ -4,7 +4,8 @@
 add_newline = true
 
 format = """
-$directory\
+${custom.directory}\
+${custom.worktree}\
 $git_branch\
 $git_status\
 $git_state\
@@ -14,10 +15,51 @@ $cmd_duration\
 $line_break\
 $character"""
 
-[directory]
+# ── Worktree-aware directory ─────────────────────────────────────────────
+# The built-in directory module can't tell a linked git worktree from a
+# normal checkout, so a workmux worktree renders as `mg-42 on MG-42` — pure
+# redundancy, since the worktree dir is named after its branch (an open
+# starship gap, see starship#7219). These two custom modules replace
+# $directory. Exactly one fires per prompt: a dir is a linked worktree iff
+# --git-dir differs from --git-common-dir (--path-format=absolute, because
+# in subdirs the two otherwise disagree on relative vs absolute form). The
+# worktree module re-roots the displayed path at the *main* checkout's name
+# (derived from the common dir, so it works for any worktree, not just
+# workmux ones): `tms-api (worktree) on MG-42`. Both replicate the old
+# directory display rules — ~ contraction, last-3-component truncation,
+# cut at the repo root — so the prompt is unchanged outside worktrees.
+
+[custom.directory]
+when = '[ "$(git rev-parse --path-format=absolute --git-dir 2>/dev/null)" = "$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)" ]'
+command = '''
+top=$(git rev-parse --show-toplevel 2>/dev/null)
+if [ -n "$top" ]; then
+  rel=$(git rev-parse --show-prefix); rel=${rel%/}
+  p="${top##*/}${rel:+/$rel}"
+else
+  case $PWD in
+    "$HOME") p='~' ;;
+    "$HOME"/*) p="~${PWD#"$HOME"}" ;;
+    *) p=$PWD ;;
+  esac
+fi
+printf '%s' "$p" | awk -F/ '{n=NF<3?NF:3; for(i=NF-n+1;i<=NF;i++) printf "%s%s", $i, (i<NF?"/":"")}'
+'''
+shell = ['sh']
 style = "bold cyan"
-truncation_length = 3
-truncate_to_repo = true
+format = '[$output]($style) '
+
+[custom.worktree]
+when = '[ "$(git rev-parse --path-format=absolute --git-dir 2>/dev/null)" != "$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)" ]'
+command = '''
+common=$(git rev-parse --path-format=absolute --git-common-dir)
+main=${common%/.git}; main=${main##*/}
+rel=$(git rev-parse --show-prefix); rel=${rel%/}
+printf '%s' "$main${rel:+/$rel}" | awk -F/ '{n=NF<3?NF:3; for(i=NF-n+1;i<=NF;i++) printf "%s%s", $i, (i<NF?"/":"")}'
+'''
+shell = ['sh']
+style = "bold cyan"
+format = '[$output]($style)[ \(worktree\)](dimmed) '
 
 [git_branch]
 symbol = " "
