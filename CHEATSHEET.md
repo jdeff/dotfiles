@@ -125,6 +125,7 @@ nothing's playing) to the left of the clock.
 | `prefix F` | Fuzzy session/window picker (tmux-fzf) |
 | `prefix [` then `v`/`y` | Copy mode: select / yank to clipboard |
 | `prefix C-s` / `C-r` | Save / restore session manually |
+| `prefix h` then `m/g/u/d/s/k` | hotseat: menu / go to session / up / down / status / lazydocker |
 
 ## Terminal (Ghostty)
 
