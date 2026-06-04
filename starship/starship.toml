@@ -59,7 +59,7 @@ printf '%s' "$main${rel:+/$rel}" | awk -F/ '{n=NF<3?NF:3; for(i=NF-n+1;i<=NF;i++
 '''
 shell = ['sh']
 style = "bold cyan"
-format = '[$output]($style)[ \(worktree\)](dimmed) '
+format = '[$output]($style)[ 󰔱](dimmed) '
 
 [git_branch]
 symbol = " "
