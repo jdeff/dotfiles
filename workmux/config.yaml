@@ -4,6 +4,9 @@
 
 agent: claude # `workmux add <name>` opens a focused Claude Code pane
 
+# Each worktree gets its own tmux session instead of a window in the current one.
+mode: session
+
 # We render the agent status in the tmux bar ourselves (see
 # tmux/themes/{wave,lotus}.conf), so workmux must NOT take over
 # window-status-format. With this off it only sets the @workmux_status
