@@ -21,7 +21,14 @@ return {
             },
           },
         },
-        ruby_lsp = {}, -- Shopify ruby-lsp; surfaces rubocop diagnostics when present
+        -- Shopify ruby-lsp; surfaces rubocop diagnostics when present.
+        -- Run via the asdf shim (NOT Mason): Mason bakes a fixed Ruby interpreter
+        -- into the launcher's shebang, which breaks per-project Ruby switching.
+        -- The shim resolves each project's .ruby-version at exec time. Install
+        -- per-Ruby with: `gem install ruby-lsp && asdf reshim ruby`.
+        ruby_lsp = {
+          cmd = { vim.fn.expand("~/.asdf/shims/ruby-lsp") },
+        },
         vtsls = {
           settings = {
             typescript = {
@@ -72,10 +79,19 @@ return {
       require("mason-tool-installer").setup({
         ensure_installed = { "stylua", "prettier", "rubocop", "sql-formatter" },
       })
+      -- ruby-lsp is intentionally excluded from Mason management (see ruby_lsp
+      -- above); we let Mason install/enable everything else and enable ruby-lsp
+      -- ourselves so it runs through the asdf shim.
+      local mason_servers = vim.tbl_filter(function(name)
+        return name ~= "ruby_lsp"
+      end, vim.tbl_keys(servers))
+
       require("mason-lspconfig").setup({
-        ensure_installed = vim.tbl_keys(servers),
+        ensure_installed = mason_servers,
         automatic_enable = true,
       })
+
+      vim.lsp.enable("ruby_lsp")
 
       -- Diagnostics presentation.
       vim.diagnostic.config({
