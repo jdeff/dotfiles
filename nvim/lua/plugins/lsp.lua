@@ -31,6 +31,14 @@ return {
         },
         vtsls = {
           settings = {
+            -- Drive tsserver from the workspace's own TypeScript (node_modules/
+            -- typescript/lib) so diagnostics match tsc/CI, instead of vtsls's
+            -- bundled copy. Falls back to the bundled version when a project has
+            -- none. vtsls itself runs on the asdf-shimmed node via its `env node`
+            -- shebang, so the Node version already tracks the project.
+            vtsls = {
+              autoUseWorkspaceTsdk = true,
+            },
             typescript = {
               inlayHints = {
                 parameterNames = { enabled = "literals" },
