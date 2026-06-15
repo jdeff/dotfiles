@@ -49,3 +49,9 @@ for _amod in "$ZSH_DIR"/aliases/*.zsh(N); do
   source "$_amod"
 done
 unset _amod
+
+# Custom additions layered on top of the prezto modules (kept here so those
+# stay verbatim). `rort` runs the suite via rspec rather than `rails test`.
+if (( $+commands[bundle] )); then
+  alias rort='bundle exec rspec'
+fi
