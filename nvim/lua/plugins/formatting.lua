@@ -46,6 +46,17 @@ return {
           args = { "$FILENAME" },
           stdin = false,
         },
+        -- Run the project's bundled RuboCop (via Bundler) rather than Mason's
+        -- standalone copy, so project plugins like rubocop-rails load. Inherits
+        -- the base formatter's args (--server -a --stdin …) via prepend_args.
+        rubocop = {
+          command = "bundle",
+          prepend_args = { "exec", "rubocop" },
+          cwd = function(_, ctx)
+            return vim.fs.root(ctx.dirname, { "Gemfile" })
+          end,
+          require_cwd = true,
+        },
       },
     },
     config = function(_, opts)

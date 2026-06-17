@@ -85,7 +85,9 @@ return {
       end
 
       require("mason-tool-installer").setup({
-        ensure_installed = { "stylua", "prettier", "rubocop", "sql-formatter" },
+        -- rubocop intentionally excluded: conform runs the project's bundled
+        -- rubocop via `bundle exec` (see plugins/formatting.lua).
+        ensure_installed = { "stylua", "prettier", "sql-formatter" },
       })
       -- ruby-lsp is intentionally excluded from Mason management (see ruby_lsp
       -- above); we let Mason install/enable everything else and enable ruby-lsp
