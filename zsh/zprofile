@@ -5,9 +5,10 @@
 # Homebrew (sets PATH, MANPATH, INFOPATH, HOMEBREW_*)
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# asdf 0.16+ (Go rewrite): no more asdf.sh — just put the shims on PATH.
-export ASDF_DATA_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
-export PATH="$ASDF_DATA_DIR/shims:$PATH"
+# mise: put the shims dir on PATH so runtimes resolve in non-interactive
+# shells, scripts, and nvim (interactive shells also get `mise activate`, see
+# conf.d/40-tools.zsh).
+export PATH="${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims:$PATH"
 
 # User-local binaries (workmux and other single-binary installs land here).
 export PATH="$HOME/.local/bin:$PATH"

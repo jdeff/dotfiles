@@ -2,8 +2,8 @@
 # Ruby / Bundler aliases (from prezto's ruby module).
 #
 # Prezto's original init.zsh also bootstraps rbenv/rvm/chruby; that's omitted
-# here because runtime versions are managed by asdf (see ~/.tool-versions).
-# Only the aliases are kept, verbatim.
+# here because runtime versions are managed by mise (see
+# ~/.config/mise/config.toml). Only the aliases are kept, verbatim.
 #
 
 # General

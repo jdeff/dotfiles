@@ -18,3 +18,10 @@ fi
 if command -v zoxide >/dev/null; then
   eval "$(zoxide init zsh)"
 fi
+
+# ── mise — runtime version manager ───────────────────────────────────────
+# Hook-based activation for interactive shells (auto-switches versions on cd,
+# manages env). Shims on PATH (see ~/.zprofile) cover non-interactive contexts.
+if command -v mise >/dev/null; then
+  eval "$(mise activate zsh)"
+fi

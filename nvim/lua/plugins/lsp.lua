@@ -22,19 +22,19 @@ return {
           },
         },
         -- Shopify ruby-lsp; surfaces rubocop diagnostics when present.
-        -- Run via the asdf shim (NOT Mason): Mason bakes a fixed Ruby interpreter
+        -- Run via the mise shim (NOT Mason): Mason bakes a fixed Ruby interpreter
         -- into the launcher's shebang, which breaks per-project Ruby switching.
         -- The shim resolves each project's .ruby-version at exec time. Install
-        -- per-Ruby with: `gem install ruby-lsp && asdf reshim ruby`.
+        -- per-Ruby with: `gem install ruby-lsp && mise reshim`.
         ruby_lsp = {
-          cmd = { vim.fn.expand("~/.asdf/shims/ruby-lsp") },
+          cmd = { vim.fn.expand("~/.local/share/mise/shims/ruby-lsp") },
         },
         vtsls = {
           settings = {
             -- Drive tsserver from the workspace's own TypeScript (node_modules/
             -- typescript/lib) so diagnostics match tsc/CI, instead of vtsls's
             -- bundled copy. Falls back to the bundled version when a project has
-            -- none. vtsls itself runs on the asdf-shimmed node via its `env node`
+            -- none. vtsls itself runs on the mise-shimmed node via its `env node`
             -- shebang, so the Node version already tracks the project.
             vtsls = {
               autoUseWorkspaceTsdk = true,
@@ -91,7 +91,7 @@ return {
       })
       -- ruby-lsp is intentionally excluded from Mason management (see ruby_lsp
       -- above); we let Mason install/enable everything else and enable ruby-lsp
-      -- ourselves so it runs through the asdf shim.
+      -- ourselves so it runs through the mise shim.
       local mason_servers = vim.tbl_filter(function(name)
         return name ~= "ruby_lsp"
       end, vim.tbl_keys(servers))

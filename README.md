@@ -8,7 +8,7 @@ manager). Plain zsh files, organized into modules, deployed by symlink.
 ```
 zsh/
   zshenv      -> ~/.zshenv      env vars (loads for ALL shells, incl. scripts)
-  zprofile    -> ~/.zprofile    login-shell PATH setup (Homebrew, asdf shims)
+  zprofile    -> ~/.zprofile    login-shell PATH setup (Homebrew, mise shims)
   zshrc       -> ~/.zshrc        interactive loader
   conf.d/     -> sourced in order by zshrc
     00-options.zsh      history, dir navigation, globbing, KEYTIMEOUT
@@ -64,7 +64,7 @@ gitsigns + fugitive + diffview + **lazygit** (`,gg`). Yank history with
 visual `gr`), plus Tim Pope's repeat, sleuth, unimpaired, abolish, and eunuch.
 Leader is `,`. First launch installs plugins automatically.
 
-Runtime versions (ruby, node) are managed by **asdf** via `~/.tool-versions`.
+Runtime versions (ruby, node) are managed by **mise** via `~/.config/mise/config.toml`.
 
 ## Aliases
 

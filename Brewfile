@@ -33,6 +33,9 @@ brew 'tmux'
 # cargo/rustc; workmux is edition 2024, so needs Rust >= 1.85.
 brew 'rust'
 
+# Runtime version manager (ruby, node) — shims on PATH + interactive activation.
+brew 'mise'
+
 # macOS light/dark watcher (event-driven). Powers the tmux-dark-notify plugin
 # and nvim's dark_notify integration so both follow the system appearance
 # without polling.

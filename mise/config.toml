@@ -1,0 +1,13 @@
+# Global mise config — runtime version pins + settings.
+# Symlinked to ~/.config/mise/config.toml by install.sh.
+
+[tools]
+ruby = "4.0.5"
+node = "24.12.0"
+
+[settings]
+# Honor per-language idiomatic version files (.ruby-version, .nvmrc,
+# .node-version) in addition to mise.toml/.tool-versions, so repos that ship
+# only the legacy file still pin the right runtime. mise disables these by
+# default, so they're opted in per tool.
+idiomatic_version_file_enable_tools = ["ruby", "node"]
