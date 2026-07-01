@@ -1,6 +1,10 @@
 return {
-  -- Seamless C-h/j/k/l between nvim splits and tmux panes. Pairs with the
-  -- vim-tmux-navigator tmux plugin (see tmux/tmux.conf).
+  -- Seamless C-h/j/k/l between nvim splits and the surrounding multiplexer.
+  -- The mappings live in after/plugin/herdr_nav.lua: they move between nvim splits
+  -- and, at a split edge, cross into a herdr pane (when $HERDR_PANE_ID is set) or a
+  -- tmux pane otherwise. We keep vim-tmux-navigator for the tmux-edge case (its
+  -- TmuxNavigate* commands are the fallback), lazy-loaded on first use, but disable
+  -- its own key mappings so herdr_nav.lua owns C-h/j/k/l.
   {
     "christoomey/vim-tmux-navigator",
     cmd = {
@@ -10,11 +14,8 @@ return {
       "TmuxNavigateRight",
       "TmuxNavigatePrevious",
     },
-    keys = {
-      { "<C-h>", "<cmd>TmuxNavigateLeft<cr>", desc = "Go to left split/pane" },
-      { "<C-j>", "<cmd>TmuxNavigateDown<cr>", desc = "Go to lower split/pane" },
-      { "<C-k>", "<cmd>TmuxNavigateUp<cr>", desc = "Go to upper split/pane" },
-      { "<C-l>", "<cmd>TmuxNavigateRight<cr>", desc = "Go to right split/pane" },
-    },
+    init = function()
+      vim.g.tmux_navigator_no_mappings = 1
+    end,
   },
 }
