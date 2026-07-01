@@ -1,0 +1,137 @@
+# herdr configuration — built for jdeff to mirror the tmux + workmux workflow.
+# This is standalone: it does NOT touch ~/.config/tmux or ~/.config/workmux.
+# Run `herdr` inside a project (NOT inside tmux) to try it.
+# Reload after edits: `herdr server reload-config`
+
+# ── Appearance ────────────────────────────────────────────────────────────────
+# Mirrors your tmux wave(dark)/lotus(light) macOS appearance swap.
+[theme]
+# Mirrors your Ghostty: light:Kanagawa Lotus / dark:Kanagawa Wave, following macOS appearance.
+name = "kanagawa"
+auto_switch = true
+dark_name = "kanagawa"          # Kanagawa Wave
+light_name = "kanagawa-lotus"   # Kanagawa Lotus
+
+# ── Shell / cwd ───────────────────────────────────────────────────────────────
+[terminal]
+default_shell = ""      # empty = $SHELL (your zsh), then /bin/sh
+shell_mode = "auto"     # login shell on macOS
+new_cwd = "follow"      # new panes/tabs inherit cwd, like tmux -c "#{pane_current_path}"
+
+# ── Worktrees (native — the workmux worktree analog) ──────────────────────────
+# `prefix+shift+g` creates a worktree, opens it as a workspace grouped under the
+# source repo. Branch already exists → checks out; new name → creates the branch.
+[worktrees]
+directory = "~/.herdr/worktrees"   # layout: <dir>/<repo>/<branch-slug>
+                                   # switch to e.g. "~/code/.worktrees" for sibling dirs
+
+# ── Keys ──────────────────────────────────────────────────────────────────────
+[keys]
+prefix = "ctrl+b"                    # same prefix as your tmux
+
+# Splits. `-` matches your tmux `bind -` (stacked). Right-split stays prefix+v
+# because Herdr can't bind the shifted "|" reliably (see notes I gave you).
+split_horizontal = "prefix+minus"    # stacked  (tmux: split -v)
+split_vertical   = "prefix+|"        # side-by-side (tmux: split -h / your `|`)
+
+# Pane focus — identical to your hjkl muscle memory.
+focus_pane_left  = "prefix+h"
+focus_pane_down  = "prefix+j"
+focus_pane_up    = "prefix+k"
+focus_pane_right = "prefix+l"
+cycle_pane_next     = "prefix+tab"
+cycle_pane_previous = "prefix+shift+tab"
+
+# Resize: Herdr uses a resize *mode*. `prefix+r` then h/j/k/l to resize,
+# esc to exit. (Your tmux prefix+H/J/K/L becomes prefix+r → hjkl.)
+resize_mode = "prefix+r"
+
+zoom       = "prefix+z"
+close_pane = "prefix+x"
+
+# Tabs (= tmux windows). n/p match your tmux next/previous-window.
+new_tab      = "prefix+c"
+next_tab     = "prefix+n"
+previous_tab = "prefix+p"
+switch_tab   = "prefix+1..9"
+rename_tab   = "prefix+shift+t"
+close_tab    = "prefix+shift+x"
+
+# Workspaces (= projects / workmux worktrees) + worktree ops.
+workspace_picker = "prefix+w"
+goto             = "prefix+g"
+new_workspace    = "prefix+shift+n"
+rename_workspace = "prefix+shift+w"
+close_workspace  = "prefix+shift+d"
+new_worktree     = "prefix+shift+g"
+open_worktree    = "prefix+shift+o"
+# remove_worktree intentionally unset — destructive; use the sidebar right-click
+# (it removes safely, prompts before forcing on a dirty tree, never deletes branches).
+
+# Agent sidebar cycling. Prefix-based so it works without Ghostty "Option as Alt".
+# (To jump to a specific agent, use the goto picker prefix+g or click the sidebar.)
+next_agent     = "prefix+shift+j"
+previous_agent = "prefix+shift+k"
+
+detach        = "prefix+q"
+toggle_sidebar = "prefix+b"
+reload_config = "prefix+shift+r"
+edit_scrollback = "prefix+e"
+
+# Seamless pane <-> vim/nvim split navigation (vim-tmux-navigator style).
+# navigate.sh checks the focused pane's process: forwards ctrl+hjkl to vim if it's
+# vim/nvim, otherwise moves Herdr pane focus. Editor side set up in your nvim config.
+[[keys.command]]
+key = "ctrl+h"
+type = "plugin_action"
+command = "vim-herdr-navigation.left"
+description = "navigate left (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "plugin_action"
+command = "vim-herdr-navigation.down"
+description = "navigate down (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "plugin_action"
+command = "vim-herdr-navigation.up"
+description = "navigate up (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "plugin_action"
+command = "vim-herdr-navigation.right"
+description = "navigate right (vim/herdr)"
+
+# lazygit in a throwaway pane — like your git popups. (l = lazygit)
+[[keys.command]]
+key = "prefix+shift+l"
+type = "pane"
+command = "lazygit"
+
+# Apply your default layout (claude focused + a shell beside it) to the current
+# workspace. Runs detached; the script talks to Herdr over the socket. (a = apply)
+[[keys.command]]
+key = "prefix+a"
+type = "shell"
+command = "/Users/jdeff/.config/herdr/scripts/layout-agent-shell.sh"
+
+# ── UI / sidebar / notifications ──────────────────────────────────────────────
+[ui]
+agent_panel_sort = "priority"
+show_agent_labels_on_pane_borders = true
+sidebar_width = 26
+accent = "#7e9cd8"                          # Kanagawa crystalBlue, for highlights/nav UI
+
+[ui.toast]
+delivery = "system"                        # OS notifications when a bg agent changes state
+delay_seconds = 1
+
+[ui.sound]
+enabled = true                             # chimes when a background agent finishes / needs you
+
+# ── Session persistence ───────────────────────────────────────────────────────
+[session]
+resume_agents_on_restore = true            # restart claude panes via `claude --resume` after server restart

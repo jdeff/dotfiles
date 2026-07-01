@@ -129,6 +129,22 @@ nothing's playing) to the left of the clock.
 | `prefix w` then `a/m/r/o/c/l/d/s` | workmux: add / merge / remove / open / close / list / dashboard / sidebar |
 | `prefix W` | Window picker (the stock `w`, relocated) |
 
+## Herdr
+
+A mouse-first, agent-aware tmux alternative (run **standalone, not inside tmux**).
+Prefix is also **`C-b`**. Full reference: `herdr/CHEATSHEET.md`; setup: `herdr/README.md`.
+
+| Key | Action |
+|-----|--------|
+| `C-h/j/k/l` | Move between panes **and** nvim splits (seamless) |
+| `prefix \|` / `prefix -` | Split right / down |
+| `prefix shift+g` | New worktree (branch + grouped space, auto Claude+shell) |
+| `prefix a` | Apply Claude+shell layout to current space |
+| `prefix shift+j` / `shift+k` | Cycle agents in the sidebar |
+| `prefix shift+l` | lazygit (throwaway pane) |
+| `prefix q` | Detach (reattach with `herdr`) |
+| `/worktree-herdr <tasks>` | Dispatch worktrees each running Claude on a prompt |
+
 ## Terminal (Ghostty)
 
 - Theme follows macOS appearance: Kanagawa **Lotus** (light) / **Wave** (dark).

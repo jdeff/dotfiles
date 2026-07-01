@@ -69,8 +69,18 @@ link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
 link "$REPO/tmux"                   "$HOME/.config/tmux"
 # workmux (global config only; the fork is built from source below)
 link "$REPO/workmux/config.yaml"    "$HOME/.config/workmux/config.yaml"
-# Claude Code global guidance (~/.claude/skills are installed by workmux, not tracked here)
+# Claude Code global guidance (most ~/.claude/skills come from workmux; the herdr
+# worktree skill is tracked here and linked below)
 link "$REPO/claude/CLAUDE.md"       "$HOME/.claude/CLAUDE.md"
+# Herdr (terminal workspace manager for AI agents). Individual symlinks so
+# ~/.config/herdr stays a real dir for runtime sockets/logs/plugin state. Herdr
+# itself is installed via curl and its plugins/integration registered once —
+# see herdr/README.md for that one-time bootstrap.
+link "$REPO/herdr/config.toml"           "$HOME/.config/herdr/config.toml"
+link "$REPO/herdr/CHEATSHEET.md"         "$HOME/.config/herdr/CHEATSHEET.md"
+link "$REPO/herdr/scripts"               "$HOME/.config/herdr/scripts"
+link "$REPO/herdr/plugins/jdeff-flow"    "$HOME/.config/herdr/plugins/jdeff-flow"
+link "$REPO/herdr/skills/worktree-herdr" "$HOME/.claude/skills/worktree-herdr"
 
 echo "==> Bootstrapping tmux plugin manager (TPM)"
 TPM_DIR="$HOME/.config/tmux/plugins/tpm"
