@@ -138,6 +138,7 @@ Prefix is also **`C-b`**. Full reference: `herdr/CHEATSHEET.md`; setup: `herdr/R
 |-----|--------|
 | `C-h/j/k/l` | Move between panes **and** nvim splits (seamless) |
 | `prefix \|` / `prefix -` | Split right / down |
+| `alt+1..9` / `alt+j`/`k` | Jump to / cycle spaces (right Option = Alt) |
 | `prefix shift+g` | New worktree (branch + grouped space, auto Claude+shell) |
 | `prefix a` | Apply Claude+shell layout to current space |
 | `prefix shift+j` / `shift+k` | Cycle agents in the sidebar |

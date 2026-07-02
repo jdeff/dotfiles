@@ -68,7 +68,12 @@ open_worktree    = "prefix+shift+o"
 # remove_worktree intentionally unset — destructive; use the sidebar right-click
 # (it removes safely, prompts before forcing on a dirty tree, never deletes branches).
 
-# Agent sidebar cycling. Prefix-based so it works without Ghostty "Option as Alt".
+# Switch between spaces prefix-free (workmux M-j/M-k parity). Needs Ghostty
+# macos-option-as-alt = right. alt+1..9 jumps to a space — see [keys.indexed] below.
+next_workspace     = "alt+j"
+previous_workspace = "alt+k"
+
+# Agent sidebar cycling. Prefix-based (distinct from the alt+ space switching above).
 # (To jump to a specific agent, use the goto picker prefix+g or click the sidebar.)
 next_agent     = "prefix+shift+j"
 previous_agent = "prefix+shift+k"
@@ -77,6 +82,10 @@ detach        = "prefix+q"
 toggle_sidebar = "prefix+b"
 reload_config = "prefix+shift+r"
 edit_scrollback = "prefix+e"
+
+# alt+1..9 jumps straight to space 1..9 (workmux M-1/2/3 parity, prefix-free).
+[keys.indexed]
+workspaces = "alt"
 
 # Seamless pane <-> vim/nvim split navigation (vim-tmux-navigator style).
 # navigate.sh checks the focused pane's process: forwards ctrl+hjkl to vim if it's
