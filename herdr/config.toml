@@ -119,6 +119,7 @@ description = "navigate right (vim/herdr)"
 key = "prefix+shift+l"
 type = "pane"
 command = "lazygit"
+description = "lazygit"
 
 # Worktree lifecycle (interactive, in a pane; also on the jdeff.flow right-click menu).
 # Run these from a pane inside the worktree you want to merge / PR.
@@ -126,11 +127,13 @@ command = "lazygit"
 key = "prefix+shift+m"
 type = "pane"
 command = "bash /Users/jdeff/.config/herdr/scripts/worktree-merge.sh"
+description = "merge worktree → base"
 
 [[keys.command]]
 key = "prefix+ctrl+p"
 type = "pane"
 command = "bash /Users/jdeff/.config/herdr/scripts/worktree-open-pr.sh"
+description = "push + open PR"
 
 # Apply your default layout (claude focused + a shell beside it) to the current
 # workspace. Runs detached; the script talks to Herdr over the socket. (a = apply)
@@ -138,6 +141,7 @@ command = "bash /Users/jdeff/.config/herdr/scripts/worktree-open-pr.sh"
 key = "prefix+a"
 type = "shell"
 command = "/Users/jdeff/.config/herdr/scripts/layout-agent-shell.sh"
+description = "layout: claude + shell"
 
 # ── UI / sidebar / notifications ──────────────────────────────────────────────
 [ui]
