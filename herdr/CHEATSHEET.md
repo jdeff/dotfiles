@@ -81,10 +81,15 @@ when a background agent finishes or needs input.
 | Keys | Action |
 |------|--------|
 | `prefix shift+l` | lazygit (throwaway pane) |
+| `prefix shift+m` | Merge this worktree's branch → base (interactive pane) |
+| `prefix ctrl+p` | Push branch + open PR via `gh` (interactive pane) |
 | `prefix q` | Detach (everything keeps running; `herdr` to reattach) |
 | `prefix shift+r` | Reload config |
 | `prefix ?` | Show all keybindings |
 | `prefix s` | Settings |
+
+Merge / Open-PR are also on the **right-click menu** of a worktree space. Run them
+from inside the worktree you want to act on; both prompt before doing anything.
 
 ## Typical loop on tms-api
 
@@ -92,7 +97,8 @@ when a background agent finishes or needs input.
 - Scratch shell: `prefix |`.
 - Feature branch off main without leaving: `prefix shift+g`, type a branch name →
   new grouped space with Claude+shell auto-laid-out; `main` stays put.
-- Merge/PR: (coming — being added to the jdeff.flow plugin.)
+- Merge when done: from a pane in the worktree, `prefix shift+m` (merge into base)
+  or `prefix ctrl+p` (push + open PR). Then right-click the space to remove it.
 - Done for now: `prefix q`. Reattach later with `herdr`.
 
 ## Gotchas

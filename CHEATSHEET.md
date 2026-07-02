@@ -143,6 +143,7 @@ Prefix is also **`C-b`**. Full reference: `herdr/CHEATSHEET.md`; setup: `herdr/R
 | `prefix a` | Apply Claude+shell layout to current space |
 | `prefix shift+j` / `shift+k` | Cycle agents in the sidebar |
 | `prefix shift+l` | lazygit (throwaway pane) |
+| `prefix shift+m` / `prefix ctrl+p` | Merge worktree / open PR (also right-click a space) |
 | `prefix q` | Detach (reattach with `herdr`) |
 | `/worktree-herdr <tasks>` | Dispatch worktrees each running Claude on a prompt |
 

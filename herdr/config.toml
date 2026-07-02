@@ -120,6 +120,18 @@ key = "prefix+shift+l"
 type = "pane"
 command = "lazygit"
 
+# Worktree lifecycle (interactive, in a pane; also on the jdeff.flow right-click menu).
+# Run these from a pane inside the worktree you want to merge / PR.
+[[keys.command]]
+key = "prefix+shift+m"
+type = "pane"
+command = "bash /Users/jdeff/.config/herdr/scripts/worktree-merge.sh"
+
+[[keys.command]]
+key = "prefix+ctrl+p"
+type = "pane"
+command = "bash /Users/jdeff/.config/herdr/scripts/worktree-open-pr.sh"
+
 # Apply your default layout (claude focused + a shell beside it) to the current
 # workspace. Runs detached; the script talks to Herdr over the socket. (a = apply)
 [[keys.command]]

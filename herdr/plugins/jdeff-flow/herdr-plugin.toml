@@ -16,3 +16,16 @@ id = "layout"
 title = "Layout: Claude + shell"
 contexts = ["workspace"]
 command = ["bash", "/Users/jdeff/.config/herdr/scripts/layout-agent-shell.sh"]
+
+# Worktree lifecycle — open an interactive pane in the space and run the op.
+[[actions]]
+id = "merge"
+title = "Merge worktree → base"
+contexts = ["workspace"]
+command = ["bash", "/Users/jdeff/.config/herdr/scripts/worktree-action.sh", "merge"]
+
+[[actions]]
+id = "open-pr"
+title = "Open PR"
+contexts = ["workspace"]
+command = ["bash", "/Users/jdeff/.config/herdr/scripts/worktree-action.sh", "open-pr"]
