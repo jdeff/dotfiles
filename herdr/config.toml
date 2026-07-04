@@ -135,6 +135,14 @@ type = "pane"
 command = "bash /Users/jdeff/.config/herdr/scripts/worktree-open-pr.sh"
 description = "push + open PR"
 
+# New worktree stacked on the CURRENT worktree's branch (workaround for herdr
+# basing UI new-worktrees on main only). Run from inside the worktree to stack on.
+[[keys.command]]
+key = "prefix+shift+b"
+type = "pane"
+command = "bash /Users/jdeff/.config/herdr/scripts/worktree-new-from-here.sh"
+description = "new worktree from current branch"
+
 # Apply your default layout (claude focused + a shell beside it) to the current
 # workspace. Runs detached; the script talks to Herdr over the socket. (a = apply)
 [[keys.command]]

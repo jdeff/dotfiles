@@ -59,7 +59,8 @@ Alternatively, from any shell:
 | `prefix shift+n` | New space |
 | `prefix shift+w` | Rename space |
 | `prefix shift+d` | Close space |
-| `prefix shift+g` | **New worktree** — creates branch + grouped space, auto Claude+shell |
+| `prefix shift+g` | **New worktree** — creates branch + grouped space, auto Claude+shell (bases on main) |
+| `prefix shift+b` | New worktree **stacked on the current branch** (run from inside a worktree) |
 | `prefix shift+o` | Open an existing worktree |
 | right-click space | Remove worktree (safe; prompts if dirty; never deletes branches) |
 
