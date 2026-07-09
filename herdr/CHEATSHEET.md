@@ -62,7 +62,8 @@ Alternatively, from any shell:
 | `prefix shift+g` | **New worktree** — creates branch + grouped space, auto Claude+shell (bases on main) |
 | `prefix shift+b` | New worktree **stacked on the current branch** (run from inside a worktree) |
 | `prefix shift+o` | Open an existing worktree |
-| right-click space | Remove worktree (safe; prompts if dirty; never deletes branches) |
+| `prefix ctrl+x` | **Remove** this worktree (checkout + space; cleanup after a PR merge) — confirms, keeps the branch |
+| right-click space | Remove worktree (same as above, via mouse) |
 
 ## Agents / sidebar
 

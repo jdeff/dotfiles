@@ -65,8 +65,11 @@ rename_workspace = "prefix+shift+w"
 close_workspace  = "prefix+shift+d"
 new_worktree     = "prefix+shift+g"
 open_worktree    = "prefix+shift+o"
-# remove_worktree intentionally unset — destructive; use the sidebar right-click
-# (it removes safely, prompts before forcing on a dirty tree, never deletes branches).
+# Remove the current worktree (checkout + space) — cleanup after a PR merge.
+# Native action: opens a confirmation, prompts before forcing on a dirty tree, and
+# never deletes the branch. prefix+x is close_pane, so this uses ctrl (pairs with
+# prefix+ctrl+p = open PR). Also available via right-click on a worktree space.
+remove_worktree = "prefix+ctrl+x"
 
 # Switch between spaces prefix-free (workmux M-j/M-k parity). Needs Ghostty
 # macos-option-as-alt = right. alt+1..9 jumps to a space — see [keys.indexed] below.
