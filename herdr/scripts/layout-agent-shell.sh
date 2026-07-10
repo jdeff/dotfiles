@@ -17,11 +17,14 @@
 
 herdr="${HERDR_BIN_PATH:-$HOME/.local/bin/herdr}"
 
+# worktree.created events arrive wrapped as {"event":..,"data":{..}}; the manual
+# `layout` action / keybinding pass a flat payload. `(.data // .)` handles both.
+
 # Resolve target workspace id, most-specific source first.
 ws=""
 if [ -n "${HERDR_PLUGIN_EVENT_JSON:-}" ]; then
   ws=$(printf '%s' "$HERDR_PLUGIN_EVENT_JSON" \
-    | jq -r '.workspace.workspace_id // .worktree.open_workspace_id // .workspace_id // empty' 2>/dev/null)
+    | jq -r '(.data // .) | .workspace.workspace_id // .worktree.open_workspace_id // .workspace_id // empty' 2>/dev/null)
 fi
 if [ -z "$ws" ]; then ws="${1:-}"; fi
 if [ -z "$ws" ]; then ws="${HERDR_WORKSPACE_ID:-}"; fi
@@ -40,7 +43,7 @@ first=$(printf '%s\n' "$panes" | head -n1)
 # Prompted (dispatch) or bare Claude? Only worktree.created events carry a branch.
 dispatch_dir="${HERDR_DISPATCH_DIR:-$HOME/.herdr/dispatch}"
 prompt_file=""
-branch=$(printf '%s' "${HERDR_PLUGIN_EVENT_JSON:-}" | jq -r '.worktree.branch // empty' 2>/dev/null)
+branch=$(printf '%s' "${HERDR_PLUGIN_EVENT_JSON:-}" | jq -r '(.data // .) | .worktree.branch // empty' 2>/dev/null)
 if [ -n "$branch" ]; then
   slug=$(printf '%s' "$branch" | tr -c '[:alnum:]' '-')
   [ -f "$dispatch_dir/$slug.md" ] && prompt_file="$dispatch_dir/$slug.md"
