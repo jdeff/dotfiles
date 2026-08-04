@@ -1,6 +1,6 @@
 # Herdr cheatsheet (jdeff)
 
-Prefix: **`ctrl+b`** (same as tmux). "prefix X" = press ctrl+b, release, then X.
+Prefix: **`ctrl+b`**. "prefix X" = press ctrl+b, release, then X.
 Everything is also mouse-driven: click to focus, drag borders to resize, right-click
 for a context menu, drag-select to copy.
 
@@ -10,7 +10,7 @@ You're in the `~` space with one shell pane. Fastest path:
 
 1. `cd ~/src/toro/tms-api`
 2. `prefix shift+w` → rename this space to `tms-api`
-3. `prefix a` → auto-splits **Claude (focused) + shell** (your workmux default layout)
+3. `prefix a` → auto-splits **Claude (focused) + shell** (the default layout)
 
 Claude now appears in the **agents** sidebar with live state. (If the space already
 has >1 pane, `prefix a` no-ops — just type `claude` in a pane.)
@@ -52,8 +52,8 @@ Alternatively, from any shell:
 
 | Keys | Action |
 |------|--------|
-| `alt+1..9` | Jump to space 1..9 (either Option; workmux M-1/2/3) |
-| `alt+j` / `alt+k` | Next / previous space (either Option; workmux M-j/M-k) |
+| `alt+1..9` | Jump to space 1..9 (either Option) |
+| `alt+j` / `alt+k` | Next / previous space (either Option) |
 | `prefix w` | Space picker |
 | `prefix g` | Goto picker (jump to any space / agent) |
 | `prefix shift+n` | New space |
@@ -93,6 +93,29 @@ when a background agent finishes or needs input.
 Merge / Open-PR are also on the **right-click menu** of a worktree space. Run them
 from inside the worktree you want to act on; both prompt before doing anything.
 
+## muster (one feature's dev stack at a time)
+
+| Keys | Action |
+|------|--------|
+| `prefix alt+d` | Dashboard (persistent right-hand split, cross-project) |
+| `prefix alt+m` | Menu (fzf: restart / logs / per-service) |
+| `prefix alt+u` | Up — this feature takes the ports |
+| `prefix alt+x` | Down — free the ports |
+| `prefix alt+s` | Status |
+| `prefix alt+k` | lazydocker |
+
+`up`/`down`/`status`/`docker` infer the project and occupant from the pane's cwd —
+run them from inside a project repo or worktree. `menu`/`dashboard` work anywhere.
+
+## Claude Code slash commands
+
+| Command | Action |
+|---------|--------|
+| `/worktree <tasks>` | Spawn a worktree space per task, each running Claude on a prompt |
+| `/coordinator` | Spawn → monitor → follow up → merge, driven from one session |
+| `/merge` | Commit, rebase onto base, merge, remove the worktree |
+| `/rebase` / `/open-pr` | Rebase with conflict care / write a PR and open it |
+
 ## Typical loop on tms-api
 
 - Work with Claude in its pane; glance at the sidebar for state.
@@ -105,8 +128,6 @@ from inside the worktree you want to act on; both prompt before doing anything.
 
 ## Gotchas
 
-- Run `herdr` in a **plain Ghostty tab, not inside tmux** — both are multiplexers and
-  both use `ctrl+b`.
 - `ctrl+h` is now "navigate left" (Herdr grabs it), so it no longer sends Backspace
   in a shell — use your normal Backspace key.
 - Theme follows macOS light/dark (Kanagawa Lotus/Wave), matching Ghostty.

@@ -22,12 +22,13 @@ Then:
   parsers (via the `tree-sitter` CLI from the Brewfile), and Mason installs LSP
   servers + formatters. `:Lazy` and `:Mason` show progress; `:checkhealth` flags
   anything missing (e.g. `node` for vtsls).
-- macOS: set Appearance (light/dark — Ghostty + nvim follow it), and remap
-  Alfred's hotkey to ⌘Space (disable Spotlight's under Keyboard Shortcuts).
-- `install.sh` also builds **workmux** from the `jdeff/workmux` fork into
-  `~/.local/bin` (needs `rust` from the Brewfile + SSH access to the fork). If
-  that step was skipped because SSH keys weren't ready yet, re-run
-  `./workmux/install.sh` once they are. See `workmux/README.md`.
+- macOS: set Appearance (light/dark — Ghostty, herdr, and nvim follow it), and
+  remap Alfred's hotkey to ⌘Space (disable Spotlight's under Keyboard Shortcuts).
+- Install **herdr** (the multiplexer — not in the Brewfile) and register its
+  plugins/integration once. `install.sh` only symlinks the config, so do the
+  bootstrap in `herdr/README.md`: `curl -fsSL https://herdr.dev/install.sh | sh`,
+  then `herdr plugin link`/`install` and `herdr integration install claude`.
+  Re-run `./install.sh` afterwards to generate `~/.claude/skills/herdr/SKILL.md`.
 
 ## Neovim
 
@@ -98,7 +99,7 @@ and wait — **which-key** shows the menu.
 - `z <dir>` jump (zoxide) · `zi` pick interactively
 - `^R` history · `^T` files · `⌥C` cd (fzf) · `**<tab>` fuzzy completion
 - Up/Down — substring-search history; `,` git/ruby/rails aliases from prezto (`g`, `gco`, `glo`, `gp`, …)
-- `wm` → workmux (git-worktree + tmux-window manager, built from the fork). Subcommand shorthands: `wma` add (new worktree+window with a Claude pane), `wmr` remove, `wmm` merge + tear down, `wml` list, `wmo` open, `wmc` close, `wmd` dashboard; `wm init` scaffolds `.workmux.yaml`. `workmux-update` rebuilds the fork after a pull (see `workmux/README.md`).
+- `herdr` is the multiplexer — deliberately un-aliased (nested subcommands, and you drive it by keybinding, not from the shell). `herdr update` self-updates; delete `~/.local/share/zsh/site-functions/_herdr` afterwards to regenerate completions.
 - Per-machine extras (not tracked): `~/.zshrc.local`, `~/.zshenv.local`, `~/.zprofile.local`
 
 ## Git aliases (gitconfig)
@@ -106,33 +107,12 @@ and wait — **which-key** shows the menu.
 `git st` status · `git co` checkout · `git ci` commit · `git br` branch ·
 `git hist` graph log · `git filter` linear first-parent log
 
-## tmux
+## Herdr (the multiplexer)
 
-Prefix is **`C-b`** (default). Plugins via TPM (auto-installed by `install.sh`;
-if needed, open tmux and press `prefix + I`). Sessions auto-save/restore
-(resurrect + continuum). Status bar follows the macOS appearance — Kanagawa
-Wave (dark) / Lotus (light) — switched live by the tmux-dark-notify plugin, and
-shows the currently playing Apple Music track (` Artist — Title`, blank when
-nothing's playing) to the left of the clock.
-
-| Key | Action |
-|-----|--------|
-| `C-h/j/k/l` | Move between panes **and** nvim splits (seamless) |
-| `prefix \|` / `prefix -` | Split right / down (inherits cwd) |
-| `prefix c` | New window (inherits cwd) |
-| `prefix H/J/K/L` | Resize pane (repeatable) |
-| `prefix r` | Reload config |
-| `prefix F` | Fuzzy session/window picker (tmux-fzf) |
-| `prefix [` then `v`/`y` | Copy mode: select / yank to clipboard |
-| `prefix C-s` / `C-r` | Save / restore session manually |
-| `prefix h` then `m/g/u/d/s/k` | hotseat: menu / go to session / up / down / status / lazydocker |
-| `prefix w` then `a/m/r/o/c/l/d/s` | workmux: add / merge / remove / open / close / list / dashboard / sidebar |
-| `prefix W` | Window picker (the stock `w`, relocated) |
-
-## Herdr
-
-A mouse-first, agent-aware tmux alternative (run **standalone, not inside tmux**).
-Prefix is also **`C-b`**. Full reference: `herdr/CHEATSHEET.md`; setup: `herdr/README.md`.
+Mouse-first and agent-aware; it replaced tmux + workmux, so there's no tmux
+config here. Prefix is **`C-b`**. Theme follows the macOS appearance (Kanagawa
+Wave/Lotus) natively. Full reference: `herdr/CHEATSHEET.md`; setup and the
+one-time bootstrap: `herdr/README.md`.
 
 | Key | Action |
 |-----|--------|
@@ -146,8 +126,14 @@ Prefix is also **`C-b`**. Full reference: `herdr/CHEATSHEET.md`; setup: `herdr/R
 | `prefix shift+l` | lazygit (throwaway pane) |
 | `prefix shift+m` / `prefix ctrl+p` | Merge worktree / open PR (also right-click a space) |
 | `prefix ctrl+x` | Remove this worktree after merge (checkout + space; keeps branch) |
+| `prefix alt+d/m/u/x/s/k` | muster: dashboard / menu / up / down / status / lazydocker |
 | `prefix q` | Detach (reattach with `herdr`) |
-| `/worktree-herdr <tasks>` | Dispatch worktrees each running Claude on a prompt |
+| `prefix ?` | Show all keybindings |
+
+Slash commands (tracked in `herdr/skills/`): `/worktree <tasks>` dispatches a
+worktree per task, `/coordinator` runs the whole spawn→monitor→merge lifecycle,
+`/merge`, `/rebase`, `/open-pr`. Herdr's own agent-control skill is generated by
+`install.sh` from `herdr --skill`.
 
 ## Terminal (Ghostty)
 
