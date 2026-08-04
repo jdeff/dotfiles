@@ -2,7 +2,7 @@ id = "jdeff.flow"
 name = "Flow"
 version = "0.1.0"
 min_herdr_version = "0.7.0"
-description = "Auto-apply the workmux-style layout (Claude + shell) to new worktrees."
+description = "Auto-apply the default layout (Claude + shell) to new worktrees."
 platforms = ["macos", "linux"]
 
 # When `prefix+shift+g` creates a worktree: first copy its untracked files

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Copy per-repo untracked files into a freshly created Herdr worktree — the
-# herdr-native replacement for workmux's `files:` copy/symlink (git does not
-# populate untracked files like .env.local or .muster.yaml in new worktrees).
+# Copy per-repo untracked files into a freshly created Herdr worktree (git does
+# not populate untracked files like .env.local or .muster.yaml in new worktrees).
 #
 # Wired to the `worktree.created` event in the jdeff.flow plugin. Reads a
 # `.worktree-files` manifest from the worktree's MAIN checkout; each non-blank,

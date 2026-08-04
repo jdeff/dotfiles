@@ -1,11 +1,11 @@
 onboarding = false
-# herdr configuration — built for jdeff to mirror the tmux + workmux workflow.
-# This is standalone: it does NOT touch ~/.config/tmux or ~/.config/workmux.
-# Run `herdr` inside a project (NOT inside tmux) to try it.
+# herdr configuration — jdeff's multiplexer. Keys are laid out to match the muscle
+# memory of the tmux + workmux setup this replaced (same ctrl+b prefix, same hjkl
+# focus, same `-`/`|` splits), so most of it should feel familiar.
 # Reload after edits: `herdr server reload-config`
 
 # ── Appearance ────────────────────────────────────────────────────────────────
-# Mirrors your tmux wave(dark)/lotus(light) macOS appearance swap.
+# Follows the macOS appearance natively (no dark-notify watcher needed here).
 [theme]
 # Mirrors your Ghostty: light:Kanagawa Lotus / dark:Kanagawa Wave, following macOS appearance.
 name = "kanagawa"
@@ -17,9 +17,9 @@ light_name = "kanagawa-lotus"   # Kanagawa Lotus
 [terminal]
 default_shell = ""      # empty = $SHELL (your zsh), then /bin/sh
 shell_mode = "auto"     # login shell on macOS
-new_cwd = "follow"      # new panes/tabs inherit cwd, like tmux -c "#{pane_current_path}"
+new_cwd = "follow"      # new panes/tabs inherit the focused pane's cwd
 
-# ── Worktrees (native — the workmux worktree analog) ──────────────────────────
+# ── Worktrees (native) ────────────────────────────────────────────────────────
 # `prefix+shift+g` creates a worktree, opens it as a workspace grouped under the
 # source repo. Branch already exists → checks out; new name → creates the branch.
 [worktrees]
@@ -28,14 +28,13 @@ directory = "~/.herdr/worktrees"   # layout: <dir>/<repo>/<branch-slug>
 
 # ── Keys ──────────────────────────────────────────────────────────────────────
 [keys]
-prefix = "ctrl+b"                    # same prefix as your tmux
+prefix = "ctrl+b"
 
-# Splits. `-` matches your tmux `bind -` (stacked). Right-split stays prefix+v
-# because Herdr can't bind the shifted "|" reliably (see notes I gave you).
-split_horizontal = "prefix+minus"    # stacked  (tmux: split -v)
-split_vertical   = "prefix+|"        # side-by-side (tmux: split -h / your `|`)
+# Splits.
+split_horizontal = "prefix+minus"    # stacked
+split_vertical   = "prefix+|"        # side-by-side
 
-# Pane focus — identical to your hjkl muscle memory.
+# Pane focus — hjkl, as everywhere else.
 focus_pane_left  = "prefix+h"
 focus_pane_down  = "prefix+j"
 focus_pane_up    = "prefix+k"
@@ -44,13 +43,13 @@ cycle_pane_next     = "prefix+tab"
 cycle_pane_previous = "prefix+shift+tab"
 
 # Resize: Herdr uses a resize *mode*. `prefix+r` then h/j/k/l to resize,
-# esc to exit. (Your tmux prefix+H/J/K/L becomes prefix+r → hjkl.)
+# esc to exit.
 resize_mode = "prefix+r"
 
 zoom       = "prefix+z"
 close_pane = "prefix+x"
 
-# Tabs (= tmux windows). n/p match your tmux next/previous-window.
+# Tabs (a tab holds panes; spaces hold tabs).
 new_tab      = "prefix+c"
 next_tab     = "prefix+n"
 previous_tab = "prefix+p"
@@ -58,7 +57,7 @@ switch_tab   = "prefix+1..9"
 rename_tab   = "prefix+shift+t"
 close_tab    = "prefix+shift+x"
 
-# Workspaces (= projects / workmux worktrees) + worktree ops.
+# Workspaces ("spaces" = one per project or worktree) + worktree ops.
 workspace_picker = "prefix+w"
 goto             = "prefix+g"
 new_workspace    = "prefix+shift+n"
@@ -72,8 +71,8 @@ open_worktree    = "prefix+shift+o"
 # prefix+ctrl+p = open PR). Also available via right-click on a worktree space.
 remove_worktree = "prefix+ctrl+x"
 
-# Switch between spaces prefix-free (workmux M-j/M-k parity). Needs Ghostty
-# macos-option-as-alt = true. alt+1..9 jumps to a space — see [keys.indexed] below.
+# Switch between spaces prefix-free. Needs Ghostty macos-option-as-alt = true.
+# alt+1..9 jumps to a space — see [keys.indexed] below.
 next_workspace     = "alt+j"
 previous_workspace = "alt+k"
 
@@ -87,7 +86,7 @@ toggle_sidebar = "prefix+b"
 reload_config = "prefix+shift+r"
 edit_scrollback = "prefix+e"
 
-# alt+1..9 jumps straight to space 1..9 (workmux M-1/2/3 parity, prefix-free).
+# alt+1..9 jumps straight to space 1..9, prefix-free.
 [keys.indexed]
 workspaces = "alt"
 
@@ -154,6 +153,48 @@ key = "prefix+a"
 type = "shell"
 command = "/Users/jdeff/.config/herdr/scripts/layout-agent-shell.sh"
 description = "layout: claude + shell"
+
+# ── muster: run one feature's dev stack at a time ─────────────────────────────
+# The herdr-native successor to the old tmux `prefix h` hotseat table. muster is
+# a linked local plugin (~/src/muster), so these are plugin_action bindings — no
+# absolute binary path needed, unlike the tmux popups that couldn't see ~/.local/bin.
+# up/down/status/docker infer the project (and occupant) from the pane's cwd, so
+# fire them from inside a project repo or worktree; menu/dashboard work anywhere.
+[[keys.command]]
+key = "prefix+alt+d"
+type = "plugin_action"
+command = "muster.dashboard"
+description = "muster dashboard"
+
+[[keys.command]]
+key = "prefix+alt+m"
+type = "plugin_action"
+command = "muster.menu"
+description = "muster menu (fzf: restart/logs/per-service)"
+
+[[keys.command]]
+key = "prefix+alt+u"
+type = "plugin_action"
+command = "muster.up"
+description = "muster up (this feature takes the ports)"
+
+[[keys.command]]
+key = "prefix+alt+x"
+type = "plugin_action"
+command = "muster.down"
+description = "muster down (free the ports)"
+
+[[keys.command]]
+key = "prefix+alt+s"
+type = "plugin_action"
+command = "muster.status"
+description = "muster status"
+
+[[keys.command]]
+key = "prefix+alt+k"
+type = "plugin_action"
+command = "muster.docker"
+description = "muster lazydocker"
 
 # ── UI / sidebar / notifications ──────────────────────────────────────────────
 [ui]

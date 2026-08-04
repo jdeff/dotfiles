@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Lay out a workspace like workmux's default: Claude focused + a shell beside it.
+# Lay out a workspace the default way: Claude focused + a shell beside it.
 # Called two ways:
 #   1) keybinding  (prefix+a) — lays out the focused workspace on demand
 #   2) plugin event (worktree.created) — auto-lays-out each new worktree workspace
