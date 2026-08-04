@@ -1,6 +1,6 @@
 ---
-name: worktree-herdr
-description: Launch one or more tasks in new git worktrees using Herdr (the workmux /worktree analog).
+name: worktree
+description: Launch one or more tasks in new git worktrees using Herdr.
 disable-model-invocation: true
 allowed-tools: Bash, Write
 ---
@@ -41,7 +41,7 @@ the exact same transform to find it). Then create the worktree with that branch.
 The file is consumed and deleted when Claude launches.
 
 Because each dispatched Claude starts fresh with only the prompt you write, it has
-no `/worktree-herdr` context and will not recursively dispatch — no guard needed.
+no `/worktree` context and will not recursively dispatch — no guard needed.
 
 ## Requirements
 
@@ -92,6 +92,9 @@ branch, and merge this branch into it.
 
 (There is no `--fork` — Herdr has no conversation-copy. Put any needed context
 directly into the prompt instead.)
+
+For the full spawn → monitor → merge lifecycle (naming agents, waiting on status,
+sending follow-ups), use `/coordinator` instead — this skill is fire-and-forget.
 
 ## Target repository
 
