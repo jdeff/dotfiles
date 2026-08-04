@@ -16,9 +16,9 @@ window-padding-x = 8
 window-padding-y = 8
 macos-titlebar-style = transparent
 
-# Right Option sends Alt (enables herdr alt+ keybindings, e.g. space switching);
-# left Option still composes special characters like é/ñ.
-macos-option-as-alt = right
+# Both Option keys send Alt (enables herdr alt+ keybindings, e.g. space switching).
+# Trades away macOS Option-compose (é/ñ/–) — muscle memory hits left Option.
+macos-option-as-alt = true
 
 # Keep scrollback generous; shell already has fzf/zoxide for navigation.
 scrollback-limit = 10000

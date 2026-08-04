@@ -52,8 +52,8 @@ Alternatively, from any shell:
 
 | Keys | Action |
 |------|--------|
-| `alt+1..9` | Jump to space 1..9 (right Option; workmux M-1/2/3) |
-| `alt+j` / `alt+k` | Next / previous space (right Option; workmux M-j/M-k) |
+| `alt+1..9` | Jump to space 1..9 (either Option; workmux M-1/2/3) |
+| `alt+j` / `alt+k` | Next / previous space (either Option; workmux M-j/M-k) |
 | `prefix w` | Space picker |
 | `prefix g` | Goto picker (jump to any space / agent) |
 | `prefix shift+n` | New space |

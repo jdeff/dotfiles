@@ -1,3 +1,4 @@
+onboarding = false
 # herdr configuration — built for jdeff to mirror the tmux + workmux workflow.
 # This is standalone: it does NOT touch ~/.config/tmux or ~/.config/workmux.
 # Run `herdr` inside a project (NOT inside tmux) to try it.
@@ -72,7 +73,7 @@ open_worktree    = "prefix+shift+o"
 remove_worktree = "prefix+ctrl+x"
 
 # Switch between spaces prefix-free (workmux M-j/M-k parity). Needs Ghostty
-# macos-option-as-alt = right. alt+1..9 jumps to a space — see [keys.indexed] below.
+# macos-option-as-alt = true. alt+1..9 jumps to a space — see [keys.indexed] below.
 next_workspace     = "alt+j"
 previous_workspace = "alt+k"
 
