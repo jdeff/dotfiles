@@ -10,7 +10,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # conf.d/40-tools.zsh).
 export PATH="${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims:$PATH"
 
-# User-local binaries (workmux and other single-binary installs land here).
+# User-local binaries (herdr, muster, and other single-binary installs land here).
 export PATH="$HOME/.local/bin:$PATH"
 
 # Work-specific login setup (optional, kept out of dotfiles repo)

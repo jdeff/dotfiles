@@ -10,8 +10,9 @@ map("n", "?", [[?\v]])
 map("n", "<leader>h", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
 
--- Window navigation via C-h/j/k/l is provided by vim-tmux-navigator
--- (lua/plugins/tmux.lua) so it crosses seamlessly into tmux panes.
+-- Window navigation via C-h/j/k/l is deliberately NOT mapped here:
+-- after/plugin/herdr_nav.lua owns it so the motion crosses seamlessly from an
+-- nvim split into the neighbouring herdr pane.
 
 -- ── Buffers ─────────────────────────────────────────────────────────────────
 map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })

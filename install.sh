@@ -65,12 +65,8 @@ link "$REPO/starship/starship.toml" "$HOME/.config/starship.toml"
 link "$REPO/nvim"                   "$HOME/.config/nvim"
 # Ghostty
 link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
-# tmux (whole config dir; TPM is bootstrapped below)
-link "$REPO/tmux"                   "$HOME/.config/tmux"
-# workmux (global config only; the fork is built from source below)
-link "$REPO/workmux/config.yaml"    "$HOME/.config/workmux/config.yaml"
-# Claude Code global guidance (most ~/.claude/skills come from workmux; the herdr
-# worktree skill is tracked here and linked below)
+# Claude Code global guidance (the worktree/agent skills are tracked under
+# herdr/skills and linked below)
 link "$REPO/claude/CLAUDE.md"       "$HOME/.claude/CLAUDE.md"
 # Herdr (terminal workspace manager for AI agents). Individual symlinks so
 # ~/.config/herdr stays a real dir for runtime sockets/logs/plugin state. Herdr
@@ -80,26 +76,26 @@ link "$REPO/herdr/config.toml"           "$HOME/.config/herdr/config.toml"
 link "$REPO/herdr/CHEATSHEET.md"         "$HOME/.config/herdr/CHEATSHEET.md"
 link "$REPO/herdr/scripts"               "$HOME/.config/herdr/scripts"
 link "$REPO/herdr/plugins/jdeff-flow"    "$HOME/.config/herdr/plugins/jdeff-flow"
-link "$REPO/herdr/skills/worktree-herdr" "$HOME/.claude/skills/worktree-herdr"
+# Claude Code skills for the worktree/agent workflow (slash commands).
+for _skill in "$REPO"/herdr/skills/*/; do
+  link "${_skill%/}" "$HOME/.claude/skills/$(basename "$_skill")"
+done
 
-echo "==> Bootstrapping tmux plugin manager (TPM)"
-TPM_DIR="$HOME/.config/tmux/plugins/tpm"
-if [[ ! -d "$TPM_DIR" ]]; then
-  git clone --quiet --depth 1 https://github.com/tmux-plugins/tpm "$TPM_DIR"
-  echo "  clone  $TPM_DIR"
+echo "==> Generating Herdr's built-in agent skill"
+# `herdr --skill` prints the official skill for driving Herdr over its socket
+# API. It ships with the binary, so it's generated (not tracked) — that keeps it
+# pinned to the installed version. Delete the file to refresh it after an update.
+if command -v herdr >/dev/null; then
+  if [[ ! -f "$HOME/.claude/skills/herdr/SKILL.md" ]]; then
+    mkdir -p "$HOME/.claude/skills/herdr"
+    herdr --skill > "$HOME/.claude/skills/herdr/SKILL.md"
+    echo "  gen   ~/.claude/skills/herdr/SKILL.md ($(herdr --version))"
+  else
+    echo "  ok    ~/.claude/skills/herdr/SKILL.md (exists)"
+  fi
 else
-  echo "  ok    $TPM_DIR (exists)"
+  echo "  (herdr not on PATH — see herdr/README.md for the one-time install)"
 fi
-# Install/update the plugins headlessly so a fresh machine is ready to go.
-if command -v tmux >/dev/null; then
-  "$TPM_DIR/bin/install_plugins" >/dev/null 2>&1 && echo "  tmux plugins installed" \
-    || echo "  (open tmux and press prefix + I to finish installing plugins)"
-fi
-
-echo "==> Building workmux (jdeff fork) from source"
-# Clones ~/src/workmux on first run and cargo-installs it into ~/.local/bin.
-# Re-runnable; also available as `workmux-update` once the binary is on PATH.
-"$REPO/workmux/install.sh" || echo "  (workmux build skipped/failed — see workmux/README.md)"
 
 echo
 echo "Done. Start a fresh login shell to load everything:"

@@ -1,7 +1,7 @@
 # Completion system: fpath sources, compinit (cached), and styling.
 
 # Completion sources: zsh-completions, Homebrew formulae (incl. mise's _mise),
-# workmux. Must precede compinit.
+# herdr. Must precede compinit.
 fpath=(
   /opt/homebrew/share/zsh-completions
   /opt/homebrew/share/zsh/site-functions
@@ -9,11 +9,12 @@ fpath=(
   $fpath
 )
 
-# workmux is built from a fork in ~/.local/bin (not brew), so generate its
-# completion here if missing — regenerate after a rebuild.
-if command -v workmux >/dev/null && [[ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions/_workmux" ]]; then
+# herdr installs via its own curl script into ~/.local/bin (not brew), so it ships
+# no completion on fpath — generate it here if missing. `herdr update` replaces the
+# binary in place, so delete _herdr to pick up new subcommands after an update.
+if command -v herdr >/dev/null && [[ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions/_herdr" ]]; then
   mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions"
-  workmux completions zsh > "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions/_workmux"
+  herdr completion zsh > "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions/_herdr"
 fi
 
 # Initialize completion, rebuilding the dump cache at most once a day for speed.

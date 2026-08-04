@@ -24,21 +24,22 @@ brew 'lazygit'     # terminal git UI (driven by nvim's lazygit.nvim)
 brew 'gh'          # GitHub CLI; also the git credential helper for github (see git/gitconfig)
 brew 'yq'          # jq for YAML/TOML/XML
 
-# Editor + terminal multiplexer
+# Editor
+# (No multiplexer here: herdr is the multiplexer and installs via curl, not brew
+# — see herdr/README.md.)
 brew 'neovim'
 brew 'tree-sitter-cli' # nvim-treesitter (main branch) compiles parsers with this
-brew 'tmux'
 
-# Build toolchain — compiles the workmux fork from source (see workmux/README.md).
-# cargo/rustc; workmux is edition 2024, so needs Rust >= 1.85.
+# Build toolchain — cargo/rustc, for the Rust tools built from source outside
+# brew (the `muster` herdr plugin). Needs Rust >= 1.85 for edition 2024.
 brew 'rust'
 
 # Runtime version manager (ruby, node) — shims on PATH + interactive activation.
 brew 'mise'
 
-# macOS light/dark watcher (event-driven). Powers the tmux-dark-notify plugin
-# and nvim's dark_notify integration so both follow the system appearance
-# without polling.
+# macOS light/dark watcher (event-driven). Powers nvim's dark_notify integration
+# so the editor follows the system appearance without polling. (Herdr does its own
+# appearance switching natively — see [theme] auto_switch in herdr/config.toml.)
 brew 'cormacrelf/tap/dark-notify'
 
 # Terminal + font (font supplies the glyphs Starship's prompt uses)
