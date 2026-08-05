@@ -76,9 +76,13 @@ link "$REPO/herdr/config.toml"           "$HOME/.config/herdr/config.toml"
 link "$REPO/herdr/CHEATSHEET.md"         "$HOME/.config/herdr/CHEATSHEET.md"
 link "$REPO/herdr/scripts"               "$HOME/.config/herdr/scripts"
 link "$REPO/herdr/plugins/jdeff-flow"    "$HOME/.config/herdr/plugins/jdeff-flow"
-# Claude Code skills for the worktree/agent workflow (slash commands).
-for _skill in "$REPO"/herdr/skills/*/; do
-  link "${_skill%/}" "$HOME/.claude/skills/$(basename "$_skill")"
+# Claude Code skills: the worktree/agent workflow (slash commands) under
+# herdr/skills, plus muster/skills (the dev-stack skill agents load themselves).
+for _root in herdr muster; do
+  for _skill in "$REPO"/$_root/skills/*/; do
+    [[ -d "$_skill" ]] || continue
+    link "${_skill%/}" "$HOME/.claude/skills/$(basename "$_skill")"
+  done
 done
 
 echo "==> Generating Herdr's built-in agent skill"
