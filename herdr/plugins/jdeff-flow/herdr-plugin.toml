@@ -5,15 +5,17 @@ min_herdr_version = "0.7.0"
 description = "Auto-apply the default layout (Claude + shell) to new worktrees."
 platforms = ["macos", "linux"]
 
-# When `prefix+shift+g` creates a worktree: first copy its untracked files
-# (.env.local, .muster.yaml, …) from the main checkout, then lay it out.
+# Copy the worktree's untracked files (.env.local, .muster.yaml, …) from the main
+# checkout, then lay it out. Chained in one handler because herdr runs separate
+# `[[events]]` entries concurrently — as two entries, layout could launch the agent
+# into a worktree whose .muster.yaml had not landed yet.
 [[events]]
 on = "worktree.created"
-command = ["bash", "/Users/jdeff/.config/herdr/scripts/worktree-copy-files.sh"]
-
-[[events]]
-on = "worktree.created"
-command = ["bash", "/Users/jdeff/.config/herdr/scripts/layout-agent-shell.sh"]
+command = [
+  "bash",
+  "-c",
+  "bash /Users/jdeff/.config/herdr/scripts/worktree-copy-files.sh; bash /Users/jdeff/.config/herdr/scripts/layout-agent-shell.sh",
+]
 
 # Also expose it as a manual action (menu + bindable) for existing workspaces.
 [[actions]]

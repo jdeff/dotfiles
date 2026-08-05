@@ -62,19 +62,44 @@ you cannot tell which leads, ask.
 
 ## 5. Dispatch
 
+**The prompt file must exist before the worktree is created.** The layout plugin
+consumes it on the `worktree.created` event. Create the worktree first and you get a
+bare Claude sitting idle in a correct-looking worktree — a silent no-op that reports
+as success.
+
+**Step 1 — write it, and prove it exists.** Do not continue on a zero byte count.
+
 ```bash
 mkdir -p ~/.herdr/dispatch
 branch="<gitBranchName>"
 slug=$(printf '%s' "$branch" | tr -c '[:alnum:]' '-')
-cat > ~/.herdr/dispatch/"$slug".md << 'EOF'
+f="$HOME/.herdr/dispatch/$slug.md"
+cat > "$f" << 'EOF'
 Work Linear ticket <KEY>: <title>
 
 Use the skill: /ticket-work <KEY>
 EOF
+wc -c "$f"
+```
+
+Keep the prompt thin — the agent re-fetches the ticket. Relative paths only.
+
+**Step 2 — create the worktree.**
+
+```bash
 herdr worktree create --cwd <repo-path> --branch "$branch" --focus
 ```
 
-Keep the prompt thin — the agent re-fetches the ticket. Relative paths only in
-anything you write into it.
+**Step 3 — confirm the prompt was picked up.** The file is deleted when the agent
+launches with it, so a file still on disk means a bare Claude:
 
-Report the branch, the workspace, and what the gates found.
+```bash
+sleep 3; [ -e "$f" ] && echo "BARE — prompt not consumed" || echo "consumed"
+```
+
+This check is the authoritative one. Agent status is not: a fast agent is already
+`idle` by the time you look, so `idle` alone doesn't distinguish "never got a
+prompt" from "finished". If the file was not consumed, report a failure — never
+success.
+
+Report the branch, the workspace, what the gates found, and the step 3 result.
