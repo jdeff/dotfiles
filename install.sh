@@ -47,6 +47,16 @@ else
   echo "  ok    ~/.gitconfig.local (exists, left untouched)"
 fi
 
+# ~/.config/dev/workspace.toml is the org/team map (see dev/README.md). Seeded,
+# not symlinked: the real values are work-specific and this repo is public.
+if [[ ! -f "$HOME/.config/dev/workspace.toml" ]]; then
+  mkdir -p "$HOME/.config/dev"
+  cp "$REPO/dev/workspace.toml.example" "$HOME/.config/dev/workspace.toml"
+  echo "  seed  ~/.config/dev/workspace.toml (edit it: set your org/team/prefix)"
+else
+  echo "  ok    ~/.config/dev/workspace.toml (exists, left untouched)"
+fi
+
 echo "==> Linking dotfiles"
 # Top-level zsh dotfiles
 link "$REPO/zsh/zshrc"            "$HOME/.zshrc"
@@ -77,8 +87,8 @@ link "$REPO/herdr/CHEATSHEET.md"         "$HOME/.config/herdr/CHEATSHEET.md"
 link "$REPO/herdr/scripts"               "$HOME/.config/herdr/scripts"
 link "$REPO/herdr/plugins/jdeff-flow"    "$HOME/.config/herdr/plugins/jdeff-flow"
 # Claude Code skills: the worktree/agent workflow (slash commands) under
-# herdr/skills, plus muster/skills (the dev-stack skill agents load themselves).
-for _root in herdr muster; do
+# herdr/skills, plus muster/skills and dev/skills (which agents load themselves).
+for _root in herdr muster dev; do
   for _skill in "$REPO"/$_root/skills/*/; do
     [[ -d "$_skill" ]] || continue
     link "${_skill%/}" "$HOME/.claude/skills/$(basename "$_skill")"

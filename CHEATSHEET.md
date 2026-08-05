@@ -29,6 +29,10 @@ Then:
   bootstrap in `herdr/README.md`: `curl -fsSL https://herdr.dev/install.sh | sh`,
   then `herdr plugin link`/`install` and `herdr integration install claude`.
   Re-run `./install.sh` afterwards to generate `~/.claude/skills/herdr/SKILL.md`.
+- Connect **Linear** so ticket work resolves in every worktree cwd — `/mcp` inside
+  Claude Code, or the user-scoped fallback in `dev/README.md`. Then fill in
+  `~/.config/dev/workspace.toml` (seeded from `dev/workspace.toml.example`; the real
+  one is work-specific and never tracked, like `~/.gitconfig.local`).
 
 ## Neovim
 

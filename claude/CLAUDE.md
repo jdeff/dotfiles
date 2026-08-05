@@ -29,6 +29,15 @@ user has already chosen a path. The dispatch skills (`/worktree`,
 must not explore the codebase first, so they fit best once the task is already
 well understood in conversation.
 
+## Ticket keys
+
+A bare ticket key like `ABC-123` is a **Linear issue**. The identity / org / team map
+— which team owns a prefix, which muster project it maps to, how a branch is named
+— is `~/.config/dev/workspace.toml` (untracked; this repo is public), and the
+`workspace` skill is the procedure that reads it. Resolve repos through muster's own
+config, never by guessing from a repo name. If Linear MCP tools aren't available,
+the machine isn't bootstrapped: see `~/dotfiles/dev/README.md`.
+
 ## Dotfiles
 
 My dotfiles are a git repo at `~/dotfiles`. It manages most of my

@@ -1,0 +1,24 @@
+# Template for ~/.config/dev/workspace.toml  (NOT tracked — this repo is public).
+#
+# The identity / org / team map agents resolve a ticket key through. Repos are
+# not listed here; a team names its muster project and `muster projects --json`
+# resolves it. See dev/README.md.
+#
+# install.sh seeds ~/.config/dev/workspace.toml from this template if it's missing.
+
+[me]
+linear_user   = "your-linear-username"   # prefix in Linear's suggested branch names
+github_handle = "your-github-handle"
+
+[orgs.acme]
+name = "Acme Inc"
+
+[teams.widgets]
+linear_key     = "WID"
+linear_name    = "Widgets"
+org            = "acme"
+muster_project = "acme-app"   # must match a project in muster's config
+default_repo   = "acme-api"   # where a ticket starts when it names no repo
+
+# Fallback only — prefer the issue's own gitBranchName from Linear.
+branch_pattern = "{linear_user}/{linear_key}-{number}-{slug}"
