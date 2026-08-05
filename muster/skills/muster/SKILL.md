@@ -26,9 +26,37 @@ muster status       # this project (inferred from cwd): occupant + per-service s
 If `muster status` says `not inside a known project repo`, this repo isn't
 managed — start things however the repo's own docs say.
 
-Everything muster knows about a project comes from config
-(`~/.config/muster/config.yaml`) and a `.muster.yaml` in each repo. Read those if
-you need to know which services exist; don't assume.
+### Ask muster, don't read its config
+
+`muster projects --json` is the machine-readable answer to "which projects exist,
+which repos are in them, and what's live":
+
+```json
+{
+  "config": "/Users/you/.config/muster/config.yaml",
+  "service_file": ".muster.yaml",
+  "projects": [
+    { "project": "web", "session": "muster-web",
+      "repos": ["/Users/you/src/acme/api", "/Users/you/src/acme/client"],
+      "occupant": "demo", "busy": false }
+  ]
+}
+```
+
+`repos` are absolute and `~`-expanded, `session` and `service_file` have their
+defaults applied, and `occupant` is `null` when idle. `busy: true` means a
+mutation is in flight — expect `up`/`down`/`restart`/`swap` to be refused until
+it finishes (see the troubleshooting table).
+
+**Do not read `config.yaml` yourself.** `$MUSTER_CONFIG` can move it, so the
+default path may not be the file muster is using — the JSON echoes back the one
+it actually loaded. The raw YAML also stores repo paths unexpanded and leaves
+`session` / `service_file` unset when defaulted, so parsing it gives you literal
+`~` and missing values.
+
+To learn which **services** a repo defines, read the `service_file` named above
+from inside the relevant worktree — that part is still a file. Don't assume
+service names.
 
 ## Rule 1 — `cd` into the worktree, run **bare** `muster up`
 
