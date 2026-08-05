@@ -43,6 +43,12 @@
 	# side-by-side = true # uncomment for split view on wide terminals
 [merge]
 	conflictStyle = zdiff3
+# Both are required for non-interactive `gh stack`: it prompts on init without
+# rerere, and shows a remote picker on push/submit/sync without pushDefault.
+[rerere]
+	enabled = true
+[remote]
+	pushDefault = origin
 [diff]
 	colorMoved = default
 
