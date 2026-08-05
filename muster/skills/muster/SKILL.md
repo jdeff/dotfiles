@@ -88,8 +88,10 @@ Columns are `service · state · (worktree it's using) · port`. Check three thi
 Anything wrong → `muster logs <svc>`. Report what you found; don't declare success
 off `muster up`'s exit code alone.
 
-> `muster logs` prints the pane's **visible** text only — the current screenful,
-> not full history. A crash that scrolled away is gone. To recover early output,
+> `muster logs` reads the pane's recent output — **up to ~1000 lines** of
+> scrollback, herdr's ceiling for a single read. Still not unlimited history:
+> anything older is gone, and so is everything from before a `restart` (which
+> spawns a fresh, empty pane) or a `down`. If a crash predates the window,
 > `muster restart <svc>` and read it fresh.
 
 Use `NO_COLOR=1` whenever you parse output.
@@ -166,7 +168,7 @@ with `muster <project> docker` (lazydocker) — never `docker compose down`.
 
 ```sh
 muster status                 # what's live, per-service state, ports  (read-only)
-muster logs <svc>             # a service's visible pane output        (read-only)
+muster logs <svc>             # a service's recent pane output, ~1000 lines (read-only)
 muster projects               # all projects + occupants               (read-only)
 muster up                     # take the seat for this worktree (vacates the current occupant)
 muster restart <svc>          # restart one service (skips after_ready hooks)
