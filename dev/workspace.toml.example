@@ -7,8 +7,7 @@
 # install.sh seeds ~/.config/dev/workspace.toml from this template if it's missing.
 
 [me]
-linear_user   = "your-linear-username"   # prefix in Linear's suggested branch names
-github_handle = "your-github-handle"
+github_handle = "your-github-handle"   # one GitHub identity; Linear's is per workspace
 
 [defaults]
 # Fallback only — prefer the issue's own gitBranchName from Linear. A team may
@@ -18,11 +17,14 @@ branch_pattern = "{linear_user}/{linear_key_lower}-{number}-{slug}"
 # `linear_workspace` is the slug from a Linear issue URL (linear.app/<slug>/issue/…).
 # `linear_mcp` is the MCP server bound to that workspace — one connection serves one
 # workspace, so each org needs its own. See dev/README.md for the setup.
+# `linear_user` is per workspace: the same person has a different username in each,
+# and it leads the branch name Linear generates.
 
 [orgs.acme]
 name             = "Acme Inc"
 linear_workspace = "acme"
 linear_mcp       = "linear-acme"
+linear_user      = "your-username-in-that-workspace"
 
 [teams.widgets]
 linear_key     = "WID"        # the ticket prefix, e.g. WID-136

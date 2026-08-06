@@ -34,7 +34,9 @@ the ticket's actual content.
 Prefer the issue's **own** `gitBranchName` from Linear, which yields
 `<user>/<key>-<number>-<slug>`. It matches what the rest of the team's branches
 look like, and it's what Linear matches against to auto-link a PR to its issue.
-`branch_pattern` in the toml is a fallback for when you can't reach Linear.
+`branch_pattern` in the toml is a fallback for when you can't reach Linear, and it
+takes `linear_user` from the **org** — the same person has a different Linear
+username in each workspace.
 
 Consequence worth remembering: because Linear links by branch name, getting the
 branch right *is* the ticket↔PR integration. A hand-made branch name silently
