@@ -46,6 +46,14 @@ Use whatever Linear MCP tools are available — the tool prefix differs by how i
 was registered (`mcp__linear__*` for a user-scoped server, `mcp__claude_ai_Linear__*`
 for a claude.ai connector). Don't hardcode one.
 
+**One connection serves one workspace.** Teams in different `linear_workspace`s are
+not all reachable at once. Before working a key from an org you haven't queried this
+session, confirm the connection serves that workspace — `list_teams` returns the
+connected workspace's teams, so a missing team means the wrong workspace, not a
+missing ticket. Say which workspace is connected and which the key needs, then stop.
+A raw "Could not find referenced Team" is the same symptom as a bad key; don't
+report it as one.
+
 If no Linear tools are present at all, the machine hasn't been bootstrapped: say so
 and point at `~/dotfiles/dev/README.md`. Do not fall back to guessing a ticket's
 contents from its key.
