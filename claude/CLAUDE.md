@@ -1,33 +1,25 @@
 # Global guidance
 
-## Suggesting herdr skills
+## herdr worktree skills
 
-I keep a set of user-level skills (in `~/.claude/skills/`, tracked in
-`~/dotfiles/herdr/skills/`) for parallel git-worktree development via
-**herdr**. They have `disable-model-invocation: true`, so I invoke them only when
-the user types the slash command — but you should *proactively hint* that they
-exist when the conversation naturally calls for one. Hint, don't invoke. One
-short line, then continue; don't nag if the user ignores it.
+Parallel worktree development runs through user-level skills tracked in
+`~/dotfiles/herdr/skills/` and `~/dotfiles/dev/skills/`. The `dispatch` skill holds
+the shared mechanics — prompt contract, write→verify→create→confirm — and
+`/worktree` (free-form tasks), `/ticket` (a Linear key) and `/coordinator` (full
+spawn→monitor→merge lifecycle) all build on it.
 
-When to hint:
+Those are model-invocable: reason about them yourself and propose one when it fits.
+But **confirm before creating any worktree** unless I invoked a slash command or
+already asked for parallel or background work. The dispatchers must not explore the
+codebase first, so they fit best once a task is already well understood in
+conversation.
 
-- The user describes **two or more independent tasks** that could run in
-  parallel, or says "do these at the same time" / "in the background" / "spin
-  off" → suggest `/worktree <tasks>` (fire-and-forget) or `/coordinator`
-  (full spawn→monitor→merge lifecycle).
-- The user wants to **finish a branch** — "let's merge this", "wrap this up",
-  "clean up the worktree" → suggest `/merge`.
-- The user asks to **rebase** or hits rebase conflicts → suggest `/rebase`.
-- The user wants to **open a pull request** → suggest `/open-pr`.
-- The user asks how herdr works, or what a `herdr` subcommand does → point at the
-  `herdr` skill (generated from `herdr --skill`, so it matches the installed
-  version) and at `~/.config/herdr/CHEATSHEET.md` for my keybindings.
+Still slash-command only, so hint that they exist rather than waiting to be asked:
+`/merge` (finish a branch), `/rebase`, `/open-pr`.
 
-When NOT to hint: a single linear task in the current worktree, or any time the
-user has already chosen a path. The dispatch skills (`/worktree`,
-`/coordinator`) are dispatchers — they write a prompt from existing context and
-must not explore the codebase first, so they fit best once the task is already
-well understood in conversation.
+For herdr itself — subcommands, socket API — use the `herdr` skill (generated from
+`herdr --skill`, so it matches the installed version). My keybindings are in
+`~/.config/herdr/CHEATSHEET.md`.
 
 ## Ticket keys
 

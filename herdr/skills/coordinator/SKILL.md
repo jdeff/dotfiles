@@ -1,8 +1,7 @@
 ---
 name: coordinator
-description: Orchestrate multiple worktree agents in Herdr. Spawn, monitor, communicate, and merge.
+description: Orchestrate multiple worktree agents in Herdr — spawn, name, monitor, send follow-ups, and merge. Use when work needs the full lifecycle rather than fire-and-forget; for a single dispatch use /worktree, and for a Linear ticket use /ticket. Builds on the dispatch skill.
 allowed-tools: Bash, Write, Read, Task
-disable-model-invocation: true
 ---
 
 # Worktree Agent Coordinator
@@ -13,16 +12,7 @@ send instructions, and trigger merges.
 
 ## Requirements
 
-The Herdr server must be running and you must be inside a Herdr pane:
-
-```bash
-test "${HERDR_ENV:-}" = 1
-```
-
-If that fails, say you are not running inside Herdr and stop.
-
-The `jdeff.flow` plugin must be enabled (`herdr plugin list`) — it lays out
-Claude + a shell on `worktree.created` and launches the dispatched prompt.
+See the `dispatch` skill: inside herdr (`HERDR_ENV=1`) with `jdeff.flow` enabled.
 
 ## Core Concepts
 
@@ -43,57 +33,16 @@ Claude + a shell on `worktree.created` and launches the dispatched prompt.
 
 ### Spawn Agents
 
-For each task, write a dispatch prompt file, then create the worktree. You are a
-dispatcher. Do NOT read source files, edit code, or implement tasks yourself.
+Spawning is the `dispatch` skill: its contract, its write→verify→create→confirm
+sequence, its flags, and its prompt rules. Use it rather than re-deriving them here.
 
-**Prompt file rules:**
+Coordinator specifics:
 
-- Self-contained with full context (agents cannot see your conversation)
-- Use RELATIVE paths only (each worktree has its own root)
-- If referencing earlier conversation context, include it verbatim
-- If a task references a markdown file (plan, spec), re-read it for the latest
-  version before writing the prompt
-- If delegating a skill (e.g. `/auto`), instruct the agent to use it. Do not
-  write detailed implementation steps yourself
-- Don't delegate a skill to worktrees unless explicitly instructed
-
-The dispatch contract: write the prompt to `~/.herdr/dispatch/<slug>.md`, where
-`slug` is the branch run through `tr -c '[:alnum:]' '-'`. The `layout-agent-shell.sh`
-script uses the identical transform to find it, and consumes/deletes the file when
-Claude launches.
-
-**Spawning workflow: write ALL files first, THEN create ALL worktrees.**
-
-```bash
-# Step 1: Write all prompt files (in parallel)
-mkdir -p ~/.herdr/dispatch
-repo="$(git rev-parse --show-toplevel)"
-
-for b in auth-module api-tests; do :; done   # (illustrative; write each below)
-
-slug=$(printf '%s' "auth-module" | tr -c '[:alnum:]' '-')
-cat > ~/.herdr/dispatch/"$slug".md << 'EOF'
-Implement auth module...
-EOF
-
-slug=$(printf '%s' "api-tests" | tr -c '[:alnum:]' '-')
-cat > ~/.herdr/dispatch/"$slug".md << 'EOF'
-Write API tests...
-EOF
-
-# Step 2: Create all worktrees (in parallel, after ALL files exist)
-herdr worktree create --cwd "$repo" --branch auth-module --no-focus
-herdr worktree create --cwd "$repo" --branch api-tests   --no-focus
-```
-
-Flags:
-
-- `--no-focus`: stay in your own space (the equivalent of backgrounding)
-- `--cwd <path>`: the repo to branch from. Same repo → `git rev-parse --show-toplevel`;
-  cross-project → that repo's absolute path. Do not `cd`.
-- `--base <ref>`: branch from `<ref>` instead of the repo's current HEAD
-- `--branch <name>`: existing name checks out, new name creates the branch
-- `--label <text>`: space label (defaults to the branch slug)
+- Always `--no-focus` — you stay in your own space.
+- Don't delegate a skill to worktrees unless explicitly instructed.
+- Confirm every prompt was consumed before you start monitoring. An unconsumed
+  prompt means that agent is idle and bare, which looks identical to an agent that
+  finished.
 
 ### Resolve and name your agents
 
@@ -288,8 +237,8 @@ herdr agent prompt docs-update "/merge" --wait --until idle --timeout 1800000
 
 ## Rules
 
-1. **Write ALL prompt files before creating any worktrees.** Prompts must be
-   self-contained — agents cannot see your conversation.
+1. **Dispatch per the `dispatch` skill** — every prompt file written and verified
+   before any worktree is created.
 2. **Always pass `--no-focus`** so you stay in your own space.
 3. **Name each agent** right after spawning; pane IDs are stable but opaque, and
    a name survives you losing track of which space is which.
@@ -301,6 +250,5 @@ herdr agent prompt docs-update "/merge" --wait --until idle --timeout 1800000
 7. **Merge one at a time**, waiting for each to finish before the next, to avoid
    conflicts.
 8. **Timeouts are milliseconds.** Always pass one.
-9. **Prompt files use relative paths** (each worktree has its own root).
-10. **`unknown` is not `done`.** Never treat it as completion.
-11. You are a coordinator, not an implementer. Never edit source files directly.
+9. **`unknown` is not `done`.** Never treat it as completion.
+10. You are a coordinator, not an implementer. Never edit source files directly.

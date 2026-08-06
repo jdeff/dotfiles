@@ -1,7 +1,6 @@
 ---
 name: ticket-work
-description: Plan a Linear ticket in the current worktree, get the plan approved, then implement it. Dispatched by /ticket; also runs standalone as /ticket-work ABC-123.
-disable-model-invocation: true
+description: Plan a Linear ticket in the current worktree, get the plan approved, then implement it. Use when working a ticket inside its own worktree; dispatched by /ticket, and runs standalone as /ticket-work ABC-123.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 ---
 
