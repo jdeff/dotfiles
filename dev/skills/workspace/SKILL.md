@@ -38,9 +38,10 @@ look like, and it's what Linear matches against to auto-link a PR to its issue.
 takes `linear_user` from the **org** — the same person has a different Linear
 username in each workspace.
 
-Consequence worth remembering: because Linear links by branch name, getting the
-branch right *is* the ticket↔PR integration. A hand-made branch name silently
-breaks it.
+Consequence worth remembering: Linear links a PR to its issue by finding the issue
+**key** in the branch name, so a branch that omits it silently loses the link. The
+username leading the branch is convention, not matching — but it is regenerated from
+the current Linear username, so read it fresh rather than reusing an old one.
 
 ## Reaching Linear
 
