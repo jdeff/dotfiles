@@ -1,62 +1,71 @@
 ---
 name: open-pr
-description: Write a PR description using conversation context and open PR creation in browser.
-disable-model-invocation: true
+description: Open a pull request, or fill in the descriptions for a stack of them, using the repo's own PR template and the current diff. Use after committing work that should become a PR; invoked directly or by /ticket-work.
 allowed-tools: Read, Bash, Glob, Grep
 ---
 
-<!-- This is a starting point. Customize the template and guidelines to match your team's PR conventions. -->
+## Use the repo's template, not a generic one
 
-## Gather context
-
-1. Get the base branch (usually `main` or `master`)
-2. Get the diff: `git diff <base>...HEAD`
-3. Get commit messages: `git log <base>...HEAD --format="%s"`
-4. Read changed files to understand the broader context
-
-## Commit uncommitted changes
-
-1. Run `git status` to check for uncommitted changes
-2. If changes exist, commit them before proceeding
-
-## Write PR description
-
-Use this template:
+If `.github/pull_request_template.md` (or `PULL_REQUEST_TEMPLATE.md`) exists, that is
+the shape of the body. Fill its sections in — including any `Relates to ___` line,
+which takes the ticket URL — and tick a checkbox only when you can say what backs it.
+Only if the repo has no template, use:
 
 ```markdown
 ## Summary
-
 [1-2 sentences: what this PR does and why]
 
 ## Changes
-
-- [Key change 1]
-- [Key change 2]
-- [Key change 3]
+- [key change]
 
 ## Testing
-
-[How you verified it works]
+[how you verified it]
 ```
 
-Guidelines:
+Lead with what and why, not how. Ground every claim in the diff — a description is
+read by someone who wasn't in your conversation, and an unverifiable number in it is
+worse than no number.
 
-- Lead with a concise summary of what the PR does
-- Explain the "why" before the "how"
-- Use the conversation context to inform the description
-- Include before/after comparisons for UI or performance changes
-- Be direct and to the point
+## Stacked PRs
 
-## Create the PR
+Check first: `gh stack view --json` (never without `--json`). If the branch belongs to
+a stack, the whole stack is the unit of work.
 
-1. Write a short PR title (max 72 characters)
+`gh stack submit --auto` generates **titles only** — it leaves every body as the
+unfilled template. So submitting is not the end:
 
-2. Ensure the branch is pushed:
-   ```bash
-   git push -u origin HEAD
-   ```
+```bash
+gh stack submit --auto            # creates/updates the PRs as drafts, correct bases
+gh stack view --json              # PR numbers, bottom to top
+```
 
-3. Open PR creation in browser (do NOT create directly):
-   ```bash
-   gh pr create --web --title "<title>" --body "<body>"
-   ```
+Then fill each body from **that layer's own diff** (`gh pr diff <n>`), not the whole
+stack's. Each PR is reviewed alone; describing the stack three times helps nobody.
+State each PR's place in the chain and what the reader can assume already landed.
+
+When editing an existing body, **preserve automation-managed blocks** — anything
+between markers such as `<!-- review-app-url -->`. Read the current body, replace only
+your part, keep the rest:
+
+```bash
+gh pr edit <n> --body-file <file>
+```
+
+## Single PR
+
+```bash
+git status                        # commit anything outstanding first
+git push -u origin HEAD
+gh pr create --web --title "<title, max 72 chars>" --body "<body>"
+```
+
+`--web` opens the browser rather than creating it, so you see it before it exists.
+
+## Leave it to the human
+
+Open PRs as **drafts** and stop. Do not mark ready for review and do not request
+reviewers — that pings people, and the author reviews their own work first. Report the
+PR numbers and the command they'd run.
+
+To keep watching a PR or stack afterwards — CI, comments, rebasing onto a moved base —
+use the `pr-watch` skill.

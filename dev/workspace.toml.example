@@ -32,3 +32,6 @@ linear_name    = "Widgets"
 org            = "acme"
 muster_project = "acme-app"   # must match a project in muster's config
 default_repo   = "acme-api"   # where a ticket starts when it names no repo
+# Optional: request review from this team. Whether it round-robins to one person is
+# a GitHub team setting (Team → Settings → Code review assignment). Omit for solo repos.
+github_team    = "acme/widgets"

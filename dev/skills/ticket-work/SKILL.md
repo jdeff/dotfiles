@@ -49,7 +49,12 @@ Stop). Before approval:
 3. Implement.
 4. Verify. Use the `muster` skill for anything needing a live stack: check
    occupancy first, and never evict another occupant.
-5. Commit, then `/open-pr`.
+5. Commit, then open the PR **through the `open-pr` skill** — including when the work
+   is a stack. `gh stack submit` alone generates titles and leaves every body as the
+   unfilled repo template, so going straight to it ships blank descriptions.
+6. Hand off to the `pr-watch` skill for CI, comments, and rebasing.
+
+Leave PRs as drafts. Marking ready and requesting reviewers is the author's call.
 
 The branch name carries the ticket key, so Linear links the PR itself. Don't post a
 PR-link comment unless you've confirmed the link is missing.

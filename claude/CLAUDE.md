@@ -15,7 +15,7 @@ codebase first, so they fit best once a task is already well understood in
 conversation.
 
 Still slash-command only, so hint that they exist rather than waiting to be asked:
-`/merge` (finish a branch), `/rebase`, `/open-pr`.
+`/merge` (finish a branch) and `/rebase`.
 
 For herdr itself — subcommands, socket API — use the `herdr` skill (generated from
 `herdr --skill`, so it matches the installed version). My keybindings are in

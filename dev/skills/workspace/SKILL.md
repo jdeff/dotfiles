@@ -29,6 +29,9 @@ If a ticket doesn't say which repo it touches, `default_repo` is the starting
 point, not the answer — a full-stack ticket usually needs both repos. Decide from
 the ticket's actual content.
 
+A team may also carry `github_team`, the reviewer to request once the author says a PR
+is ready. It's optional — solo repos have none.
+
 ## Branch names
 
 Prefer the issue's **own** `gitBranchName` from Linear, which yields
