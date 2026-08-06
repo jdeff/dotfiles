@@ -1,6 +1,6 @@
 ---
 name: muster
-description: Start, stop, and inspect a project's dev servers (web servers, background workers, docker infra) via `muster`, which runs one feature's stack at a time on fixed ports. Use BEFORE launching any dev server, worker, or `docker compose` by hand — and whenever the question is "is the app running?", "why did the server die?", "bring up the services for this worktree", or a dev port is already in use.
+description: Start, stop, and inspect a project's dev servers (web servers, background workers, docker infra) via `muster`. Use BEFORE launching any dev server, worker, or `docker compose` by hand, and whenever a dev port is already in use or a service died unexpectedly.
 ---
 
 # muster — one feature's dev stack at a time
@@ -9,12 +9,11 @@ description: Start, stop, and inspect a project's dev servers (web servers, back
 *occupant* (a feature worktree, or `main`) can be live per project. Activating one
 **vacates** whatever was running.
 
-## Rule 0 — never start services by hand
+## Rule 0 — every start and stop goes through muster
 
-Do **not** run the dev server, background worker, or `docker compose up` directly
-in a muster-managed repo. You will collide with muster's fixed ports and leave
-orphaned processes muster can't see or clean up. Every start/stop goes through
-`muster`.
+Running a dev server, background worker, or `docker compose up` by hand in a
+muster-managed repo collides with muster's fixed ports and leaves orphaned
+processes muster can't see or clean up.
 
 To find out whether the repo you're in is managed, and what's live anywhere:
 
@@ -23,49 +22,33 @@ muster projects     # every configured project + its current occupant
 muster status       # this project (inferred from cwd): occupant + per-service state
 ```
 
+Set `NO_COLOR=1` on any muster command whose output you parse.
+
 If `muster status` says `not inside a known project repo`, this repo isn't
 managed — start things however the repo's own docs say.
 
-### Ask muster, don't read its config
+## Rule 1 — check occupancy before taking the seat
 
-`muster projects --json` is the machine-readable answer to "which projects exist,
-which repos are in them, and what's live":
+Always `muster status` first:
 
-```json
-{
-  "config": "/Users/you/.config/muster/config.yaml",
-  "service_file": ".muster.yaml",
-  "projects": [
-    { "project": "web", "session": "muster-web",
-      "repos": ["/Users/you/src/acme/api", "/Users/you/src/acme/client"],
-      "occupant": "demo", "busy": false }
-  ]
-}
-```
+| status says | do this |
+|---|---|
+| `<project>: (not running)` | seat is free — `muster up` |
+| `occupant=<your branch>` | already yours. Don't re-`up`. Verify health; `muster restart <svc>` if a service died |
+| `occupant=<another branch>` | **STOP and ask the user.** `up` would kill their running stack mid-work |
 
-`repos` are absolute and `~`-expanded, `session` and `service_file` have their
-defaults applied, and `occupant` is `null` when idle. `busy: true` means a
-mutation is in flight — expect `up`/`down`/`restart`/`swap` to be refused until
-it finishes (see the troubleshooting table).
+The seat is shared with other agents and the user, so leave another occupant
+running until they tell you otherwise. When you ask, say exactly what's live and
+what you'd replace it with.
 
-**Do not read `config.yaml` yourself.** `$MUSTER_CONFIG` can move it, so the
-default path may not be the file muster is using — the JSON echoes back the one
-it actually loaded. The raw YAML also stores repo paths unexpanded and leaves
-`session` / `service_file` unset when defaulted, so parsing it gives you literal
-`~` and missing values.
-
-To learn which **services** a repo defines, read the `service_file` named above
-from inside the relevant worktree — that part is still a file. Don't assume
-service names.
-
-## Rule 1 — `cd` into the worktree, run **bare** `muster up`
+## Rule 2 — `cd` into the worktree, run **bare** `muster up`
 
 ```sh
 cd /path/to/the/worktree && muster up
 ```
 
-Never type the feature name. muster's feature identifier is the **git branch**,
-but herdr's worktree *directory* is a slug of it, and they routinely differ:
+Let cwd name the feature. muster's feature identifier is the **git branch**, but
+herdr's worktree *directory* is a slug of it, and they routinely differ:
 
 ```
 branch=add-search-filters   dir=search-work        (branch renamed after creation)
@@ -77,19 +60,6 @@ Guessing from the directory name gives `no '<feature>' worktree`, or silently
 resolves the wrong thing. Bare `muster up` infers project + branch from cwd and is
 always right. If you must name a feature explicitly, take it from the `branch`
 field of `herdr worktree list --cwd <repo> --json` and single-quote it.
-
-## Rule 2 — check occupancy before taking the seat
-
-Always `muster status` first:
-
-| status says | do this |
-|---|---|
-| `<project>: (not running)` | seat is free — `muster up` |
-| `occupant=<your branch>` | already yours. Don't re-`up`. Verify health; `muster restart <svc>` if a service died |
-| `occupant=<another branch>` | **STOP and ask the user.** `up` would kill their running stack mid-work |
-
-Never auto-vacate another occupant. Other agents and the user share this seat.
-When you ask, say exactly what's live and what you'd replace it with.
 
 ## Rule 3 — confirm it actually booted
 
@@ -111,7 +81,7 @@ Columns are `service · state · (worktree it's using) · port`. Check three thi
 
 1. **state** is `running` — not `exited` (process died) or `stopped` (no pane).
 2. **port** is `bound` for every service that declares one.
-3. **`(using)`** is the worktree you expected, for *every* repo — see Rule 4.
+3. **`(using)`** is the worktree you expected, for *every* repo.
 
 Anything wrong → `muster logs <svc>`. Report what you found; don't declare success
 off `muster up`'s exit code alone.
@@ -122,67 +92,23 @@ off `muster up`'s exit code alone.
 > spawns a fresh, empty pane) or a `down`. If a crash predates the window,
 > `muster restart <svc>` and read it fresh.
 
-Use `NO_COLOR=1` whenever you parse output.
+## Multi-repo projects
 
-## Rule 4 — cross-repo: assert before, verify after
+muster resolves each repo independently — `use:` pin → the occupant's own
+worktree → `main` — so a sibling repo whose branch name doesn't match **falls
+back to `main` while `up` still reports success**. You get a plausible stack
+running the wrong backend, and nothing errors. Silence is the failure mode.
 
-In a multi-repo project, branch names for the *same* work often differ per repo.
-muster resolves each repo independently:
-
-```
-`use:` pin  →  the occupant's own worktree  →  main
-```
-
-So a sibling repo whose branch name doesn't match **falls back to `main` and
-`muster up` still reports success.** You get a plausible stack running the wrong
-backend. Silence is the failure mode.
-
-**Never infer the pairing.** Only pin a sibling worktree when the user, the task
-prompt, or your own orchestration explicitly established it. If you suspect a
-sibling dependency but weren't told, ask.
-
-**Assert before.** State the intended mapping before bringing anything up:
-
-> Bringing up `myproj`: `client` → `add-search-filters`, `api` →
-> `search-index-endpoint` (pinned).
-
-**Then pick a mechanism.**
-
-*Durable* — a `use:` pin in the **occupant worktree's own** `.muster.yaml`.
-Survives `up`/`restart` and outranks a same-named worktree. Use when the
-dependency is part of the task:
-
-```yaml
-# in the client worktree's .muster.yaml
-use:
-  api: search-index-endpoint
-```
-
-Keys are **repo directory names**, values are **branch names**. Remove the pin once
-the dependency merges — it wins permanently otherwise. Check whether
-`.muster.yaml` is gitignored in that repo before editing; if it's tracked, the pin
-would land in the PR diff, so prefer a swap.
-
-*Ephemeral* — re-point one repo on an already-live stack. No file edit, but
-**wiped by the next `muster up`**. Use for a one-off check. Takes a repo **path**
-(unlike the pin's dir name):
-
-```sh
-muster <project> swap /path/to/repo search-index-endpoint
-```
-
-**Verify after.** Re-read the `(using)` column for every service. If a repo landed
-on `main` and you didn't intend that, the stack is wrong — say so, don't proceed.
-
-To see what a sibling repo actually has:
-`herdr worktree list --cwd <repo> --json`.
+Read [`CROSS-REPO.md`](CROSS-REPO.md) before bringing up a project that spans more
+than one repo, and whenever you need repo paths, session labels, or the
+service-file name.
 
 ## Troubleshooting
 
 | symptom | cause | what to do |
 |---|---|---|
 | `<repo>: no .muster.yaml in <path> — skipping its services` | the worktree is missing its service file, so **that repo starts nothing** while `up` still "succeeds" | Report it — worktree creation should have supplied that file, so its absence is a bug worth fixing at the source. Don't hand-author or copy a service file to work around it |
-| `another muster operation is already running for '<project>'` | another agent or the dashboard holds the project's `flock` | **Do not retry-loop.** Wait, then `muster status` — someone else may be taking the seat |
+| `another muster operation is already running for '<project>'` | another agent, the dashboard, or an earlier job holds the project lock | **Do not retry-loop.** Wait, then `muster status` — someone else may be taking the seat |
 | service `exited` right after `up` | crashed on boot | `muster logs <svc>` for the traceback. Fix the cause, then `muster restart <svc>` — not a bare `up` |
 | `ports still in use after teardown` | an orphaned process holds the port | `lsof -i :<port>`. Usually a hand-started server (Rule 0) |
 | ready-gate hangs, then continues | the service's `ready:` regex never matched | It may still be fine — check `port … bound`. Tune with `MUSTER_READY_WAIT_TIMEOUT` (seconds) |
@@ -192,23 +118,17 @@ To see what a sibling repo actually has:
 Containers are shared infra: left running on `down` and across swaps. Manage them
 with `muster <project> docker` (lazydocker) — never `docker compose down`.
 
-## Command reference
+## Commands
 
-```sh
-muster status                 # what's live, per-service state, ports  (read-only)
-muster logs <svc>             # a service's recent pane output, ~1000 lines (read-only)
-muster projects               # all projects + occupants               (read-only)
-muster up                     # take the seat for this worktree (vacates the current occupant)
-muster restart <svc>          # restart one service (skips after_ready hooks)
-muster restart                # restart the whole project
-muster swap <repo-path> <br>  # re-point one repo, ephemerally
-muster down                   # stop this project's services, free the ports
-```
+`muster help` lists every command and its arguments. Two things it won't tell you:
 
-Read-only commands are always safe. `up`/`down`/`restart`/`swap` mutate the shared
-seat — they run in a detached worker (surviving a closed terminal), and only one
-runs per project at a time. All of them accept an explicit `muster <project> <cmd>`
-form when cwd inference isn't what you want.
+**Read-only, always safe:** `status`, `logs <svc>`, `projects`.
+
+**Mutating — these take the shared seat:** `up`, `down`, `restart [<svc>]`, `swap`.
+Each runs in a detached worker, so it survives a closed terminal, and only one
+runs per project at a time; a second is refused while the first is in flight. All
+of them accept an explicit `muster <project> <cmd>` form for when cwd inference
+isn't what you want.
 
 ## Scope
 
