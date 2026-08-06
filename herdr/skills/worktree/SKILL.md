@@ -1,35 +1,32 @@
 ---
 name: worktree
-description: Dispatch one or more free-form tasks to new git worktrees, one per task, for parallel or background work in this or another repo. Use for a task described in conversation; for a Linear ticket use /ticket, and for the full spawn→monitor→merge lifecycle use /coordinator.
+description: Dispatch free-form tasks to new git worktrees, one per task, for parallel or background work in this or another repo. Use for work described in conversation.
 allowed-tools: Bash, Write
 ---
 
 Tasks: $ARGUMENTS
 
-Use the `dispatch` skill for the contract, the write→verify→create→confirm sequence,
-the flags, and the prompt rules. This skill covers only what is specific to
-free-form tasks.
+Mechanics — contract, sequence, flags, prompt rules — are the `dispatch` skill. This
+covers what is specific to free-form tasks.
 
-## You are a dispatcher, not an implementer
+## Dispatch, don't implement
 
-Do NOT explore, read, grep, or search the codebase, and do not send a subagent to.
-Your job is to write prompt files and create worktrees — the worktree agents do the
-work. If the request has enough context to write a prompt, write it. If it doesn't,
-ask; don't go read code to find out.
+Your whole job is writing prompt files and creating worktrees; the worktree agents
+explore and implement. Write each prompt from what the request already gives you, and
+ask when that isn't enough. Reading the codebase to fill a gap — directly or through a
+subagent — is the one thing this skill never does.
 
-If a task refers to earlier conversation ("do option 2"), include that context
-verbatim in the prompt.
+Earlier conversation a task leans on ("do option 2") goes into the prompt verbatim.
 
 ## One worktree per task
 
-Generate a short kebab-case branch name (2–4 words) per task. One prompt and one
-worktree each — and one per repository when a task spans repos.
+A short kebab-case branch name (2–4 words) per task, one prompt and one worktree each,
+and one per repository when a task spans repos.
 
 ## Target repo
 
-Same repo by default: pass the repo root as `--cwd`. If a task names another
-repository or an absolute path, use that as `--cwd`. If you can't tell which repo a
-task belongs to, ask.
+The current repo's root as `--cwd` by default; a task naming another repository or an
+absolute path uses that instead. Ask when a task's repo is ambiguous.
 
 ## Flags
 
@@ -37,6 +34,5 @@ task belongs to, ask.
   message, rebase onto the base branch, and merge this branch into it."
 - `--base <ref>` — pass through to `herdr worktree create`.
 
-This skill is fire-and-forget: report the branches and spaces created, then stop.
-For naming agents, waiting on status, sending follow-ups, or merging, use
-`/coordinator`.
+Fire-and-forget: report the branches and spaces created, then stop. `/coordinator`
+covers naming agents, waiting on status, follow-ups, and merging.

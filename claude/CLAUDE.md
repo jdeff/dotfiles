@@ -1,34 +1,17 @@
 # Global guidance
 
-## herdr worktree skills
+## Worktree and ticket skills
 
-Parallel worktree development runs through user-level skills tracked in
-`~/dotfiles/herdr/skills/` and `~/dotfiles/dev/skills/`. The `dispatch` skill holds
-the shared mechanics — prompt contract, write→verify→create→confirm — and
-`/worktree` (free-form tasks), `/ticket` (a Linear key) and `/coordinator` (full
-spawn→monitor→merge lifecycle) all build on it.
+Tracked in `~/dotfiles/herdr/skills/` and `~/dotfiles/dev/skills/`; their descriptions
+say when each fires. Confirm before creating a worktree unless I typed the command or
+already asked for parallel or background work.
 
-Those are model-invocable: reason about them yourself and propose one when it fits.
-But **confirm before creating any worktree** unless I invoked a slash command or
-already asked for parallel or background work. The dispatchers must not explore the
-codebase first, so they fit best once a task is already well understood in
-conversation.
-
-Still slash-command only, so hint that they exist rather than waiting to be asked:
-`/merge` (finish a branch) and `/rebase`.
+`/merge` and `/rebase` carry no description, so name them when they'd fit rather than
+waiting to be asked.
 
 For herdr itself — subcommands, socket API — use the `herdr` skill (generated from
 `herdr --skill`, so it matches the installed version). My keybindings are in
 `~/.config/herdr/CHEATSHEET.md`.
-
-## Ticket keys
-
-A bare ticket key like `ABC-123` is a **Linear issue**. The identity / org / team map
-— which team owns a prefix, which muster project it maps to, how a branch is named
-— is `~/.config/dev/workspace.toml` (untracked; this repo is public), and the
-`workspace` skill is the procedure that reads it. Resolve repos through muster's own
-config, never by guessing from a repo name. If Linear MCP tools aren't available,
-the machine isn't bootstrapped: see `~/dotfiles/dev/README.md`.
 
 ## Dotfiles
 

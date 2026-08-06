@@ -1,38 +1,39 @@
 ---
 name: ticket
-description: Work a Linear ticket in a new git worktree — resolve the key, gate on existing work, and dispatch a prompted agent. Use whenever a bare ticket key like ABC-123 is the thing to be worked on. Builds on the dispatch skill.
+description: Work a Linear ticket in a new git worktree — resolve the key, gate on existing work, and dispatch a prompted agent. Use whenever a bare ticket key like ABC-123 is the thing to be worked on.
 allowed-tools: Bash, Write
 ---
 
 Ticket: $ARGUMENTS
 
-You are a dispatcher. Do NOT read, grep, or explore the codebase, and do not plan
-the work — the dispatched agent does both. Resolve, gate, write the prompt, create
-the worktree.
+Resolve, gate, write the prompt, create the worktree — the dispatched agent plans and
+implements. Everything here comes from Linear and `workspace.toml`; the codebase stays
+unread until the worktree agent opens it.
 
 ## 1. Resolve
 
-Use the `workspace` skill for prefix → team → muster project → repos. Fetch the
-issue with the Linear MCP (`get_issue`, `includeRelations: true`). Take the branch
-name from `gitBranchName`; never invent one.
+The `workspace` skill maps prefix → team → muster project → repos and names the Linear
+server to ask. Fetch with `get_issue` (`includeRelations: true`) and take the branch
+from `gitBranchName`.
 
 ## 2. Stop conditions
 
-Check in order. Report and stop on the first hit — do not create a worktree.
+Check in order; report and stop on the first hit.
 
-**Sub-issues.** `list_issues` with `parentId: <key>`. Any result means this is an
-epic. Epic fan-out is not built yet: list the sub-issues with their statuses, note
-that dependencies are often stated in descriptions rather than Linear relations,
-and stop.
+**Sub-issues.** `list_issues` with `parentId: <key>`. Any result makes this an epic,
+which is a set of worktrees rather than one — list the sub-issues with their statuses
+and stop. Their order rarely lives in Linear's relations graph; it's usually stated in
+the descriptions.
 
-**Hard evidence of existing work.** Any of:
+**Existing work**, meaning hard evidence:
 
 - a GitHub PR attachment on the Linear issue
 - a branch or PR whose name carries the key
 - an existing worktree under `~/.herdr/worktrees/<repo>/`
 
-Match the key with a digit boundary, or `MG-13` also hits `mg-137`. Do not use
-`gh pr list --search <key>` — it matches other tickets and stops you on their work.
+Match the key with a digit boundary, or `MG-13` also hits `mg-137`. `gh pr list
+--search <key>` matches other tickets and stops you on their work — filter
+`headRefName` instead:
 
 ```bash
 key=ABC-123
@@ -43,29 +44,28 @@ gh pr list --state all --limit 200 --json number,state,headRefName \
 ```
 
 One ticket legitimately has several PRs (expand / dual-write / backfill), so report
-everything you find rather than assuming the first hit is the whole story.
+every hit rather than the first.
 
 **Empty description.** Nothing to plan from.
 
-## 3. Soft signals — report, don't stop
+## 3. Soft signals — report and continue
 
-Status `In Progress`/`In Review`, an assignee, or a prior plan comment are not
-existing work. Status is routinely set before any code exists. Note them in one
-line and continue.
+Status `In Progress`/`In Review`, an assignee, or a prior plan comment are routinely
+set before any code exists. Note them in one line and carry on.
 
 ## 4. Repo
 
-Decide from the ticket's content which repos it touches; `default_repo` is a
-starting point, not the answer. One worktree per repo. If it needs two repos and
-you cannot tell which leads, ask.
+Which repos a ticket touches comes from its content; `default_repo` is only the
+starting point. One worktree per repo, and ask when two are involved and the lead
+isn't clear.
 
 ## 5. Dispatch
 
-Follow the `dispatch` skill's sequence. Ticket-specific parts:
+The `dispatch` skill's sequence, with:
 
-- The branch is the issue's `gitBranchName`, unmodified.
-- `--focus` for a single ticket; `--no-focus` when dispatching more than one.
-- The prompt is two lines — the agent re-fetches the ticket itself:
+- the branch exactly as `gitBranchName` gives it
+- `--focus` for a single ticket, `--no-focus` for more than one
+- a two-line prompt, since the agent re-fetches the ticket itself:
 
 ```
 Work Linear ticket <KEY>: <title>

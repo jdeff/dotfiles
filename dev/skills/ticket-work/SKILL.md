@@ -1,6 +1,6 @@
 ---
 name: ticket-work
-description: Plan a Linear ticket in the current worktree, get the plan approved, then implement it. Use when working a ticket inside its own worktree; dispatched by /ticket, and runs standalone as /ticket-work ABC-123.
+description: Plan a Linear ticket in its worktree, get the plan approved, then implement it. Use when a ticket is to be worked inside its own worktree.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 ---
 
@@ -8,9 +8,9 @@ Ticket: $ARGUMENTS
 
 ## 1. Re-fetch
 
-Fetch the issue and `list_comments` from Linear now. The dispatch prompt is a
-pointer, not a source. A prior agent may have left a plan; a plan on a parent epic
-may be stale relative to the sub-issues that were created after it.
+Fetch the issue and `list_comments` from Linear now — the dispatch prompt is a
+pointer, not a source. A prior agent may have left a plan, and a plan on a parent epic
+can predate the sub-issues that replaced it.
 
 ## 2. Plan
 
@@ -25,36 +25,29 @@ Explore the code, then write the plan with these sections:
 - **Open questions**.
 - **Confidence** — overall, and how much of the relevant code you actually read.
 
-`muster status` is fine here. Start no services yet.
+`muster status` reads freely here; services stay down until the plan is approved.
 
 ## 3. Underspecified exit
 
-If the ticket cannot be planned — a design is needed and none is attached,
-acceptance criteria are ambiguous, or the AC contradicts the code — post the
-questions as a Linear comment, tell the user, and stop. Do not guess.
+A ticket that cannot be planned — a design is needed and none is attached, acceptance
+criteria are ambiguous, the AC contradicts the code — earns a Linear comment carrying
+the questions, and a stop. The answers come from the author.
 
 ## 4. Approval gate
 
-Present the plan and ask for approval with AskUserQuestion (Approve / Revise /
-Stop). Before approval:
-
-- write no code
-- post nothing to Linear
-- do not change the issue status
+Present the plan and ask for approval with AskUserQuestion (Approve / Revise / Stop).
+Until it is approved the plan is the only artifact: no code, nothing posted to Linear,
+no status change.
 
 ## 5. After approval
 
 1. Post the plan as a Linear comment.
 2. Move the issue to In Progress.
 3. Implement.
-4. Verify. Use the `muster` skill for anything needing a live stack: check
-   occupancy first, and never evict another occupant.
-5. Commit, then open the PR **through the `open-pr` skill** — including when the work
-   is a stack. `gh stack submit` alone generates titles and leaves every body as the
-   unfilled repo template, so going straight to it ships blank descriptions.
+4. Verify. The `muster` skill covers anything needing a live stack — check occupancy
+   first, and leave another occupant's stack running.
+5. Commit, then open the PR through the `open-pr` skill, stacks included.
 6. Hand off to the `pr-watch` skill for CI, comments, and rebasing.
 
-Leave PRs as drafts. Marking ready and requesting reviewers is the author's call.
-
-The branch name carries the ticket key, so Linear links the PR itself. Don't post a
-PR-link comment unless you've confirmed the link is missing.
+Linear links the PR through the key in the branch name, so a PR-link comment is worth
+posting only once you've confirmed the link is missing.
