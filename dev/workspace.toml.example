@@ -12,8 +12,8 @@ github_handle = "your-github-handle"
 
 [defaults]
 # Fallback only — prefer the issue's own gitBranchName from Linear. A team may
-# override this.
-branch_pattern = "{linear_user}/{linear_key}-{number}-{slug}"
+# override this. The key is lowercased, matching what Linear generates.
+branch_pattern = "{linear_user}/{linear_key_lower}-{number}-{slug}"
 
 # `linear_workspace` is the slug from a Linear issue URL (linear.app/<slug>/issue/…).
 # One Linear MCP connection serves one workspace, so orgs in different workspaces
