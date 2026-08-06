@@ -42,20 +42,19 @@ breaks it.
 
 ## Reaching Linear
 
-Use whatever Linear MCP tools are available — the tool prefix differs by how it
-was registered (`mcp__linear__*` for a user-scoped server, `mcp__claude_ai_Linear__*`
-for a claude.ai connector). Don't hardcode one.
+**One connection serves one workspace**, so query the org's own server. Resolve the
+key to its org, read that org's `linear_mcp`, and use that server's tools
+(`mcp__<linear_mcp>__*`). Never pick a Linear server by whichever one is listed
+first.
 
-**One connection serves one workspace.** Teams in different `linear_workspace`s are
-not all reachable at once. Before working a key from an org you haven't queried this
-session, confirm the connection serves that workspace — `list_teams` returns the
-connected workspace's teams, so a missing team means the wrong workspace, not a
-missing ticket. Say which workspace is connected and which the key needs, then stop.
-A raw "Could not find referenced Team" is the same symptom as a bad key; don't
-report it as one.
+Getting this wrong is not always loud. A missing team gives "Could not find
+referenced Team" — the same symptom as a typo'd key, so don't report it as one. But
+two workspaces can each have a team with the same prefix, and then the wrong server
+returns a real, plausible, wrong ticket. `list_teams` returns the connected
+workspace's teams; use it to confirm when unsure.
 
-If no Linear tools are present at all, the machine hasn't been bootstrapped: say so
-and point at `~/dotfiles/dev/README.md`. Do not fall back to guessing a ticket's
+If the org's server isn't present, or no Linear tools are, the machine isn't
+bootstrapped: say so and point at `~/dotfiles/dev/README.md`. Never guess a ticket's
 contents from its key.
 
 ## What does not belong in workspace.toml

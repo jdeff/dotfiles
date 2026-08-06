@@ -16,12 +16,13 @@ github_handle = "your-github-handle"
 branch_pattern = "{linear_user}/{linear_key_lower}-{number}-{slug}"
 
 # `linear_workspace` is the slug from a Linear issue URL (linear.app/<slug>/issue/…).
-# One Linear MCP connection serves one workspace, so orgs in different workspaces
-# are not all reachable at once.
+# `linear_mcp` is the MCP server bound to that workspace — one connection serves one
+# workspace, so each org needs its own. See dev/README.md for the setup.
 
 [orgs.acme]
 name             = "Acme Inc"
 linear_workspace = "acme"
+linear_mcp       = "linear-acme"
 
 [teams.widgets]
 linear_key     = "WID"        # the ticket prefix, e.g. WID-136

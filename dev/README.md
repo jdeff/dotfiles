@@ -27,24 +27,33 @@ worktrees live under `~/.herdr/worktrees/<repo>/<slug>`, not in the main checkou
 A per-project MCP registration (the default `claude mcp add` scope) does not
 follow a worktree there.
 
-Preferred — connect Linear as a **claude.ai connector** (`/mcp` inside Claude
-Code). Account-level, so it resolves in every cwd and a new machine inherits it
-with no setup.
+Two constraints shape this. Worktrees live under `~/.herdr/worktrees/<repo>/<slug>`,
+so a project-scoped registration never reaches them — Linear must be **user-scoped**.
+And the official Linear MCP is OAuth-only and **single-workspace per instance**:
+reconnecting doesn't switch workspace within an existing auth session, and two
+entries pointing at the same URL share one auth context, so renaming the server
+doesn't buy you a second workspace.
 
-Fallback, if Linear isn't offered as a connector:
-
-```sh
-claude mcp add --scope user --transport http linear https://mcp.linear.app/mcp
-```
-
-Either way, drop any per-project Linear entries afterwards so the tool name is the
-same everywhere:
+Linear's documented answer is one `mcp-remote` instance per workspace, each with its
+own credential directory. One per org in `workspace.toml`, named to match that org's
+`linear_mcp`:
 
 ```sh
-claude mcp remove <name>   # run from each repo that has its own Linear entry;
-                           # `claude mcp list` there shows what's registered
+claude mcp add --scope user linear-<org> \
+  -e MCP_REMOTE_CONFIG_DIR="$HOME/.mcp-auth/<workspace-slug>" \
+  -- npx -y mcp-remote https://mcp.linear.app/mcp
 ```
 
-Caveat: claude.ai-authenticated servers can be missing in headless or cron runs.
-If ticket work ever needs to run unattended, a small GraphQL client reading
-`LINEAR_API_KEY` from `~/.zshenv.local` is the portable alternative.
+Then `/mcp` in Claude Code to authenticate each, choosing the matching workspace in
+the browser. Verify per server with `list_teams` — it returns that workspace's teams.
+
+Needs node on PATH (mise provides it). Credentials land in `~/.mcp-auth/<slug>/`,
+not the keychain.
+
+Drop any older Linear entries once the new ones work, so no server can be picked by
+accident:
+
+```sh
+claude mcp remove <name>   # `claude mcp list` shows what's registered;
+                           # per-project entries must be removed from that repo
+```
