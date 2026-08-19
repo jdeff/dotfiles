@@ -28,20 +28,17 @@ The prompt goes to `~/.herdr/dispatch/<slug>.md`, where slug is the branch run
 through `tr -c '[:alnum:]' '-'` — the layout script uses the identical transform, and
 deletes the file when the agent launches with it.
 
-## Sibling worktrees in one project
+## Sibling worktrees
 
-Dispatching into another repo of the same muster project, for the same work, *is* the
-orchestration that establishes a pairing. Left unrecorded, muster resolves that
-sibling to `main` and still reports success — a plausible stack running the wrong
-backend. `muster projects --json` says which repos share a project.
+Dispatching into another repo of the same muster project, for the same work, is what
+establishes a **pin** — muster otherwise resolves that sibling to `main` silently.
+`muster projects --json` says which repos share a project.
 
-Two things follow:
-
-- Name the counterpart branch in the sibling's prompt, so its agent works from a
-  stated pairing rather than an inferred one.
-- Once both worktrees exist, record the pin in whichever one will take the seat, per
-  the `muster` skill's cross-repo reference. It has to come after creation — the
-  worktree's `.muster.yaml` is seeded by the `worktree.created` hook.
+- The sibling's prompt names its counterpart branch, so its agent works from a stated
+  pin rather than an inferred one.
+- Once both worktrees exist, write the pin per the `muster` skill's cross-repo
+  reference, in whichever worktree takes the seat. Creation comes first: the
+  `worktree.created` hook seeds the `.muster.yaml` the pin lives in.
 
 ## Sequence
 

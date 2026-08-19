@@ -14,14 +14,13 @@ can predate the sub-issues that replaced it.
 
 ## 2. Plan
 
-Plan mode, with `Explore` for the codebase sweep. This is an ordinary engineering
-plan — let it take the shape the ticket needs.
+Plan mode, with `Explore` for the codebase sweep.
 
-Two demands the default doesn't make:
+Two demands beyond the default:
 
 - **Every acceptance criterion accounted for**, each mapped to what will satisfy it.
   An AC with nothing against it is the gap worth finding now.
-- **Say what you didn't read.** Name the coverage you actually have, so approval is
+- **Name the coverage you have** — which files you actually read — so approval is
   informed rather than assumed.
 
 `muster status` reads freely here; services stay down until the plan is approved.
