@@ -6,8 +6,8 @@ Tracked in `~/dotfiles/herdr/skills/` and `~/dotfiles/dev/skills/`; their descri
 say when each fires. Confirm before creating a worktree unless I typed the command or
 already asked for parallel or background work.
 
-`/merge` and `/rebase` carry no description, so name them when they'd fit rather than
-waiting to be asked.
+`/merge`, `/rebase` and `/merged` (a PR landed upstream; retire its worktree) carry
+no description, so name them when they'd fit rather than waiting to be asked.
 
 For herdr itself — subcommands, socket API — use the `herdr` skill (generated from
 `herdr --skill`, so it matches the installed version). My keybindings are in
