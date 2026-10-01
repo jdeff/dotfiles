@@ -1,3 +1,8 @@
+-- Prefer the project's own oxfmt, falling back to prettier for projects that
+-- don't ship it. oxfmt covers everything prettier does here, so every web
+-- filetype gets the same pair.
+local web = { "oxfmt", "prettier", stop_after_first = true }
+
 return {
   {
     "stevearc/conform.nvim",
@@ -18,19 +23,18 @@ return {
         lua = { "stylua" },
         ruby = { "rubocop" },
         sql = { "sql_formatter" },
-        -- Frontend: prefer the project's oxfmt, fall back to prettier.
-        javascript = { "oxfmt", "prettier", stop_after_first = true },
-        javascriptreact = { "oxfmt", "prettier", stop_after_first = true },
-        typescript = { "oxfmt", "prettier", stop_after_first = true },
-        typescriptreact = { "oxfmt", "prettier", stop_after_first = true },
-        graphql = { "prettier" },
-        json = { "prettier" },
-        jsonc = { "prettier" },
-        yaml = { "prettier" },
-        css = { "prettier" },
-        scss = { "prettier" },
-        html = { "prettier" },
-        markdown = { "prettier" },
+        javascript = web,
+        javascriptreact = web,
+        typescript = web,
+        typescriptreact = web,
+        graphql = web,
+        json = web,
+        jsonc = web,
+        yaml = web,
+        css = web,
+        scss = web,
+        html = web,
+        markdown = web,
       },
       -- Format on save, but never block the write if a formatter is slow/missing.
       format_on_save = function(bufnr)
@@ -40,9 +44,14 @@ return {
         return { timeout_ms = 2000, lsp_format = "fallback" }
       end,
       formatters = {
-        -- oxc's formatter; project-local, so resolved from the project's bin.
+        -- oxc's formatter. Resolved from the project's node_modules rather than
+        -- $PATH: it is never installed globally, so a bare command would always
+        -- miss and silently fall through to Mason's prettier. Deferred into a
+        -- function because conform.util is not on the rtp when this spec loads.
         oxfmt = {
-          command = "oxfmt",
+          command = function(self, ctx)
+            return require("conform.util").from_node_modules("oxfmt")(self, ctx)
+          end,
           args = { "$FILENAME" },
           stdin = false,
         },
