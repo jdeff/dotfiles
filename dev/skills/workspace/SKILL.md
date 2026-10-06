@@ -30,16 +30,18 @@ says a PR is ready.
 
 ## Branch names
 
-Take the issue's own `gitBranchName` from Linear, which yields
-`<user>/<key>-<number>-<slug>` and matches the rest of the team's branches.
-`branch_pattern` is the fallback when Linear is unreachable, and it takes
-`linear_user` from the **org** — the same person has a different Linear username in
-each workspace.
+Build the branch from `branch_pattern` — `<user>/<key>-<number>`, e.g.
+`jdeff/mg-123` — not from Linear's `gitBranchName`, whose title slug is noise.
+`linear_user` comes from the **org**: the same person has a different Linear username
+in each workspace. The key is lowercased, because macOS's case-insensitive filesystem
+lets `MG-123` and `mg-123` refs collide.
 
-Linear links a PR to its issue by finding the **key** in the branch name, so a branch
-carrying the key keeps the link. The leading username is convention, and Linear
-regenerates it from the current username — read it fresh rather than reusing an old
-one.
+One branch per ticket per repo. A second PR in the same repo takes a suffix
+(`jdeff/mg-123-2`, `jdeff/mg-123-backfill`), never a nested path — git can't hold both
+`jdeff/mg-123` and `jdeff/mg-123/api`.
+
+Linear links a PR to its issue by finding the **key** in the branch name, so any of
+these keeps the link.
 
 ## Reaching Linear
 

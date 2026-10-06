@@ -13,8 +13,8 @@ unread until the worktree agent opens it.
 ## 1. Resolve
 
 The `workspace` skill maps prefix → team → muster project → repos and names the Linear
-server to ask. Fetch with `get_issue` (`includeRelations: true`) and take the branch
-from `gitBranchName`.
+server to ask. Fetch with `get_issue` (`includeRelations: true`); the
+branch comes from the `workspace` skill's pattern, not Linear's `gitBranchName`.
 
 ## 2. Stop conditions
 
@@ -63,7 +63,7 @@ isn't clear.
 
 The `dispatch` skill's sequence, with:
 
-- the branch exactly as `gitBranchName` gives it
+- the branch from `branch_pattern`, e.g. `jdeff/mg-123`
 - `--focus` for a single ticket, `--no-focus` for more than one
 - a two-line prompt, since the agent re-fetches the ticket itself:
 
