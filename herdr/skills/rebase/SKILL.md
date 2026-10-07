@@ -122,14 +122,30 @@ changes what the branch *does* — a duplicated feature, a contradicted design,
 a failing test whose right answer is a judgement call — goes in the report as
 a question, not a fix.
 
-## Step 5: Report
+## Step 5: Push
 
-Nothing is pushed: the rebased branches now differ from their remote copies,
-and whether to force-push is the user's call. Offer
-`git push --force-with-lease` (or `gh stack push` for a stack).
+Push without asking when the branch has an open PR and the work is clean:
+the rebase is finished, any stash is popped, the checks pass, and step 4 left
+nothing awaiting a decision. Otherwise push nothing, and offer the command in
+the report.
+
+- **Open PR:** `gh pr view --json state -q .state` prints `OPEN`; for a stack,
+  any unmerged layer has one.
+- **Nothing to lose remotely:** `--force-with-lease` checks against the
+  remote-tracking ref, which the fetch just refreshed — so it can't catch a
+  commit someone pushed that this branch never had. For each branch pushed,
+  `git merge-base --is-ancestor "origin/<branch>" <its pre-rebase head>` must
+  exit 0 (or the remote branch must not exist); if not, stop and ask.
+
+Then push: `git push --force-with-lease` for a single branch, `gh stack push`
+for a stack (it pushes every unmerged layer atomically with
+`--force-with-lease`).
+
+## Step 6: Report
 
 Report: the target and the upstream delta (commit count, and the ones that
 mattered), the local base before and after, each branch or layer rebased, how
 each conflict was resolved, commits dropped as already upstream, the semantic
-findings with what was fixed and what needs a decision, the check results, and
-the way back (`git reset --hard "$old_head"`, or the recorded layer heads).
+findings with what was fixed and what needs a decision, the check results,
+what was pushed (or why not, with the command), and the way back
+(`git reset --hard "$old_head"`, or the recorded layer heads).
