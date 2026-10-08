@@ -13,6 +13,7 @@ herdr "inside".
 | `config.toml` | `~/.config/herdr/config.toml` | Keys, theme (Kanagawa, macOS light/dark), worktrees, notifications |
 | `CHEATSHEET.md` | `~/.config/herdr/CHEATSHEET.md` | Personal keybinding + workflow reference |
 | `scripts/layout-agent-shell.sh` | `~/.config/herdr/scripts/` | Lays out Claude + shell; also launches dispatched prompts |
+| `scripts/devin-cloud-pick.sh` | `~/.config/herdr/scripts/` | `prefix shift+c`: fzf over Devin Cloud sessions → a space streaming one |
 | `plugins/jdeff-flow/` | `~/.config/herdr/plugins/jdeff-flow` | Local plugin: auto-layout on `worktree.created` |
 | `skills/*/` | `~/.claude/skills/<name>` | Claude Code slash commands (see below) |
 
@@ -34,10 +35,12 @@ curl -fsSL https://herdr.dev/install.sh | sh
 herdr plugin link "$HOME/.config/herdr/plugins/jdeff-flow"   # the local auto-layout plugin
 herdr plugin install paulbkim-dev/vim-herdr-navigation --yes # C-hjkl pane<->nvim nav
 herdr integration install claude                             # authoritative agent state + claude --resume
+herdr integration install devin                              # devin session identity + devin --resume
+devin auth login                                             # the Devin Cloud picker rides this login
 ```
 
 Verify: `herdr plugin list` shows `jdeff.flow` and `vim-herdr-navigation`
-enabled; `herdr integration status` shows claude `current`.
+enabled; `herdr integration status` shows claude and devin `current`.
 
 `muster` (dev-server switcher, `~/src/muster`) is linked the same way —
 `herdr plugin link ~/src/muster` — and its actions are bound in `config.toml`

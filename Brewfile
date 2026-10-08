@@ -49,6 +49,9 @@ cask 'font-lilex-nerd-font'
 # Secrets / credentials
 cask '1password-cli' # `op` — pull secrets into .local files / shell env
 
+# Coding agents
+cask 'devin-cli' # `devin` — local agent + Devin Cloud sessions (herdr's devin picker)
+
 # Desktop apps
 cask 'alfred'   # Spotlight replacement
 cask 'dash'     # offline documentation browser

@@ -154,6 +154,14 @@ type = "shell"
 command = "/Users/jdeff/.config/herdr/scripts/layout-agent-shell.sh"
 description = "layout: claude + shell"
 
+# Devin Cloud sessions as workspaces: fzf over your cloud sessions, then open one
+# streaming via `devin --cloud -r` (or focus the space already attached). (c = cloud)
+[[keys.command]]
+key = "prefix+shift+c"
+type = "pane"
+command = "bash /Users/jdeff/.config/herdr/scripts/devin-cloud-pick.sh"
+description = "devin cloud session picker"
+
 # ── muster: run one feature's dev stack at a time ─────────────────────────────
 # The herdr-native successor to the old tmux `prefix h` hotseat table. muster is
 # a linked local plugin (~/src/muster), so these are plugin_action bindings — no

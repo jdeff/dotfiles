@@ -71,12 +71,17 @@ Alternatively, from any shell:
 |------|--------|
 | `prefix shift+j` / `prefix shift+k` | Cycle to next / previous agent |
 | `prefix g` | Goto picker (also jumps to agents) |
+| `prefix shift+c` | Devin Cloud picker: open a cloud session as a `☁` space (or focus it) |
 | `prefix b` | Toggle sidebar |
 | click / right-click sidebar | Focus / menu |
 
 States: `working` `blocked` `done` `idle` `unknown`, sorted by priority
 (blocked → done → working → idle → unknown). You get an OS notification + sound
 when a background agent finishes or needs input.
+
+Devin Cloud spaces stream the session via `devin --cloud -r <id>` (needs
+`devin auth login`). They aren't restored after a Herdr server restart — re-pick.
+In the picker: `ctrl-o` opens the session in the browser, `ctrl-r` reloads.
 
 ## Git / tools / session
 
