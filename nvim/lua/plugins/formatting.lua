@@ -55,6 +55,26 @@ return {
           args = { "$FILENAME" },
           stdin = false,
         },
+        -- A project that ships oxfmt is formatted by oxfmt alone. With
+        -- node_modules missing — a fresh worktree before `npm ci` — the pair
+        -- above would fall through to Mason's prettier, which re-wraps at 80
+        -- columns; oxfmt accepts the result, so the drift passes the project's
+        -- own format check and lands in commits. No format beats the wrong one.
+        prettier = {
+          condition = function(_, ctx)
+            local root = vim.fs.root(ctx.dirname, { "package.json" })
+            if root == nil then
+              return true
+            end
+            local file = io.open(root .. "/package.json")
+            if file == nil then
+              return true
+            end
+            local manifest = file:read("a")
+            file:close()
+            return manifest:find('"oxfmt"', 1, true) == nil
+          end,
+        },
         -- Run the project's bundled RuboCop (via Bundler) rather than Mason's
         -- standalone copy, so project plugins like rubocop-rails load. Inherits
         -- the base formatter's args (--server -a --stdin …) via prepend_args.
