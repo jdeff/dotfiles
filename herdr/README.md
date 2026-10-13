@@ -55,7 +55,7 @@ Tracked under `skills/`, linked into `~/.claude/skills/` by `install.sh`. All ar
 |-------|--------------|
 | `/worktree <tasks>` | Fire-and-forget: write a prompt per task, spawn a worktree space running Claude on it |
 | `/coordinator` | Full lifecycle: spawn, name, monitor, send follow-ups, merge |
-| `/merge` | Commit → rebase onto base → merge in the main tree → remove the worktree |
+| `/merge` | Commit → rebase onto base → merge in the main tree → close completed Linear tickets → remove the worktree |
 | `/rebase` | Rebase with careful conflict resolution (tool-agnostic) |
 | `/open-pr` | Write a PR description from context, push, open `gh pr create --web` |
 

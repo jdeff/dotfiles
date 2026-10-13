@@ -118,7 +118,7 @@ run them from inside a project repo or worktree. `menu`/`dashboard` work anywher
 |---------|--------|
 | `/worktree <tasks>` | Spawn a worktree space per task, each running Claude on a prompt |
 | `/coordinator` | Spawn → monitor → follow up → merge, driven from one session |
-| `/merge` | Commit, rebase onto base, merge, remove the worktree |
+| `/merge` | Commit, rebase onto base, merge, close completed Linear tickets, remove the worktree |
 | `/rebase` / `/open-pr` | Rebase with conflict care / write a PR and open it |
 
 ## Typical loop on tms-api

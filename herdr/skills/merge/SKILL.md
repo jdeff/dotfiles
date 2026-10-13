@@ -1,6 +1,6 @@
 ---
 name: merge
-description: Commit, sync the base, rebase, and merge the current branch into its base.
+description: Commit, sync the base, rebase, merge the current branch into its base, and close the Linear tickets it completes.
 disable-model-invocation: true
 allowed-tools: Read, Bash, Glob, Grep, AskUserQuestion
 ---
@@ -15,7 +15,8 @@ Check the arguments for flags:
 Strip all flags from arguments.
 
 Finish work on the current branch: commit what is staged, bring the base up to
-date, rebase onto it, merge into it, and clean up the worktree.
+date, rebase onto it, merge into it, close out the Linear tickets the merge
+completes, and clean up the worktree.
 
 ## Step 1: Commit
 
@@ -81,7 +82,47 @@ git -C "$main_root" merge --no-ff "$(git branch --show-current)"
 If the merge hits conflicts, stop and report that they must be resolved in the
 main worktree (print its path). Do not attempt to resolve them from here.
 
-## Step 5: Clean up
+## Step 5: Close out Linear tickets
+
+The merge is local, so nothing reaches GitHub and Linear never sees it land —
+no PR merges, and no magic word gets pushed. Closing the tickets is this
+skill's job.
+
+**Candidates.** Ticket keys in the branch name (`jdeff/mg-123` → `MG-123`) and
+in the messages of the commits just merged:
+
+```bash
+git -C "$main_root" log --format=%B HEAD^1..HEAD^2   # the merge commit's branch side
+```
+
+An "Already up to date" merge has no merge commit; take the branch's own
+commits instead (`git log --format=%B "$base@{upstream}..HEAD"`, or the branch
+name alone if that is empty). Match keys case-insensitively and uppercase them.
+Keep only keys whose prefix is a team's `linear_key` — that drops look-alikes
+such as `UTF-8`. No candidates → say so in the report and move on.
+
+**Resolve each** through the `workspace` skill: it names the org's Linear MCP
+server, and the wrong server returns a plausible wrong ticket. Fetch the issue
+with its status, attachments, and sub-issues.
+
+**Close it when the merge completes it:**
+
+- Its status is not already of type `completed` or `canceled` — those are
+  skipped and reported.
+- Nothing else is still open for it: no other branch for the key with unmerged
+  work (`git branch -a --list "*<key-lower>*"` — a ticket with several PRs
+  carries suffixed branches like `jdeff/mg-123-2`), no open GitHub PR attached
+  to it, and no sub-issue outside `completed`/`canceled`.
+- A key that only appears in a commit message as a reference ("see MG-120",
+  "part of MG-120") is not completed by this branch; one in the branch name or
+  after "fixes", "closes", or "resolves" is.
+
+When all three hold, move it to the team's `completed` status
+(`list_issue_statuses` — its name varies by team, usually `Done`), and comment
+the branch and merge commit. When any is in doubt, ask with the evidence rather
+than guess; a ticket closed early drops out of everyone's view.
+
+## Step 6: Clean up
 
 Unless `--keep` was passed, remove the worktree checkout and its Herdr space.
 This keeps the branch; only the checkout and the space go away:
@@ -95,7 +136,8 @@ herdr worktree remove --workspace "$HERDR_WORKSPACE_ID"
 worktree themselves.
 
 Removing the space closes the pane you are running in, so make this the last
-action and report the merge result before doing it.
+action and report before doing it: the merge result, and each candidate ticket
+— closed, already closed, or left open and why.
 
 ## Interactive alternative
 
