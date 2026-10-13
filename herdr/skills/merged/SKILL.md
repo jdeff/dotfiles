@@ -1,6 +1,6 @@
 ---
 name: merged
-description: Retire the current worktree after its PR merged upstream — confirm the merge, verify against the base's upstream, fast-forward the local base when clean, release the muster seat, remove the checkout.
+description: Retire the current worktree after its PR merged upstream — confirm the merge, verify against the base's upstream, fast-forward the local base when clean, close the Linear tickets it completed, release the muster seat, remove the checkout.
 disable-model-invocation: true
 allowed-tools: Read, Bash, Glob, Grep, AskUserQuestion
 ---
@@ -16,7 +16,7 @@ Strip all flags from arguments.
 The pull request for the current branch has merged upstream. `/merge` lands a
 branch locally; this skill retires one that already landed: prove the merge,
 account for every change on the branch against the upstream base, bring the
-local base along when it is clean,
+local base along when it is clean, close out the Linear tickets it completed,
 release what the checkout holds, and remove it.
 
 ## Step 1: Account for uncommitted work
@@ -37,14 +37,15 @@ there, with these choices:
 ## Step 2: Confirm the merge
 
 ```bash
-gh pr view --json number,url,state,mergedAt,mergeCommit,baseRefName
+gh pr view --json number,url,state,mergedAt,mergeCommit,baseRefName,title,body,commits
 ```
 
 (If the lookup fails because GitHub already deleted the branch, find the number
 with `gh pr list --state all --head "$(git branch --show-current)"`.)
 
 Done when `state` is `MERGED`; keep `baseRefName` and `mergeCommit.oid` for
-step 4. Anything else ends the skill with a report: `OPEN` means nothing has
+step 4. Fetch the PR's `title`, `body`, and `commits` in the same call and keep
+them for step 5 — step 4's rebase drops the branch's commits. Anything else ends the skill with a report: `OPEN` means nothing has
 landed — `/merge` lands it locally and `pr-watch` minds it; `CLOSED` or no PR
 means the branch's fate is the user's call.
 
@@ -104,7 +105,17 @@ Also note whether the remote branch still exists
 (`git ls-remote --heads origin "$(git branch --show-current)"`); GitHub
 usually deletes it on merge. Report it; deleting it is not this skill's job.
 
-## Step 5: Release what the checkout holds
+## Step 5: Close out Linear tickets
+
+Linear's GitHub integration usually closes a linked ticket when its PR merges,
+but not always — an unlinked PR, a key it didn't pick up, a team whose workflow
+stops short of done. Check rather than assume.
+
+Collect the candidates — the branch name, the PR's title and body, and its commit
+messages (the `commits` from step 2) — and hand them to the `ticket-close` skill,
+with the PR link and merge commit for its comment.
+
+## Step 6: Release what the checkout holds
 
 The checkout is about to disappear, so anything running from it or pinned by
 it goes first — and only what this checkout holds.
@@ -118,7 +129,7 @@ checkout, which is the point. The muster skill has the seat rules.
 Stop anything else you started from this directory: a dev server by hand, a
 watcher, a background job.
 
-## Step 6: Clean up
+## Step 7: Clean up
 
 Unless `--keep` was passed, remove the worktree checkout and its Herdr space.
 The branch stays; it is fully contained in `$upstream`, so `git branch -d` is
@@ -135,5 +146,6 @@ worktree themselves.
 
 Removing the space closes the pane you are running in, so make this the last
 action. Report first: the PR number and merge commit, the local base before
-and after (or why it was left alone), the verification result, the remote branch, the seat, and whether the
+and after (or why it was left alone), the verification result, each candidate
+ticket and what happened to it, the remote branch, the seat, and whether the
 checkout was removed or kept.
