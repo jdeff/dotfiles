@@ -5,6 +5,9 @@
 # Homebrew (sets PATH, MANPATH, INFOPATH, HOMEBREW_*)
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# libpq is keg-only; put its client tools (psql, pg_dump) on PATH.
+export PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$PATH"
+
 # mise: put the shims dir on PATH so runtimes resolve in non-interactive
 # shells, scripts, and nvim (interactive shells also get `mise activate`, see
 # conf.d/40-tools.zsh).
