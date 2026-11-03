@@ -4,19 +4,19 @@ Prefix: **`ctrl+b`**. "prefix X" = press ctrl+b, release, then X.
 Everything is also mouse-driven: click to focus, drag borders to resize, right-click
 for a context menu, drag-select to copy.
 
-## Start working on tms-api (main)
+## Start working on a repo (main)
 
 You're in the `~` space with one shell pane. Fastest path:
 
-1. `cd ~/src/toro/tms-api`
-2. `prefix shift+w` → rename this space to `tms-api`
+1. `cd ~/src/<repo>`
+2. `prefix shift+w` → rename this space to the repo's name
 3. `prefix a` → auto-splits **Claude (focused) + shell** (the default layout)
 
 Claude now appears in the **agents** sidebar with live state. (If the space already
 has >1 pane, `prefix a` no-ops — just type `claude` in a pane.)
 
 Alternatively, from any shell:
-`herdr workspace create --cwd ~/src/toro/tms-api --label tms-api --focus` then `prefix a`.
+`herdr workspace create --cwd ~/src/<repo> --label <repo> --focus` then `prefix a`.
 
 ## Navigation (prefix-free — vim-aware)
 
@@ -121,7 +121,7 @@ run them from inside a project repo or worktree. `menu`/`dashboard` work anywher
 | `/merge` | Commit, rebase onto base, merge, close completed Linear tickets, remove the worktree |
 | `/rebase` / `/open-pr` | Rebase with conflict care / write a PR and open it |
 
-## Typical loop on tms-api
+## Typical loop
 
 - Work with Claude in its pane; glance at the sidebar for state.
 - Scratch shell: `prefix |`.
