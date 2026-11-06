@@ -115,37 +115,12 @@ Collect the candidates — the branch name, the PR's title and body, and its com
 messages (the `commits` from step 2) — and hand them to the `ticket-close` skill,
 with the PR link and merge commit for its comment.
 
-## Step 6: Release what the checkout holds
+## Step 6: Clean up
 
-The checkout is about to disappear, so anything running from it or pinned by
-it goes first — and only what this checkout holds.
-
-If the repo is muster-managed, run `NO_COLOR=1 muster status` **now**, not from
-memory: the seat changes hands between turns. `occupant=<this branch>` →
-`muster down`. Any other occupant, or `(not running)` → leave it; the seat is
-theirs. The `use:` pins in this worktree's `.muster.yaml` vanish with the
-checkout, which is the point. The muster skill has the seat rules.
-
-Stop anything else you started from this directory: a dev server by hand, a
-watcher, a background job.
-
-## Step 7: Clean up
-
-Unless `--keep` was passed, remove the worktree checkout and its Herdr space.
-The branch stays; it is fully contained in `$upstream`, so `git branch -d` is
-safe whenever the user wants it gone (`gh stack sync --prune` does the same
-for a stacked branch):
-
-```bash
-herdr worktree remove --workspace "$HERDR_WORKSPACE_ID"
-```
-
-`$HERDR_WORKSPACE_ID` is injected into every Herdr-managed pane. If it is unset
-(not running inside Herdr), skip this step and tell the user to remove the
-worktree themselves.
-
-Removing the space closes the pane you are running in, so make this the last
-action. Report first: the PR number and merge commit, the local base before
-and after (or why it was left alone), the verification result, each candidate
-ticket and what happened to it, the remote branch, the seat, and whether the
-checkout was removed or kept.
+Hand off to the `worktree-retire` skill with branch mode `keep` and `--keep` if
+it was passed. The branch is fully contained in `$upstream`, so `git branch -d`
+is safe whenever the user wants it gone (`gh stack sync --prune` does the same
+for a stacked branch). The report it sends first: the PR number and merge
+commit, the local base before and after (or why it was left alone), the
+verification result, each candidate ticket and what happened to it, and the
+remote branch.

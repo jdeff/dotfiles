@@ -119,6 +119,8 @@ run them from inside a project repo or worktree. `menu`/`dashboard` work anywher
 | `/worktree <tasks>` | Spawn a worktree space per task, each running Claude on a prompt |
 | `/coordinator` | Spawn → monitor → follow up → merge, driven from one session |
 | `/merge` | Commit, rebase onto base, merge, close completed Linear tickets, remove the worktree |
+| `/merged` | Retire a worktree whose PR merged upstream |
+| `/discard` | Throw away an unmerged worktree: show what's lost, confirm, remove checkout + branch |
 | `/rebase` / `/open-pr` | Rebase with conflict care / write a PR and open it |
 
 ## Typical loop

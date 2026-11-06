@@ -102,20 +102,10 @@ filters, resolves, gates, and closes.
 
 ## Step 6: Clean up
 
-Unless `--keep` was passed, remove the worktree checkout and its Herdr space.
-This keeps the branch; only the checkout and the space go away:
-
-```bash
-herdr worktree remove --workspace "$HERDR_WORKSPACE_ID"
-```
-
-`$HERDR_WORKSPACE_ID` is injected into every Herdr-managed pane. If it is unset
-(not running inside Herdr), skip this step and tell the user to remove the
-worktree themselves.
-
-Removing the space closes the pane you are running in, so make this the last
-action and report before doing it: the merge result, and each candidate ticket
-— closed, already closed, or left open and why.
+Hand off to the `worktree-retire` skill with branch mode `keep` (the base now
+contains the branch) and `--keep` if it was passed. The report it sends first:
+the merge result, and each candidate ticket — closed, already closed, or left
+open and why.
 
 ## Interactive alternative
 
