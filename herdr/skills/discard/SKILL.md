@@ -37,7 +37,7 @@ git ls-remote --heads origin "$branch"                  # pushed?
 gh pr list --state open --head "$branch" --json number,url,title
 ```
 
-Also note the Linear ticket key in the branch name, if any (`me/abc-123` →
+Also note the Linear ticket key in the branch name, if any (`jdeff/abc-123` →
 `ABC-123`).
 
 Done when every item above has an answer: each uncommitted file, each commit

@@ -6,7 +6,7 @@ allowed-tools: Bash, Read, AskUserQuestion
 ---
 
 The caller has landed a branch and hands over its **candidates**: ticket keys found
-in the branch name (`jdeff/mg-123` → `MG-123`) and in the text that describes the
+in the branch name (`jdeff/abc-123` → `ABC-123`) and in the text that describes the
 work — commit messages, and the PR's title and body when there is a PR. Match keys
 case-insensitively and uppercase them.
 
@@ -30,11 +30,11 @@ Close a ticket only when all three hold:
   there first; that is the normal case, not a failure.
 - **Nothing else outstanding.** No other branch for the key with work not on the
   base (`git branch -a --list "*<key-lower>*"` — a ticket with several PRs carries
-  suffixed branches like `jdeff/mg-123-2`), no open GitHub PR attached to it, and no
+  suffixed branches like `jdeff/abc-123-2`), no open GitHub PR attached to it, and no
   sub-issue outside `completed`/`canceled`.
 - **This branch completes it.** A key in the branch name, or after "fixes",
   "closes", or "resolves", does. One that only appears as a reference ("see
-  MG-120", "part of MG-120") does not.
+  ABC-120", "part of ABC-120") does not.
 
 When any is in doubt, ask with the evidence rather than guess; a ticket closed early
 drops out of everyone's view.

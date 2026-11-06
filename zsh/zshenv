@@ -6,6 +6,6 @@
 export EDITOR="${EDITOR:-nvim}"
 export VISUAL="$EDITOR"
 
-# Machine-/work-specific env vars (secrets, TORO_* tokens, internal URLs, etc.)
+# Machine-/work-specific env vars (secrets, API tokens, internal URLs, etc.)
 # Keep this file OUT of your dotfiles repo (it is .gitignored).
 [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"

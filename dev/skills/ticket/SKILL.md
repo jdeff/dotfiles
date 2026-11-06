@@ -31,7 +31,7 @@ the descriptions.
 - a branch or PR whose name carries the key
 - an existing worktree under `~/.herdr/worktrees/<repo>/`
 
-Match the key with a digit boundary, or `MG-13` also hits `mg-137`. `gh pr list
+Match the key with a digit boundary, or `ABC-13` also hits `abc-137`. `gh pr list
 --search <key>` matches other tickets and stops you on their work — filter
 `headRefName` instead:
 
@@ -63,7 +63,7 @@ isn't clear.
 
 The `dispatch` skill's sequence, with:
 
-- the branch from `branch_pattern`, e.g. `jdeff/mg-123`
+- the branch from `branch_pattern`, e.g. `jdeff/abc-123`
 - `--focus` for a single ticket, `--no-focus` for more than one
 - a two-line prompt, since the agent re-fetches the ticket itself:
 

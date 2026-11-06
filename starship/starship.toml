@@ -17,7 +17,7 @@ $character"""
 
 # ── Worktree-aware directory ─────────────────────────────────────────────
 # The built-in directory module can't tell a linked git worktree from a
-# normal checkout, so a worktree renders as `mg-42 on MG-42` — pure
+# normal checkout, so a worktree renders as `abc-42 on ABC-42` — pure
 # redundancy, since the worktree dir is named after its branch (an open
 # starship gap, see starship#7219). These two custom modules replace
 # $directory. Exactly one fires per prompt: a dir is a linked worktree iff
@@ -26,7 +26,7 @@ $character"""
 # worktree module re-roots the displayed path at the *main* checkout's name
 # (derived from the common dir, so it's independent of where the worktree
 # lives — herdr puts them under ~/.herdr/worktrees/<repo>/<branch-slug>):
-# `tms-api (worktree) on MG-42`. Both replicate the old
+# `api (worktree) on ABC-42`. Both replicate the old
 # directory display rules — ~ contraction, last-3-component truncation,
 # cut at the repo root — so the prompt is unchanged outside worktrees.
 
