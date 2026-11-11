@@ -86,6 +86,13 @@ link "$REPO/herdr/config.toml"           "$HOME/.config/herdr/config.toml"
 link "$REPO/herdr/CHEATSHEET.md"         "$HOME/.config/herdr/CHEATSHEET.md"
 link "$REPO/herdr/scripts"               "$HOME/.config/herdr/scripts"
 link "$REPO/herdr/plugins/jdeff-flow"    "$HOME/.config/herdr/plugins/jdeff-flow"
+# Herdr Desktop (Herdr.app). ~/.config/herdr-app is a real dir too: the app
+# rewrites its guide, .d.ts files and shipped mods there on every start.
+link "$REPO/herdr-app/keys.json"         "$HOME/.config/herdr-app/keys.json"
+link "$REPO/herdr-app/settings.json"     "$HOME/.config/herdr-app/settings.json"
+for _theme in "$REPO"/herdr-app/themes/*.json; do
+  link "$_theme" "$HOME/.config/herdr-app/themes/$(basename "$_theme")"
+done
 # Claude Code skills: the worktree/agent workflow (slash commands) under
 # herdr/skills, plus muster/skills and dev/skills (which agents load themselves).
 for _root in herdr muster dev; do

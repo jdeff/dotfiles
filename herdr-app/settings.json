@@ -1,0 +1,18 @@
+{
+  "zoom": 1.0,
+  "sounds": {
+    "enabled": true
+  },
+  "font_ligatures": false,
+  "minimum_contrast": 1.0,
+  "theme": {
+    "light": "kanagawa-lotus",
+    "dark": "kanagawa-wave"
+  },
+  "colors": {
+    "accent": "#7e9cd8"
+  },
+  "font": "Lilex Nerd Font Mono",
+  "font_size": 14,
+  "option_as_alt": "on"
+}
