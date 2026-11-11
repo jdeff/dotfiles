@@ -18,7 +18,7 @@ and the pane go away at the end:
 ```bash
 branch=$(git branch --show-current)
 main_root=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
-# Desktop host only (the dispatch skill's Host check): the space this terminal is in
+# The Herdr space this terminal is in (empty outside Herdr)
 space=$(herdr-app ls | jq -r --arg t "$HC_TERMINAL_ID" \
   '.spaces[] | select(any(.tabs[].terminals[]; .terminal == $t)) | .id')
 ```
@@ -64,14 +64,11 @@ Otherwise this is one shell command, the last action. Files a `.worktree-files`
 manifest copied in (`.env.local` and the like) live in the checkout and go with
 it; its `link` entries are symlinks, and removing one leaves the main checkout's
 file alone. Those untracked files make a plain remove refuse, which is why
-`--force` appears below. Neither remove touches the branch.
+`--force` appears below. The remove never touches the branch.
 
 - **Mode `keep`:**
 
   ```bash
-  # TUI
-  herdr worktree remove --workspace "$HERDR_WORKSPACE_ID"
-  # Desktop
   git -C "$main_root" worktree remove "$PWD" \
     && herdr-app do space.close "$(jq -n --arg id "$space" '{id: $id, confirmed: true}')"
   ```
@@ -85,16 +82,12 @@ file alone. Those untracked files make a plain remove refuse, which is why
   the remove because a checked-out branch can't be deleted:
 
   ```bash
-  # TUI
-  herdr worktree remove --workspace "$HERDR_WORKSPACE_ID" --force \
-    && git -C "$main_root" branch -D "$branch"
-  # Desktop
   git -C "$main_root" worktree remove --force "$PWD" \
     && git -C "$main_root" branch -D "$branch" \
     && herdr-app do space.close "$(jq -n --arg id "$space" '{id: $id, confirmed: true}')"
   ```
 
-On Desktop, `space.close` goes last because it ends this terminal; the checkout
-can go first because removing your own working directory leaves the shell
-running. With neither host, run only the `git -C "$main_root" worktree remove
-[--force] "$PWD"` part and tell the user any space for it is theirs to close.
+`space.close` goes last because it ends this terminal; the checkout can go first
+because removing your own working directory leaves the shell running. With
+`$space` empty (not inside Herdr), drop the `space.close` part and tell the user
+any space for it is theirs to close.

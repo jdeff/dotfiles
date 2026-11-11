@@ -16,7 +16,7 @@ window-padding-x = 8
 window-padding-y = 8
 macos-titlebar-style = transparent
 
-# Both Option keys send Alt (enables herdr alt+ keybindings, e.g. space switching).
+# Both Option keys send Alt (terminal alt+ keybindings in zsh and nvim).
 # Trades away macOS Option-compose (é/ñ/–) — muscle memory hits left Option.
 macos-option-as-alt = true
 

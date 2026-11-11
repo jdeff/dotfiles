@@ -22,13 +22,12 @@ Then:
   parsers (via the `tree-sitter` CLI from the Brewfile), and Mason installs LSP
   servers + formatters. `:Lazy` and `:Mason` show progress; `:checkhealth` flags
   anything missing (e.g. `node` for vtsls).
-- macOS: set Appearance (light/dark — Ghostty, herdr, and nvim follow it), and
+- macOS: set Appearance (light/dark — Ghostty, Herdr, and nvim follow it), and
   remap Alfred's hotkey to ⌘Space (disable Spotlight's under Keyboard Shortcuts).
-- Install **herdr** (the multiplexer — not in the Brewfile) and register its
-  plugins/integration once. `install.sh` only symlinks the config, so do the
-  bootstrap in `herdr/README.md`: `curl -fsSL https://herdr.dev/install.sh | sh`,
-  then `herdr plugin link`/`install` and `herdr integration install claude`.
-  Re-run `./install.sh` afterwards to generate `~/.claude/skills/herdr/SKILL.md`.
+- Open **Herdr** (the `herdr-app` cask) and go through its welcome until
+  `hc --version` works (herdr-core runs every terminal), then re-run `./install.sh`:
+  it links the config into `~/.config/herdr-app` and generates the `herdr-app` and
+  `hc` Claude skills from the installed binaries.
 - Connect **Linear** — one user-scoped `mcp-remote` server per workspace, since the
   official MCP is single-workspace per auth context. Commands in `dev/README.md`, then
   `/mcp` to authenticate each. Fill in `~/.config/dev/workspace.toml` (seeded from
@@ -104,7 +103,6 @@ and wait — **which-key** shows the menu.
 - `z <dir>` jump (zoxide) · `zi` pick interactively
 - `^R` history · `^T` files · `⌥C` cd (fzf) · `**<tab>` fuzzy completion
 - Up/Down — substring-search history; `,` git/ruby/rails aliases from prezto (`g`, `gco`, `glo`, `gp`, …)
-- `herdr` is the multiplexer — deliberately un-aliased (nested subcommands, and you drive it by keybinding, not from the shell). `herdr update` self-updates; delete `~/.local/share/zsh/site-functions/_herdr` afterwards to regenerate completions.
 - Per-machine extras (not tracked): `~/.zshrc.local`, `~/.zshenv.local`, `~/.zprofile.local`
 
 ## Git aliases (gitconfig)
@@ -112,30 +110,28 @@ and wait — **which-key** shows the menu.
 `git st` status · `git co` checkout · `git ci` commit · `git br` branch ·
 `git hist` graph log · `git filter` linear first-parent log
 
-## Herdr (the multiplexer)
+## Herdr
 
-Mouse-first and agent-aware; it replaced tmux + workmux, so there's no tmux
-config here. Prefix is **`C-b`**. Theme follows the macOS appearance (Kanagawa
-Wave/Lotus) natively. Full reference: `herdr/CHEATSHEET.md`; setup and the
-one-time bootstrap: `herdr/README.md`.
+Herdr.app, with terminals in herdr-core (`hc`): spaces → tabs → panes, and agents'
+state in the sidebar. Config in `herdr-app/` (`keys.json`, `settings.json`, Kanagawa
+themes, the `jdeff` layout). Prefix chords use **`C-b`** (`C-b C-b` sends a literal
+`C-b`); the app's own Cmd keys stay on top.
 
 | Key | Action |
 |-----|--------|
-| `C-h/j/k/l` | Move between panes **and** nvim splits (seamless) |
-| `prefix \|` / `prefix -` | Split right / down |
-| `alt+1..9` / `alt+j`/`k` | Jump to / cycle spaces (either Option = Alt) |
-| `prefix shift+g` | New worktree off main (branch + grouped space, auto Claude+shell) |
-| `prefix shift+b` | New worktree stacked on the current branch (from inside a worktree) |
-| `prefix a` | Apply Claude+shell layout to current space |
-| `prefix shift+j` / `shift+k` | Cycle agents in the sidebar |
-| `prefix shift+l` | lazygit (throwaway pane) |
-| `prefix shift+m` / `prefix ctrl+p` | Merge worktree / open PR (also right-click a space) |
-| `prefix ctrl+x` | Remove this worktree after merge (checkout + space; keeps branch) |
-| `prefix alt+d/m/u/x/s/k` | muster: dashboard / menu / up / down / status / lazydocker |
-| `prefix q` | Detach (reattach with `herdr`) |
-| `prefix ?` | Show all keybindings |
+| `C-h/j/k/l` | Move between panes **and** nvim splits (the `vim-nav` mod; `jdeff` layout only) |
+| `C-b \|` / `C-b -` | Split right / down |
+| `alt+1..9` / `alt+j`/`k` | Jump to / cycle spaces |
+| `C-b shift+j` / `shift+k` | Cycle agents |
+| `C-b shift+l` | lazygit (split below) |
+| `C-b shift+m` / `C-b ctrl+p` | Merge worktree / open PR (from inside the worktree) |
+| `cmd-p` / `cmd-shift-p` | Picker / command palette |
+| `cmd-/` | Show all keybindings |
+| `ctrl-alt-shift-escape` | Reset the layout and keys if a bad edit locks you out |
 
-Slash commands (tracked in `herdr/skills/` and `dev/skills/`): `/worktree <tasks>`
+Worktrees: the space's right-click and `+` menus (New / Open / Remove worktree).
+
+Slash commands (tracked in `herdr-app/skills/` and `dev/skills/`): `/worktree <tasks>`
 dispatches a worktree per task, `/ticket ABC-123` works a Linear ticket,
 `/coordinator` runs the whole spawn→monitor→merge lifecycle, `/open-pr` opens PRs
 (stack-aware, fills the repo's template), `/pr-watch` keeps an open PR or stack
@@ -143,17 +139,8 @@ healthy, plus `/merge`, `/merged`, `/discard`, and `/rebase` — both merge skil
 the Linear tickets the branch completes, via the shared `ticket-close` skill, and
 `/discard` throws away an unmerged worktree and its branch after showing what would
 be lost. All three tear down through the shared `worktree-retire` skill. Dispatch
-mechanics live once in the shared `dispatch` skill. Herdr's own agent-control skill is generated by `install.sh` from
-`herdr --skill`.
-
-**Herdr Desktop** (`Herdr.app`, terminals run in herdr-core `hc`) is configured
-separately in `herdr-app/` (`keys.json`, `settings.json`, Kanagawa themes, and
-the `jdeff` layout). It keeps the same `C-b` prefix chords for splits, hjkl
-focus, tabs, spaces, agents, lazygit and merge/PR, and `C-h/j/k/l` crosses nvim
-splits and panes through the `vim-nav` mod (only in the `jdeff` layout, which
-hosts it). It has no resize mode, no muster binds, and no detach. Worktrees are on the space's right-click and `+`
-menus. `C-b C-b` sends a literal `C-b`. `ctrl-alt-shift-escape` resets the
-layout and keys if a bad edit locks you out.
+mechanics live once in the shared `dispatch` skill. The `herdr-app` and `hc` skills
+are generated by `install.sh` from `herdr-app --skill` and `hc --skill`.
 
 ## Terminal (Ghostty)
 

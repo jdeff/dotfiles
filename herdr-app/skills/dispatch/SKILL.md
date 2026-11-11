@@ -1,28 +1,20 @@
 ---
 name: dispatch
-description: Hand work to a Herdr worktree agent — the host check, the dispatch-prompt contract, and the write→verify→create→confirm sequence. Load before creating a worktree or spawning an agent.
+description: Hand work to a Herdr worktree agent — the dispatch-prompt contract, and the write→verify→create→confirm sequence. Load before creating a worktree or spawning an agent.
 user-invocable: false
 allowed-tools: Bash, Write
 ---
 
-Creating a worktree opens it as its own space under the source repo, copies the
-repo's untracked files, then lays out Claude + a shell. A Claude that finds a
-dispatch prompt for its branch launches with it as its first message; one that finds
-none starts **bare** — no prompt, no work, and no error anywhere.
+`~/.config/herdr-app/scripts/worktree-create.sh` adds the worktree, copies the
+repo's untracked files, then opens it as its own Herdr space with Claude + a shell.
+A Claude given a dispatch prompt for its branch launches with it as its first
+message; one that finds none starts **bare** — no prompt, no work, and no error
+anywhere.
 
-## Host
+## Requirements
 
-Two Herdrs run worktree agents, and each has its own CLI; neither can see the
-other's spaces. Settle the **host** first — every herdr command in these skills
-belongs to one of them:
-
-| Host | Test | Creates worktrees with |
-|---|---|---|
-| **TUI** | `test "${HERDR_ENV:-}" = 1` | `herdr worktree create`; the `jdeff.flow` plugin (`herdr plugin list`) runs on `worktree.created` and consumes the prompt |
-| **Desktop** (Herdr.app on herdr-core) | `test -n "${HC_TERMINAL_ID:-}"` | `~/.config/herdr/scripts/hc-worktree-create.sh`, which consumes the prompt itself |
-
-Run the TUI test first: the TUI running inside a Desktop terminal is the TUI. If
-neither passes, say so and stop.
+Inside a Herdr terminal: `test -n "${HC_TERMINAL_ID:-}"`. If not, say so and stop.
+Herdr is Herdr.app on herdr-core: `herdr-app` drives the window, `hc` the terminals.
 
 ## Confirm before creating
 
@@ -33,9 +25,8 @@ background work, list what you would create and get a yes first.
 ## The contract
 
 The prompt goes to `~/.herdr/dispatch/<slug>.md`, where slug is the branch run
-through `tr -c '[:alnum:]' '-'` — the TUI's layout script and the Desktop create
-script use the identical transform, and delete the file when the agent launches
-with it.
+through `tr -c '[:alnum:]' '-'` — the create script uses the identical transform,
+and deletes the file once the agent's space exists.
 
 ## Sibling worktrees
 
@@ -69,10 +60,8 @@ wc -c "$f"
 **2. Create the worktrees** — after every prompt file exists.
 
 ```bash
-# TUI
-herdr worktree create --cwd "<repo-root>" --branch "$branch" --no-focus
-# Desktop: prints {space, tab, terminal, pane, path}; keep `terminal`, it is the agent
-~/.config/herdr/scripts/hc-worktree-create.sh --cwd "<repo-root>" --branch "$branch" --no-focus
+# prints {space, tab, terminal, pane, path}; keep `terminal`, it is the agent
+~/.config/herdr-app/scripts/worktree-create.sh --cwd "<repo-root>" --branch "$branch" --no-focus
 ```
 
 **3. Confirm each prompt was consumed.** A file still on disk means a bare agent.
@@ -83,19 +72,17 @@ sleep 3; [ -e "$f" ] && echo "BARE — $branch" || echo "consumed"
 
 This is the authoritative check. Agent status is not: a fast agent is already `idle`
 when you look, so `idle` cannot separate bare from finished. Report a bare agent as a
-failure. On Desktop a failed create exits non-zero and leaves the file, so the check
-reads the same.
+failure. A failed create exits non-zero and leaves the file, so the check reads the
+same.
 
 ## Flags
-
-Both create commands take these:
 
 - `--cwd <path>` — the repo to branch from. Same repo: `git rev-parse --show-toplevel`;
   cross-project: that repo's absolute path. Never `cd`.
 - `--base <ref>` — branch from `<ref>` instead of the repo's current HEAD.
 - `--branch <name>` — an existing name checks out, a new name creates.
 - `--focus` / `--no-focus` — `--no-focus` keeps you where you are. Always use it for
-  more than one worktree. Desktop defaults to `--no-focus`.
+  more than one worktree. The default is `--no-focus`.
 
 ## Prompt rules
 

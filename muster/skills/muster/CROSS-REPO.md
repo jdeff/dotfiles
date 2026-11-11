@@ -21,9 +21,10 @@ and what's live:
 }
 ```
 
-`repos` are absolute and `~`-expanded, `session` and `service_file` have their
-defaults applied, and `occupant` is `null` when idle. `busy: true` means a
-mutation is in flight, so a mutating command will be refused until it finishes.
+`repos` are absolute and `~`-expanded, `session` (the Herdr app space id) and
+`service_file` have their defaults applied, and `occupant` is `null` when idle.
+`busy: true` means a mutation is in flight, so a mutating command will be
+refused until it finishes.
 
 Ask muster rather than reading `config.yaml`: `$MUSTER_CONFIG` can move that file,
 so the default path may not be the one muster loaded — the JSON echoes back the
@@ -83,5 +84,6 @@ muster <project> swap /path/to/repo search-index-endpoint
 **Verify after.** Re-read the `(using)` column for every service. If a repo landed
 on `main` and you didn't intend that, the stack is wrong — say so, don't proceed.
 
-To see what a sibling repo actually has:
-`herdr worktree list --cwd <repo> --json`.
+To see what a sibling repo actually has: `git -C <repo> worktree list
+--porcelain` — the same list muster resolves from. Feature names are its
+`branch` lines minus `refs/heads/`, not the directory names.

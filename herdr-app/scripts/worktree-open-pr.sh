@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Push the current Herdr worktree's branch and open a PR with gh, interactively,
-# from a pane inside the worktree. Bound to a key (type=pane) and to the jdeff.flow
-# "open-pr" action. Uses $PWD, so it must run in a pane cwd'd to the worktree.
+# Push the current worktree's branch and open a PR with gh, interactively, from
+# a pane inside the worktree. Bound to ctrl-b ctrl-p in herdr-app/keys.json (a
+# split below). Uses $PWD, so it must run in a pane cwd'd to the worktree.
 set -u
 
 pause() { printf '\n'; read -r -p "— press enter to close — " _; }

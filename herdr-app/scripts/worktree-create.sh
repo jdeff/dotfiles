@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# Herdr Desktop's counterpart of `herdr worktree create` plus the jdeff.flow
-# hook: add the worktree where Herdr's own worktree mod puts them
-# (~/.herdr/worktrees/<repo>/<branch-slug>, so the sidebar nests it and its
-# Open/Remove menus see it), copy the repo's untracked files, then open it as a
-# space with Claude and a shell to its right. Claude gets the dispatch prompt
-# for the branch (~/.herdr/dispatch/<slug>.md) as its first message, and the
-# file is deleted once the space exists.
+# Create a worktree for a dispatched agent: add it where Herdr's own worktree
+# mod puts them (~/.herdr/worktrees/<repo>/<branch-slug>, so the sidebar nests
+# it and its Open/Remove menus see it), copy the repo's untracked files, then
+# open it as a space with Claude and a shell to its right. Claude gets the
+# dispatch prompt for the branch (~/.herdr/dispatch/<slug>.md) as its first
+# message, and the file is deleted once the space exists.
 #
-# Usage: hc-worktree-create.sh --cwd <repo> --branch <name> [--base <ref>] [--focus]
+# Usage: worktree-create.sh --cwd <repo> --branch <name> [--base <ref>] [--focus]
 # Without --focus the previously shown space is selected again.
 # Prints {space, tab, terminal, pane, path} as JSON.
 

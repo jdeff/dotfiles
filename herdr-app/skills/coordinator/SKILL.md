@@ -1,8 +1,45 @@
-# Coordinator reference: Desktop host
+---
+name: coordinator
+description: Orchestrate multiple worktree agents in Herdr — spawn, monitor, send follow-ups, and merge. Use when work needs the full lifecycle rather than fire-and-forget; for a single dispatch use /worktree, and for a Linear ticket use /ticket. Builds on the dispatch skill.
+allowed-tools: Bash, Write, Read, Task
+---
 
-Commands for herdr-core's `hc` and Herdr.app's `herdr-app`, used when the
-`dispatch` skill's Host check says Desktop. `hc --skill` is the full manual.
-**Timeouts are SECONDS** here: `--timeout 3600` is one hour.
+# Worktree Agent Coordinator
+
+You are a coordinator agent. You orchestrate multiple worktree agents with
+herdr-core's `hc` and Herdr.app's `herdr-app`. You do NOT implement tasks
+yourself. You spawn agents, monitor them, send instructions, and trigger merges.
+
+## Requirements
+
+See the `dispatch` skill: inside a Herdr terminal (`HC_TERMINAL_ID` set).
+`hc --skill` is the full `hc` manual. **Timeouts are SECONDS**: `--timeout 3600`
+is one hour.
+
+## Core Concepts
+
+- **Worktree agent**: a Claude Code session running in its own git
+  worktree/branch, which Herdr opens as its own space grouped under the source
+  repo.
+- **Statuses**: `working` (processing), `blocked` (an approval or question UI is
+  up — needs you), `idle` (ready for input), `done` (the same underlying idle
+  state, after unseen background work finished), `error` (read why, then send or
+  kill — not completion).
+- Reading an agent does **not** mark it as seen; focusing it does. That's the
+  `done` vs `idle` distinction.
+
+## Spawn Agents
+
+Spawning is the `dispatch` skill: its contract, write→verify→create→confirm
+sequence, flags, and prompt rules. Use it rather than re-deriving them here.
+
+Coordinator specifics:
+
+- Always `--no-focus` — you stay in your own space.
+- Don't delegate a skill to worktrees unless explicitly instructed.
+- Confirm every prompt was consumed before you start monitoring. An unconsumed
+  prompt means that agent is idle and bare, which looks identical to an agent that
+  finished.
 
 ## Handles
 
@@ -89,13 +126,13 @@ hc send --wait t7 "/merge" --timeout 1800
 space, which ends the agent's terminal (`hc get` reports `finished`). Nothing
 is left for you to remove. An agent told `/merge --keep` keeps both.
 
-## Fan-out / Fan-in example
+## Workflow: fan-out / fan-in
 
 ```bash
 # 1. Write ALL prompt files first (the dispatch skill)
 # 2. Create the worktrees, staying put; record each terminal
 repo="$(git rev-parse --show-toplevel)"
-create=~/.config/herdr/scripts/hc-worktree-create.sh
+create=~/.config/herdr-app/scripts/worktree-create.sh
 for b in auth-module api-tests docs-update; do
   printf '%s %s\n' "$b" "$("$create" --cwd "$repo" --branch "$b" | jq -r .terminal)"
 done   # auth-module t7 / api-tests t9 / docs-update t12
@@ -116,3 +153,31 @@ hc send --wait t9 "/merge" --timeout 1800
 hc send --wait t12 "also add the API reference section" --timeout 1800
 hc send --wait t12 "/merge" --timeout 1800
 ```
+
+## Long follow-ups
+
+For a long instruction, write a file and send the agent a pointer to it:
+
+```bash
+cat > /tmp/followup.md << 'EOF'
+...long instructions...
+EOF
+# then send: "Read /tmp/followup.md and do what it says."
+```
+
+## Rules
+
+1. **Dispatch per the `dispatch` skill** — every prompt file written and verified
+   before any worktree is created.
+2. **Always pass `--no-focus`** so you stay in your own space.
+3. **Record each agent's terminal** as you spawn it.
+4. **Confirm agents started** on their prompt before waiting for completion.
+5. **`blocked` ends every completion wait.** A blocked agent needs you, and
+   without it you burn the whole timeout.
+6. **Capture and review output** before merging. Do not blindly merge.
+7. **Merge one at a time**, waiting for each to finish before the next, to avoid
+   conflicts.
+8. **Always pass a timeout.**
+9. **Completion is `idle` or `done` after real work.** `error` and a startup
+   `idle` (turn 0) are not.
+10. You are a coordinator, not an implementer. Never edit source files directly.

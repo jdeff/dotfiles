@@ -12,7 +12,7 @@ map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
 
 -- Window navigation via C-h/j/k/l is deliberately NOT mapped here:
 -- after/plugin/herdr_nav.lua owns it so the motion crosses seamlessly from an
--- nvim split into the neighbouring herdr pane.
+-- nvim split into the neighbouring Herdr pane.
 
 -- ── Buffers ─────────────────────────────────────────────────────────────────
 map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })

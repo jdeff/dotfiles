@@ -9,6 +9,10 @@ description: Start, stop, and inspect a project's dev servers (web servers, back
 *occupant* (a feature worktree, or `main`) can be live per project. Activating one
 **vacates** whatever was running.
 
+Each service runs as a herdr-core (`hc`) **terminal**, which the Herdr app shows
+as a **tab** in the project's **space** `muster-<project>` (named
+`<project> · <occupant>`).
+
 ## Rule 0 — every start and stop goes through muster
 
 Running a dev server, background worker, or `docker compose up` by hand in a
@@ -48,7 +52,8 @@ cd /path/to/the/worktree && muster up
 ```
 
 Let cwd name the feature. muster's feature identifier is the **git branch**, but
-herdr's worktree *directory* is a slug of it, and they routinely differ:
+a worktree's *directory* name is often something else (the app creates them
+under `~/.herdr/worktrees/<repo>/<branch>`, but older or hand-made ones vary):
 
 ```
 branch=add-search-filters   dir=search-work        (branch renamed after creation)
@@ -56,11 +61,11 @@ branch=Fix-Date-Parsing     dir=fix-date-parsing   (case folded)
 branch=fix-a&b-handling     dir=fix-a-b-handling   (& would break the shell unquoted)
 ```
 
-Guessing from the directory name gives `no '<feature>' worktree`, or silently
-resolves the wrong thing. Bare `muster up` infers project + branch from cwd and is
-always right. If you must name a feature explicitly, take it from the `branch`
-line of `git -C <repo> worktree list --porcelain` (minus `refs/heads/`) and
-single-quote it.
+Guessing from the directory name gives `feature '<x>' has no worktree in any
+'<project>' repo`, or silently resolves the wrong thing. Bare `muster up` infers
+project + branch from cwd and is always right. If you must name a feature
+explicitly, take it from the `branch` line of `git -C <repo> worktree list
+--porcelain` (minus `refs/heads/`) and single-quote it.
 
 ## Rule 3 — confirm it actually booted
 
@@ -78,20 +83,23 @@ myproj  occupant=add-search-filters  session=muster-myproj
   docker:api       compose  (5 containers up)
 ```
 
-Columns are `service · state · (worktree it's using) · port`. Check three things:
+Columns are `service · state · (worktree it's using) · port`; `session` is the
+app space id. Check three things:
 
-1. **state** is `running` — not `exited` (process died) or `stopped` (no pane).
+1. **state** is `running` (live terminal) — not `exited` (the program ended; the
+   app drops its tab, so look here, not for the tab) or `stopped` (never
+   started, or gone from herdr-core).
 2. **port** is `bound` for every service that declares one.
 3. **`(using)`** is the worktree you expected, for *every* repo.
 
 Anything wrong → `muster logs <svc>`. Report what you found; don't declare success
 off `muster up`'s exit code alone.
 
-> `muster logs` reads the pane's recent output — **up to ~1000 lines** of
-> scrollback, herdr's ceiling for a single read. Still not unlimited history:
-> anything older is gone, and so is everything from before a `restart` (which
-> spawns a fresh, empty pane) or a `down`. If a crash predates the window,
-> `muster restart <svc>` and read it fresh.
+> `muster logs` reads the terminal's output — **up to ~1000 lines**, one `hc
+> read`'s ceiling — and works on `exited` services too: the core keeps a finished
+> terminal's output until teardown. Older lines are gone, and so is everything
+> from before a `restart` (which starts a fresh terminal) or a `down`. If a crash
+> predates the window, `muster restart <svc>` and read it fresh.
 
 ## Multi-repo projects
 
@@ -101,7 +109,7 @@ back to `main` while `up` still reports success**. You get a plausible stack
 running the wrong backend, and nothing errors. Silence is the failure mode.
 
 Read [`CROSS-REPO.md`](CROSS-REPO.md) before bringing up a project that spans more
-than one repo, and whenever you need repo paths, session labels, or the
+than one repo, and whenever you need repo paths, space ids (`session`), or the
 service-file name.
 
 ## Troubleshooting
@@ -109,27 +117,36 @@ service-file name.
 | symptom | cause | what to do |
 |---|---|---|
 | `<repo>: no .muster.yaml in <path> — skipping its services` | the worktree is missing its service file, so **that repo starts nothing** while `up` still "succeeds" | Report it — worktree creation should have supplied that file, so its absence is a bug worth fixing at the source. Don't hand-author or copy a service file to work around it |
-| `another muster operation is already running for '<project>'` | another agent, the dashboard, or an earlier job holds the project lock | **Do not retry-loop.** Wait, then `muster status` — someone else may be taking the seat |
+| `a muster job is already running for '<project>'` (or `another muster operation is already running…`) | another agent, the Herdr app's Muster panel, or an earlier job holds the project lock | **Do not retry-loop.** Wait, then `muster status` — someone else may be taking the seat. `hc ls --label muster.job=<project>` shows the job; `hc read <t>` its output |
 | service `exited` right after `up` | crashed on boot | `muster logs <svc>` for the traceback. Fix the cause, then `muster restart <svc>` — not a bare `up` |
+| service `exited` at once with `command not found` or missing env vars | services run as `/bin/sh -c <command>` with herdr-core's environment: no `.zshrc`, no direnv (PATH does include mise shims) | Report it to the user as an environment gap. Leave the service command and muster's setup as they are |
 | `ports still in use after teardown` | an orphaned process holds the port | `lsof -i :<port>`. Usually a hand-started server (Rule 0) |
 | ready-gate hangs, then continues | the service's `ready:` regex never matched | It may still be fine — check `port … bound`. Tune with `MUSTER_READY_WAIT_TIMEOUT` (seconds) |
 | docker/compose errors on `up` | Docker isn't running | Start Docker, then retry. muster refuses to start services against missing infra |
 | `not inside a known project repo` | cwd isn't in a configured repo | `muster projects`, then use the explicit form `muster <project> <cmd>` |
 
 Containers are shared infra: left running on `down` and across swaps. Manage them
-with `muster <project> docker` (lazydocker) — never `docker compose down`.
+with `muster <project> docker` (lazydocker, opened as a tab in the project's
+space) — never `docker compose down`.
 
 ## Commands
 
-`muster help` lists every command and its arguments. Two things it won't tell you:
+`muster help` lists every command and its arguments. What it won't tell you:
 
-**Read-only, always safe:** `status`, `logs <svc>`, `projects`.
+**Read-only, always safe:** `status`, `logs <svc>`, `projects`. (`state` is all
+projects as JSON for UIs — use `status`.)
 
 **Mutating — these take the shared seat:** `up`, `down`, `restart [<svc>]`, `swap`.
-Each runs in a detached worker, so it survives a closed terminal, and only one
-runs per project at a time; a second is refused while the first is in flight. All
-of them accept an explicit `muster <project> <cmd>` form for when cwd inference
-isn't what you want.
+Each runs as an `hc` job terminal: it survives a closed caller, streams its output
+to your CLI, stops on Ctrl-C, and exits with the job's code. Only one runs per
+project at a time; a second is refused while the first is in flight. Run them
+plain and blocking so you see the result — `--detach` returns `{job,label}` at
+once and is meant for UIs. All accept an explicit `muster <project> <cmd>` form
+for when cwd inference isn't what you want.
+
+Teardown (`down`, and `up`'s vacate) stops every terminal labelled with the
+project, including ones no lock recorded — so `down` also reaps strays when
+`status` says `(not running)`.
 
 ## Scope
 

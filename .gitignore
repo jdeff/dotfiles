@@ -1,3 +1,8 @@
 .DS_Store
 *.bak.*
 dev/workspace.toml
+
+# Herdr Desktop writes its type files into every mod folder on start.
+herdr-app/mods/*/gpui-kit.d.ts
+herdr-app/mods/*/herdr.d.ts
+herdr-app/mods/*/jsconfig.json

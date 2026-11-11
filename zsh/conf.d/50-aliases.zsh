@@ -18,12 +18,6 @@ fi
 # fd (find) and rg (ripgrep) are used by their own names — intentionally NOT
 # aliased over `find`/`grep`, whose flags differ and would surprise scripts.
 
-# herdr (the multiplexer) is deliberately NOT aliased: the name is already short,
-# its surface is nested subcommands (`herdr worktree create`, `herdr agent list`)
-# that abbreviate poorly, and the zsh completion in 10-completion.zsh covers
-# discovery. It also self-updates via `herdr update`, so there's no build step to
-# wrap. Day-to-day driving happens through keybindings inside herdr, not the shell.
-
 # ── Prezto-derived alias modules (git / ruby / rails) ────────────────────
 for _amod in "$ZSH_DIR"/aliases/*.zsh(N); do
   source "$_amod"

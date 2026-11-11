@@ -25,13 +25,11 @@ brew 'gh'          # GitHub CLI; also the git credential helper for github (see 
 brew 'yq'          # jq for YAML/TOML/XML
 
 # Editor
-# (No multiplexer here: herdr is the multiplexer and installs via curl, not brew
-# — see herdr/README.md.)
 brew 'neovim'
 brew 'tree-sitter-cli' # nvim-treesitter (main branch) compiles parsers with this
 
 # Build toolchain — cargo/rustc, for the Rust tools built from source outside
-# brew (the `muster` herdr plugin). Needs Rust >= 1.85 for edition 2024.
+# brew (`muster`). Needs Rust >= 1.85 for edition 2024.
 brew 'rust'
 
 # Runtime version manager (ruby, node) — shims on PATH + interactive activation.
@@ -39,10 +37,11 @@ brew 'mise'
 
 # macOS light/dark watcher (event-driven). Powers nvim's dark_notify integration
 # so the editor follows the system appearance without polling. (Herdr does its own
-# appearance switching natively — see [theme] auto_switch in herdr/config.toml.)
+# appearance switching — the theme pair in herdr-app/settings.json.)
 brew 'cormacrelf/tap/dark-notify'
 
 # Terminal + font (font supplies the glyphs Starship's prompt uses)
+cask 'herdr-app' # Herdr: workspaces for coding agents, on herdr-core (`hc`)
 cask 'ghostty'
 cask 'font-lilex-nerd-font'
 
@@ -50,7 +49,7 @@ cask 'font-lilex-nerd-font'
 cask '1password-cli' # `op` — pull secrets into .local files / shell env
 
 # Coding agents
-cask 'devin-cli' # `devin` — local agent + Devin Cloud sessions (herdr's devin picker)
+cask 'devin-cli' # `devin` — local agent + Devin Cloud sessions
 
 # Desktop apps
 cask 'alfred'   # Spotlight replacement

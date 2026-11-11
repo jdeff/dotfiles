@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Merge the current Herdr worktree's branch into its base (the branch checked out
-# in the repo's MAIN working tree), interactively, from a pane inside the worktree.
-# Bound to a key (type=pane) and to the jdeff.flow "merge" action. Uses $PWD, so it
+# Merge the current worktree's branch into its base (the branch checked out in
+# the repo's MAIN working tree), interactively, from a pane inside the worktree.
+# Bound to ctrl-b shift-m in herdr-app/keys.json (a split below). Uses $PWD, so it
 # must run in a pane whose cwd is the worktree checkout.
 set -u
 

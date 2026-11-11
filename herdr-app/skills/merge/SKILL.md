@@ -110,6 +110,5 @@ open and why.
 ## Interactive alternative
 
 The same flow exists as a keybinding for when you'd rather drive it yourself:
-`prefix shift+m` (or the "Merge worktree → base" right-click action on a space)
-runs `~/.config/herdr/scripts/worktree-merge.sh`, which prompts at each step but
-does not fetch first.
+`ctrl-b shift-m` in Herdr runs `~/.config/herdr-app/scripts/worktree-merge.sh` in a
+split below, which prompts at each step but does not fetch first.

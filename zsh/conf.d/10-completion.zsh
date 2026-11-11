@@ -1,21 +1,13 @@
 # Completion system: fpath sources, compinit (cached), and styling.
 
 # Completion sources: zsh-completions, Homebrew formulae (incl. mise's _mise),
-# herdr. Must precede compinit.
+# and user-local ones. Must precede compinit.
 fpath=(
   /opt/homebrew/share/zsh-completions
   /opt/homebrew/share/zsh/site-functions
   "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions"
   $fpath
 )
-
-# herdr installs via its own curl script into ~/.local/bin (not brew), so it ships
-# no completion on fpath — generate it here if missing. `herdr update` replaces the
-# binary in place, so delete _herdr to pick up new subcommands after an update.
-if command -v herdr >/dev/null && [[ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions/_herdr" ]]; then
-  mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions"
-  herdr completion zsh > "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions/_herdr"
-fi
 
 # Initialize completion, rebuilding the dump cache at most once a day for speed.
 autoload -Uz compinit
