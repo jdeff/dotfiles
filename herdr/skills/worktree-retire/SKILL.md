@@ -18,6 +18,9 @@ and the pane go away at the end:
 ```bash
 branch=$(git branch --show-current)
 main_root=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
+# Desktop host only (the dispatch skill's Host check): the space this terminal is in
+space=$(herdr-app ls | jq -r --arg t "$HC_TERMINAL_ID" \
+  '.spaces[] | select(any(.tabs[].terminals[]; .terminal == $t)) | .id')
 ```
 
 In the main working tree (`$PWD` is `$main_root`) there is nothing to retire:
@@ -61,12 +64,16 @@ Otherwise this is one shell command, the last action. Files a `.worktree-files`
 manifest copied in (`.env.local` and the like) live in the checkout and go with
 it; its `link` entries are symlinks, and removing one leaves the main checkout's
 file alone. Those untracked files make a plain remove refuse, which is why
-`--force` appears below. `herdr worktree remove` never touches the branch.
+`--force` appears below. Neither remove touches the branch.
 
 - **Mode `keep`:**
 
   ```bash
+  # TUI
   herdr worktree remove --workspace "$HERDR_WORKSPACE_ID"
+  # Desktop
+  git -C "$main_root" worktree remove "$PWD" \
+    && herdr-app do space.close "$(jq -n --arg id "$space" '{id: $id, confirmed: true}')"
   ```
 
   If it refuses over untracked files, re-run with `--force` only when they are
@@ -78,11 +85,16 @@ file alone. Those untracked files make a plain remove refuse, which is why
   the remove because a checked-out branch can't be deleted:
 
   ```bash
+  # TUI
   herdr worktree remove --workspace "$HERDR_WORKSPACE_ID" --force \
     && git -C "$main_root" branch -D "$branch"
+  # Desktop
+  git -C "$main_root" worktree remove --force "$PWD" \
+    && git -C "$main_root" branch -D "$branch" \
+    && herdr-app do space.close "$(jq -n --arg id "$space" '{id: $id, confirmed: true}')"
   ```
 
-`$HERDR_WORKSPACE_ID` is injected into every Herdr-managed pane. If it is unset
-(not running inside Herdr), substitute `git -C "$main_root" worktree remove
-[--force] "$PWD"` for the herdr command, and tell the user any space for it is
-theirs to close.
+On Desktop, `space.close` goes last because it ends this terminal; the checkout
+can go first because removing your own working directory leaves the shell
+running. With neither host, run only the `git -C "$main_root" worktree remove
+[--force] "$PWD"` part and tell the user any space for it is theirs to close.

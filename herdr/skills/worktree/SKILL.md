@@ -32,7 +32,7 @@ absolute path uses that instead. Ask when a task's repo is ambiguous.
 
 - `--merge` — append to the prompt: "When finished, commit all changes with a clear
   message, rebase onto the base branch, and merge this branch into it."
-- `--base <ref>` — pass through to `herdr worktree create`.
+- `--base <ref>` — pass through to the host's create command.
 
 Fire-and-forget: report the branches and spaces created, then stop. `/coordinator`
 covers naming agents, waiting on status, follow-ups, and merging.

@@ -59,7 +59,8 @@ branch=fix-a&b-handling     dir=fix-a-b-handling   (& would break the shell unqu
 Guessing from the directory name gives `no '<feature>' worktree`, or silently
 resolves the wrong thing. Bare `muster up` infers project + branch from cwd and is
 always right. If you must name a feature explicitly, take it from the `branch`
-field of `herdr worktree list --cwd <repo> --json` and single-quote it.
+line of `git -C <repo> worktree list --porcelain` (minus `refs/heads/`) and
+single-quote it.
 
 ## Rule 3 — confirm it actually booted
 

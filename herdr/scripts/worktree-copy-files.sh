@@ -2,7 +2,8 @@
 # Copy per-repo untracked files into a freshly created Herdr worktree (git does
 # not populate untracked files like .env.local or .muster.yaml in new worktrees).
 #
-# Wired to the `worktree.created` event in the jdeff.flow plugin. Reads a
+# Wired to the `worktree.created` event in the jdeff.flow plugin, or run as
+# `worktree-copy-files.sh <worktree-path>` (Herdr Desktop). Reads a
 # `.worktree-files` manifest from the worktree's MAIN checkout; each non-blank,
 # non-comment line is:
 #     copy <path>      # copy main/<path> → worktree/<path> (skip if dest exists)
@@ -24,7 +25,8 @@ log "event: $ev"
 #    the event. The `worktree.created` payload nests these under `.data`; older/
 #    other shapes are tolerated via fallbacks.
 q() { printf '%s' "$ev" | jq -r "$1 // empty" 2>/dev/null; }
-wt=$(q '.data.worktree.path // .worktree.path // .data.worktree.checkout_path // .worktree.checkout_path')
+# hc-worktree-create.sh passes the path directly; Herdr Desktop has no events.
+wt=${1:-$(q '.data.worktree.path // .worktree.path // .data.worktree.checkout_path // .worktree.checkout_path')}
 main=$(q '.data.workspace.worktree.repo_root // .workspace.worktree.repo_root')
 
 if [ -z "$wt" ]; then

@@ -46,4 +46,5 @@ state. See `~/dotfiles/herdr/README.md`.
 
 **herdr CLI gotchas:** `--timeout` values are **milliseconds**, not seconds. And
 `herdr agent wait` takes a **single** target — loop with `&` + `wait` to block on
-several agents at once.
+several agents at once. Herdr Desktop's `hc` is the opposite: its `--timeout` is
+**seconds**.
