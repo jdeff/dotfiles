@@ -46,6 +46,17 @@
                 "weight": 1
               },
               "min": 90
+            },
+            {
+              "id": "muster",
+              "type": "block",
+              "content": {
+                "mod": "muster"
+              },
+              "size": {
+                "weight": 1
+              },
+              "min": 90
             }
           ]
         },
