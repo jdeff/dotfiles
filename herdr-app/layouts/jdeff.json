@@ -37,26 +37,51 @@
               "min": 90
             },
             {
-              "id": "agents",
-              "type": "block",
-              "content": {
-                "mod": "agents"
+              "id": "sidebar-tabs",
+              "type": "stack",
+              "header": {
+                "content": {
+                  "mod": "sidebar-tabs",
+                  "props": {
+                    "stack": "sidebar-tabs",
+                    "tabs": [
+                      {
+                        "id": "agents",
+                        "label": "Agents"
+                      },
+                      {
+                        "id": "muster",
+                        "label": "Muster"
+                      }
+                    ]
+                  }
+                },
+                "height": 34
               },
+              "active": "agents",
               "size": {
                 "weight": 1
               },
-              "min": 90
-            },
-            {
-              "id": "muster",
-              "type": "block",
-              "content": {
-                "mod": "muster"
-              },
-              "size": {
-                "weight": 1
-              },
-              "min": 90
+              "min": 120,
+              "children": [
+                {
+                  "id": "agents",
+                  "type": "block",
+                  "content": {
+                    "mod": "agents"
+                  }
+                },
+                {
+                  "id": "muster",
+                  "type": "block",
+                  "content": {
+                    "mod": "muster",
+                    "props": {
+                      "embedded": true
+                    }
+                  }
+                }
+              ]
             }
           ]
         },
@@ -168,14 +193,43 @@
           "gap": 8
         },
         {
-          "id": "status",
-          "type": "block",
-          "content": {
-            "mod": "workspace-status"
-          },
+          "id": "status-row",
+          "type": "row",
           "size": {
             "px": 28
-          }
+          },
+          "resizable": false,
+          "children": [
+            {
+              "id": "status",
+              "type": "block",
+              "content": {
+                "mod": "workspace-status"
+              },
+              "size": {
+                "weight": 1
+              }
+            },
+            {
+              "id": "muster-status",
+              "type": "block",
+              "size": {
+                "px": 340
+              },
+              "content": {
+                "mod": "muster",
+                "props": {
+                  "status": {
+                    "panel": {
+                      "show": "sidebar",
+                      "stack": "sidebar-tabs",
+                      "child": "muster"
+                    }
+                  }
+                }
+              }
+            }
+          ]
         }
       ],
       "resizable": false
