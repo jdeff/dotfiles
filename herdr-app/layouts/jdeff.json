@@ -204,7 +204,10 @@
               "id": "status",
               "type": "block",
               "content": {
-                "mod": "workspace-status"
+                "mod": "status-bar",
+                "props": {
+                  "part": "left"
+                }
               },
               "size": {
                 "weight": 1
@@ -226,6 +229,19 @@
                       "child": "muster"
                     }
                   }
+                }
+              }
+            },
+            {
+              "id": "palette-hint",
+              "type": "block",
+              "size": {
+                "px": 130
+              },
+              "content": {
+                "mod": "status-bar",
+                "props": {
+                  "part": "hint"
                 }
               }
             }
