@@ -140,5 +140,11 @@
     "cmd-right": "send:\u0005",
     "cmd-backspace": "send:\u0015",
     "ctrl-b ctrl-b": "send:\u0002"
+  },
+  "layout:jdeff": {
+    "ctrl-h": "vim-nav.left",
+    "ctrl-j": "vim-nav.down",
+    "ctrl-k": "vim-nav.up",
+    "ctrl-l": "vim-nav.right"
   }
 }

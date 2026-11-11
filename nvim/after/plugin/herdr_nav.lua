@@ -1,9 +1,17 @@
 -- Seamless <C-h/j/k/l> navigation between Neovim splits and herdr panes. Move
--- between Neovim splits; at a split edge, cross into the neighbouring herdr pane
--- (when $HERDR_PANE_ID is set, i.e. nvim is running in a herdr-managed pane).
+-- between Neovim splits; at a split edge, cross into the neighbouring herdr pane.
+-- In the herdr TUI ($HERDR_PANE_ID) that's `herdr pane focus`; in Herdr Desktop
+-- ($HC_TERMINAL_ID, a herdr-core terminal) it's `herdr-app do pane.go`, which
+-- acts on the app's focused pane, i.e. this one. The desktop side of the
+-- handoff is the vim-nav mod (herdr-app/mods/vim-nav), which presses the keys in.
 --
 -- Vendored from paulbkim-dev/vim-herdr-navigation (editor/nvim.lua). Loaded from
 -- after/plugin so it wins over any other <C-h/j/k/l> mappings.
+
+local function bin(env, name)
+  local path = vim.env[env]
+  return (path and path ~= "") and path or name
+end
 
 local function nav(wincmd, dir)
   local prev = vim.api.nvim_get_current_win()
@@ -13,11 +21,9 @@ local function nav(wincmd, dir)
   end
   -- At a split edge: cross into the surrounding herdr pane.
   if vim.env.HERDR_PANE_ID and vim.env.HERDR_PANE_ID ~= "" then
-    local herdr = vim.env.HERDR_BIN_PATH
-    if herdr == nil or herdr == "" then
-      herdr = "herdr"
-    end
-    vim.fn.system({ herdr, "pane", "focus", "--direction", dir, "--current" })
+    vim.fn.system({ bin("HERDR_BIN_PATH", "herdr"), "pane", "focus", "--direction", dir, "--current" })
+  elseif vim.env.HC_TERMINAL_ID and vim.env.HC_TERMINAL_ID ~= "" then
+    vim.fn.system({ "herdr-app", "do", "pane.go", "--direction", dir })
   end
 end
 

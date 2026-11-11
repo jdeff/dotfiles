@@ -147,10 +147,11 @@ mechanics live once in the shared `dispatch` skill. Herdr's own agent-control sk
 `herdr --skill`.
 
 **Herdr Desktop** (`Herdr.app`, terminals run in herdr-core `hc`) is configured
-separately in `herdr-app/` (`keys.json`, `settings.json`, Kanagawa themes). It
-keeps the same `C-b` prefix chords for splits, hjkl focus, tabs, spaces, agents,
-lazygit and merge/PR, but has no resize mode, no `C-hjkl` nvim crossing, no
-muster binds, and no detach. Worktrees are on the space's right-click and `+`
+separately in `herdr-app/` (`keys.json`, `settings.json`, Kanagawa themes, and
+the `jdeff` layout). It keeps the same `C-b` prefix chords for splits, hjkl
+focus, tabs, spaces, agents, lazygit and merge/PR, and `C-h/j/k/l` crosses nvim
+splits and panes through the `vim-nav` mod (only in the `jdeff` layout, which
+hosts it). It has no resize mode, no muster binds, and no detach. Worktrees are on the space's right-click and `+`
 menus. `C-b C-b` sends a literal `C-b`. `ctrl-alt-shift-escape` resets the
 layout and keys if a bad edit locks you out.
 

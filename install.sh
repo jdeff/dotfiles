@@ -90,8 +90,11 @@ link "$REPO/herdr/plugins/jdeff-flow"    "$HOME/.config/herdr/plugins/jdeff-flow
 # rewrites its guide, .d.ts files and shipped mods there on every start.
 link "$REPO/herdr-app/keys.json"         "$HOME/.config/herdr-app/keys.json"
 link "$REPO/herdr-app/settings.json"     "$HOME/.config/herdr-app/settings.json"
-for _theme in "$REPO"/herdr-app/themes/*.json; do
-  link "$_theme" "$HOME/.config/herdr-app/themes/$(basename "$_theme")"
+for _f in "$REPO"/herdr-app/themes/*.json "$REPO"/herdr-app/layouts/*.json; do
+  link "$_f" "$HOME/.config/herdr-app/${_f#"$REPO"/herdr-app/}"
+done
+for _mod in "$REPO"/herdr-app/mods/*/; do
+  link "${_mod%/}" "$HOME/.config/herdr-app/mods/$(basename "$_mod")"
 done
 # Claude Code skills: the worktree/agent workflow (slash commands) under
 # herdr/skills, plus muster/skills and dev/skills (which agents load themselves).
