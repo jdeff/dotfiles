@@ -117,7 +117,7 @@ service-file name.
 | symptom | cause | what to do |
 |---|---|---|
 | `<repo>: no .muster.yaml in <path> — skipping its services` | the worktree is missing its service file, so **that repo starts nothing** while `up` still "succeeds" | Report it — worktree creation should have supplied that file, so its absence is a bug worth fixing at the source. Don't hand-author or copy a service file to work around it |
-| `a muster job is already running for '<project>'` (or `another muster operation is already running…`) | another agent, the Herdr app's Muster panel, or an earlier job holds the project lock | **Do not retry-loop.** Wait, then `muster status` — someone else may be taking the seat. `hc ls --label muster.job=<project>` shows the job; `hc read <t>` its output |
+| `a muster job is already running for '<project>'` | another agent, the Herdr app's Muster panel, or an earlier job holds the project lock | **Do not retry-loop.** Wait, then `muster status` — someone else may be taking the seat. `hc ls --label muster.job=<project>` shows the job; `hc read <t>` its output |
 | service `exited` right after `up` | crashed on boot | `muster logs <svc>` for the traceback. Fix the cause, then `muster restart <svc>` — not a bare `up` |
 | service `exited` at once with `command not found` or missing env vars | services run as `/bin/sh -c <command>` with herdr-core's environment: no `.zshrc`, no direnv (PATH does include mise shims) | Report it to the user as an environment gap. Leave the service command and muster's setup as they are |
 | `ports still in use after teardown` | an orphaned process holds the port | `lsof -i :<port>`. Usually a hand-started server (Rule 0) |
