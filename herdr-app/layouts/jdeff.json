@@ -37,51 +37,15 @@
               "min": 90
             },
             {
-              "id": "sidebar-tabs",
-              "type": "stack",
-              "header": {
-                "content": {
-                  "mod": "sidebar-tabs",
-                  "props": {
-                    "stack": "sidebar-tabs",
-                    "tabs": [
-                      {
-                        "id": "agents",
-                        "label": "Agents"
-                      },
-                      {
-                        "id": "muster",
-                        "label": "Muster"
-                      }
-                    ]
-                  }
-                },
-                "height": 34
-              },
-              "active": "agents",
+              "id": "agents",
+              "type": "block",
               "size": {
                 "weight": 1
               },
-              "min": 120,
-              "children": [
-                {
-                  "id": "agents",
-                  "type": "block",
-                  "content": {
-                    "mod": "agents"
-                  }
-                },
-                {
-                  "id": "muster",
-                  "type": "block",
-                  "content": {
-                    "mod": "muster",
-                    "props": {
-                      "embedded": true
-                    }
-                  }
-                }
-              ]
+              "min": 90,
+              "content": {
+                "mod": "agents"
+              }
             }
           ]
         },
@@ -112,15 +76,39 @@
       "type": "column",
       "children": [
         {
-          "id": "tabs",
-          "type": "block",
-          "content": {
-            "mod": "tabs"
-          },
+          "id": "tabs-row",
+          "type": "row",
           "size": {
             "px": 42
           },
-          "window_drag": true
+          "resizable": false,
+          "children": [
+            {
+              "id": "tabs",
+              "type": "block",
+              "content": {
+                "mod": "tabs"
+              },
+              "size": {
+                "weight": 1
+              },
+              "window_drag": true
+            },
+            {
+              "id": "muster-toggle",
+              "type": "block",
+              "size": {
+                "px": 104
+              },
+              "window_drag": true,
+              "content": {
+                "mod": "muster",
+                "props": {
+                  "toggle": "muster-panel"
+                }
+              }
+            }
+          ]
         },
         {
           "id": "work-body",
@@ -187,6 +175,28 @@
               "min": 280,
               "max": 900,
               "hidden": true
+            },
+            {
+              "id": "muster-panel",
+              "type": "column",
+              "size": {
+                "px": 400
+              },
+              "min": 340,
+              "max": 720,
+              "hidden": true,
+              "children": [
+                {
+                  "id": "muster",
+                  "type": "block",
+                  "content": {
+                    "mod": "muster",
+                    "props": {
+                      "node": "muster-panel"
+                    }
+                  }
+                }
+              ]
             }
           ],
           "padding": 8,
@@ -221,9 +231,7 @@
                 "props": {
                   "status": {
                     "panel": {
-                      "show": "sidebar",
-                      "stack": "sidebar-tabs",
-                      "child": "muster"
+                      "show": "muster-panel"
                     }
                   }
                 }
