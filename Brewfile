@@ -24,6 +24,9 @@ brew 'lazygit'     # terminal git UI (driven by nvim's lazygit.nvim)
 brew 'gh'          # GitHub CLI; also the git credential helper for github (see git/gitconfig)
 brew 'yq'          # jq for YAML/TOML/XML
 
+# Agent tooling
+brew 'agent-browser' # browser automation CLI behind the agent-browser skill (npx skills add vercel-labs/agent-browser)
+
 # Editor
 brew 'neovim'
 brew 'tree-sitter-cli' # nvim-treesitter (main branch) compiles parsers with this
