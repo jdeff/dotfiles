@@ -1,11 +1,13 @@
 # Completion system: fpath sources, compinit (cached), and styling.
 
 # Completion sources: zsh-completions, Homebrew formulae (incl. mise's _mise),
-# and user-local ones. Must precede compinit.
+# and user-local ones (the Blaxel installer drops `_bl` in ~/.zsh/completions).
+# Must precede compinit.
 fpath=(
   /opt/homebrew/share/zsh-completions
   /opt/homebrew/share/zsh/site-functions
   "${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions"
+  "$HOME/.zsh/completions"
   $fpath
 )
 
