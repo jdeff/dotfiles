@@ -2,7 +2,7 @@
 
 ## Worktree and ticket skills
 
-Tracked in `~/dotfiles/herdr-app/skills/` and `~/dotfiles/dev/skills/`; their descriptions
+Tracked in `~/dotfiles/dev/skills/`; their descriptions
 say when each fires. Confirm before creating a worktree unless I typed the command or
 already asked for parallel or background work.
 
@@ -15,6 +15,11 @@ panes, layouts, keys, mods — use the `herdr-app` skill; for running, reading,
 messaging and waiting on terminals and agents, the `hc` skill. Both are generated
 from the installed binaries. My keybindings are in the Herdr section of
 `~/dotfiles/CHEATSHEET.md`.
+
+I also run Rex (the `rex` skill). The worktree skills work in either: the scripts
+they call in `~/dotfiles/bin/` detect the multiplexer and load its backend from
+`bin/lib/host-<name>.sh`. Keep Herdr- and Rex-specific mechanics in those
+backends, not in the skills.
 
 ## Dotfiles
 
@@ -33,7 +38,8 @@ unless I ask.
 When changing a managed config:
 - Confirm the path is actually managed (`ls -ld` it, or check `install.sh`). New
   files need a `link()` line added there — except skills, which `install.sh`
-  picks up automatically from `herdr-app/skills/*/`.
+  picks up automatically from `dev/skills/*/`, and executables in `bin/`, which it
+  links into `~/.local/bin`.
 - Herdr reloads its config on save; after editing it, check `herdr-app status`
   for `errors`.
 - Group commits sensibly and write clear messages; ask before pushing.

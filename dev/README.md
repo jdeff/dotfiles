@@ -22,11 +22,11 @@ neither — muster already owns project → repos, and answers via
 ## One-time per-machine bootstrap: Linear
 
 Not done by `install.sh` — same category as `gh auth login`. Ticket skills need Linear to resolve in **every** cwd, because
-worktrees live under `~/.herdr/worktrees/<repo>/<slug>`, not in the main checkout.
+worktrees live under `~/src/.worktrees/<repo>/<slug>`, not in the main checkout.
 A per-project MCP registration (the default `claude mcp add` scope) does not
 follow a worktree there.
 
-Two constraints shape this. Worktrees live under `~/.herdr/worktrees/<repo>/<slug>`,
+Two constraints shape this. Worktrees live under `~/src/.worktrees/<repo>/<slug>`,
 so a project-scoped registration never reaches them — Linear must be **user-scoped**.
 And the official Linear MCP is OAuth-only and **single-workspace per instance**:
 reconnecting doesn't switch workspace within an existing auth session, and two

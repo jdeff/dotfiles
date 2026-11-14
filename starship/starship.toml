@@ -25,7 +25,7 @@ $character"""
 # in subdirs the two otherwise disagree on relative vs absolute form). The
 # worktree module re-roots the displayed path at the *main* checkout's name
 # (derived from the common dir, so it's independent of where the worktree
-# lives — Herdr puts them under ~/.herdr/worktrees/<repo>/<branch-slug>):
+# lives — worktree-create puts them under ~/src/.worktrees/<repo>/<branch-slug>):
 # `api (worktree) on ABC-42`. Both replicate the old
 # directory display rules — ~ contraction, last-3-component truncation,
 # cut at the repo root — so the prompt is unchanged outside worktrees.

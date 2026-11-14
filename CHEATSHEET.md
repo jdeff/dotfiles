@@ -131,9 +131,9 @@ themes, the `jdeff` layout). Prefix chords use **`C-b`** (`C-b C-b` sends a lite
 
 Worktrees: the space's right-click and `+` menus (New / Open / Remove worktree).
 
-Slash commands (tracked in `herdr-app/skills/` and `dev/skills/`): `/worktree <tasks>`
-dispatches a worktree per task, `/ticket ABC-123` works a Linear ticket,
-`/coordinator` runs the whole spawn→monitor→merge lifecycle, `/open-pr` opens PRs
+Slash commands (tracked in `dev/skills/`, working in Herdr or Rex): `/worktree <tasks>`
+dispatches a worktree per task into `~/src/.worktrees`, `/ticket ABC-123` works a
+Linear ticket, `/open-pr` opens PRs
 (stack-aware, fills the repo's template), `/pr-watch` keeps an open PR or stack
 healthy, plus `/merge`, `/merged`, `/discard`, and `/rebase` — both merge skills close
 the Linear tickets the branch completes, via the shared `ticket-close` skill, and
