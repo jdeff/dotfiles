@@ -94,7 +94,7 @@
         "direction": "down",
         "argv": [
           "bash",
-          "/Users/jdeff/.config/herdr-app/scripts/worktree-merge.sh"
+          "/Users/jdeff/.local/bin/worktree-merge"
         ]
       }
     },
@@ -104,7 +104,7 @@
         "direction": "down",
         "argv": [
           "bash",
-          "/Users/jdeff/.config/herdr-app/scripts/worktree-open-pr.sh"
+          "/Users/jdeff/.local/bin/worktree-open-pr"
         ]
       }
     },

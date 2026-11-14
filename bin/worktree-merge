@@ -42,7 +42,7 @@ case "$go" in y|Y) ;; *) echo "Aborted."; pause; exit 0 ;; esac
 
 if git -C "$main_root" merge --no-ff "$branch"; then
   printf '\n✓ Merged %s into %s.\n' "$branch" "$base"
-  echo "Remove this worktree from the sidebar (right-click the space) when you're done."
+  echo "Remove the checkout when you're done (git worktree remove $here), then close its session."
 else
   printf '\n✗ Merge hit conflicts. Resolve them in the main worktree:\n  %s\n' "$main_root"
 fi

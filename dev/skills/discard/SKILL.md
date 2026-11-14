@@ -1,6 +1,6 @@
 ---
 name: discard
-description: Throw away the current worktree without merging — show what would be lost, confirm, then remove the checkout, its space, and the branch.
+description: Throw away the current worktree without merging — show what would be lost, confirm, then remove the checkout, its session, and the branch.
 disable-model-invocation: true
 allowed-tools: Read, Bash, Glob, Grep, AskUserQuestion
 ---
@@ -9,7 +9,7 @@ allowed-tools: Read, Bash, Glob, Grep, AskUserQuestion
 
 Check the arguments for flags:
 
-- `--keep-branch`, `-b` → remove the checkout and its space but keep the branch
+- `--keep-branch`, `-b` → remove the checkout and its session but keep the branch
 
 Strip all flags from arguments.
 
@@ -51,7 +51,7 @@ one-liners), the remote branch, the PR, the ticket. When the inventory is empty
 — clean tree, no commits beyond the base, nothing remote — say so in the
 question; it is still the user's call.
 
-- **Discard everything** — checkout, space, and branch (unless `--keep-branch`)
+- **Discard everything** — checkout, session, and branch (unless `--keep-branch`)
 - **Keep the branch, drop the checkout**
 - **Abort**
 

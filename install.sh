@@ -78,23 +78,28 @@ link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
 # Rex (whole config tree: init.lua + the files it requires)
 link "$REPO/rex"                    "$HOME/.config/rex"
 # Claude Code global guidance (the worktree/agent skills are tracked under
-# herdr-app/skills and linked below)
+# dev/skills and linked below)
 link "$REPO/claude/CLAUDE.md"       "$HOME/.claude/CLAUDE.md"
 # Herdr (Herdr.app on herdr-core). Individual symlinks so ~/.config/herdr-app
 # stays a real dir: the app rewrites its guide, .d.ts files and shipped mods
 # there on every start.
 link "$REPO/herdr-app/keys.json"         "$HOME/.config/herdr-app/keys.json"
 link "$REPO/herdr-app/settings.json"     "$HOME/.config/herdr-app/settings.json"
-link "$REPO/herdr-app/scripts"           "$HOME/.config/herdr-app/scripts"
 for _f in "$REPO"/herdr-app/themes/*.json "$REPO"/herdr-app/layouts/*.json; do
   link "$_f" "$HOME/.config/herdr-app/${_f#"$REPO"/herdr-app/}"
 done
 for _mod in "$REPO"/herdr-app/mods/*/; do
   link "${_mod%/}" "$HOME/.config/herdr-app/mods/$(basename "$_mod")"
 done
-# Claude Code skills: the worktree/agent workflow (slash commands) under
-# herdr-app/skills, plus muster/skills and dev/skills (which agents load themselves).
-for _root in herdr-app muster dev; do
+# Commands the skills and keybindings run, on PATH. bin/lib holds what they
+# source (the per-multiplexer backends) and stays unlinked.
+for _bin in "$REPO"/bin/*; do
+  [[ -f "$_bin" && -x "$_bin" ]] || continue
+  link "$_bin" "$HOME/.local/bin/$(basename "$_bin")"
+done
+# Claude Code skills: the worktree/ticket workflow under dev/skills, plus
+# muster/skills.
+for _root in muster dev; do
   for _skill in "$REPO"/$_root/skills/*/; do
     [[ -d "$_skill" ]] || continue
     link "${_skill%/}" "$HOME/.claude/skills/$(basename "$_skill")"

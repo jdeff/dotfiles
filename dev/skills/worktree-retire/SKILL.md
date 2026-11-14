@@ -1,6 +1,6 @@
 ---
 name: worktree-retire
-description: Retire a Herdr worktree once the branch's fate is settled — release the muster seat, drop the dispatch prompt, remove the checkout and its space, optionally delete the branch. Load as the last step of a skill that ends a worktree.
+description: Retire a worktree once the branch's fate is settled — release the muster seat, drop the dispatch prompt, remove the checkout and its session, optionally delete the branch. Load as the last step of a skill that ends a worktree.
 user-invocable: false
 allowed-tools: Bash, Read
 ---
@@ -9,18 +9,15 @@ The caller has already settled what happens to the branch's work and hands over:
 
 - **branch mode** — `keep` (the base contains the branch, or the user wants it)
   or `delete` (the user chose to throw the work away)
-- **`--keep`** — whether the checkout and its space stay
+- **`--keep`** — whether the checkout and its session stay
 - **its report** — which goes out before the checkout does
 
 Run from inside the worktree being retired. Capture these first; the checkout
-and the pane go away at the end:
+and the terminal go away at the end:
 
 ```bash
 branch=$(git branch --show-current)
 main_root=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
-# The Herdr space this terminal is in (empty outside Herdr)
-space=$(herdr-app ls | jq -r --arg t "$HC_TERMINAL_ID" \
-  '.spaces[] | select(any(.tabs[].terminals[]; .terminal == $t)) | .id')
 ```
 
 In the main working tree (`$PWD` is `$main_root`) there is nothing to retire:
@@ -46,12 +43,12 @@ Unless `--keep` was passed, delete the prompt a dispatched worktree left outside
 its checkout (the dispatch skill's slug transform):
 
 ```bash
-rm -f "$HOME/.herdr/dispatch/$(printf '%s' "$branch" | tr -c '[:alnum:]' '-').md"
+rm -f "$HOME/.local/state/dispatch/$(printf '%s' "$branch" | tr -c '[:alnum:]' '-').md"
 ```
 
 ## Step 3: Report
 
-Removing the space closes the pane you are running in, so report now: the
+Closing the session ends the terminal you are running in, so report now: the
 caller's report, then the seat (released, someone else's, or not held), the
 dispatch prompt (deleted, kept, or none), and what step 4 is about to remove.
 
@@ -69,8 +66,7 @@ file alone. Those untracked files make a plain remove refuse, which is why
 - **Mode `keep`:**
 
   ```bash
-  git -C "$main_root" worktree remove "$PWD" \
-    && herdr-app do space.close "$(jq -n --arg id "$space" '{id: $id, confirmed: true}')"
+  git -C "$main_root" worktree remove "$PWD" && worktree-close-session
   ```
 
   If it refuses over untracked files, re-run with `--force` only when they are
@@ -84,10 +80,10 @@ file alone. Those untracked files make a plain remove refuse, which is why
   ```bash
   git -C "$main_root" worktree remove --force "$PWD" \
     && git -C "$main_root" branch -D "$branch" \
-    && herdr-app do space.close "$(jq -n --arg id "$space" '{id: $id, confirmed: true}')"
+    && worktree-close-session
   ```
 
-`space.close` goes last because it ends this terminal; the checkout can go first
-because removing your own working directory leaves the shell running. With
-`$space` empty (not inside Herdr), drop the `space.close` part and tell the user
-any space for it is theirs to close.
+`worktree-close-session` goes last because it ends this terminal; the checkout can
+go first because removing your own working directory leaves the shell running. It
+closes whichever multiplexer session holds this terminal. Outside one it only says
+so — then tell the user any session for the worktree is theirs to close.

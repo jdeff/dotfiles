@@ -29,7 +29,8 @@ the descriptions.
 
 - a GitHub PR attachment on the Linear issue
 - a branch or PR whose name carries the key
-- an existing worktree under `~/.herdr/worktrees/<repo>/`
+- an existing worktree on such a branch: `git -C "$repo" worktree list`, which finds it
+  wherever it was created
 
 Match the key with a digit boundary, or `ABC-13` also hits `abc-137`. `gh pr list
 --search <key>` matches other tickets and stops you on their work — filter

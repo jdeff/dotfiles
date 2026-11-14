@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Copy per-repo untracked files into a freshly created Herdr worktree (git does
+# Copy per-repo untracked files into a freshly created worktree (git does
 # not populate untracked files like .env.local or .muster.yaml in new worktrees).
 #
-# Usage: worktree-copy-files.sh <worktree-path> (worktree-create.sh runs it).
+# Usage: worktree-copy-files <worktree-path> (worktree-create runs it).
 # Reads a `.worktree-files` manifest from the worktree's MAIN checkout; each
 # non-blank, non-comment line is:
 #     copy <path>      # copy main/<path> → worktree/<path> (skip if dest exists)
 #     link <path>      # symlink worktree/<path> → main/<path>
 # Paths are relative to the repo root. Idempotent and non-destructive.
-# Set HERDR_COPY_DEBUG=1 to log decisions to ~/.herdr/worktree-copy.log.
+# Set WORKTREE_COPY_DEBUG=1 to log decisions to ~/.local/state/worktree-copy.log.
 
 set -u
-log() { [ "${HERDR_COPY_DEBUG:-}" = "1" ] && printf '%s %s\n' "$(date +%H:%M:%S)" "$*" >>"$HOME/.herdr/worktree-copy.log"; return 0; }
+log() { [ "${WORKTREE_COPY_DEBUG:-}" = "1" ] && printf '%s %s\n' "$(date +%H:%M:%S)" "$*" >>"$HOME/.local/state/worktree-copy.log"; return 0; }
 
 wt=${1:-}
 [ -n "$wt" ] && [ -d "$wt" ] || { log "no worktree path given; exiting"; exit 0; }

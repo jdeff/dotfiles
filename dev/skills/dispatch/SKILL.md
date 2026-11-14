@@ -1,32 +1,32 @@
 ---
 name: dispatch
-description: Hand work to a Herdr worktree agent — the dispatch-prompt contract, and the write→verify→create→confirm sequence. Load before creating a worktree or spawning an agent.
+description: Hand work to a worktree agent — the dispatch-prompt contract, and the write→verify→create→confirm sequence. Load before creating a worktree or spawning an agent.
 user-invocable: false
 allowed-tools: Bash, Write
 ---
 
-`~/.config/herdr-app/scripts/worktree-create.sh` adds the worktree, copies the
-repo's untracked files, then opens it as its own Herdr space with Claude + a shell.
-A Claude given a dispatch prompt for its branch launches with it as its first
-message; one that finds none starts **bare** — no prompt, no work, and no error
-anywhere.
+`worktree-create` adds the worktree under `~/src/.worktrees/<repo>/<branch-slug>`,
+copies the repo's untracked files, then opens it as its own session in whichever
+multiplexer you are running in, with Claude and a shell. A Claude given a dispatch
+prompt for its branch launches with it as its first message; one that finds none
+starts **bare** — no prompt, no work, and no error anywhere.
 
 ## Requirements
 
-Inside a Herdr terminal: `test -n "${HC_TERMINAL_ID:-}"`. If not, say so and stop.
-Herdr is Herdr.app on herdr-core: `herdr-app` drives the window, `hc` the terminals.
+Inside a Herdr or Rex terminal. `worktree-create` checks this before touching git and
+exits non-zero otherwise; say so and stop.
 
 ## Confirm before creating
 
-A worktree means a new branch, a new space, and a running agent. Unless the user
+A worktree means a new branch, a new session, and a running agent. Unless the user
 invoked a dispatch skill by slash command, or has already asked for parallel or
 background work, list what you would create and get a yes first.
 
 ## The contract
 
-The prompt goes to `~/.herdr/dispatch/<slug>.md`, where slug is the branch run
-through `tr -c '[:alnum:]' '-'` — the create script uses the identical transform,
-and deletes the file once the agent's space exists.
+The prompt goes to `~/.local/state/dispatch/<slug>.md`, where slug is the branch run
+through `tr -c '[:alnum:]' '-'` — `worktree-create` uses the identical transform, and
+deletes the file once the agent's session exists.
 
 ## Sibling worktrees
 
@@ -48,9 +48,9 @@ worktree created first gets a bare agent in a correct-looking worktree.
 **1. Write each prompt, and prove it exists.** Stop on a zero byte count.
 
 ```bash
-mkdir -p ~/.herdr/dispatch
+mkdir -p ~/.local/state/dispatch
 branch="<branch>"
-f="$HOME/.herdr/dispatch/$(printf '%s' "$branch" | tr -c '[:alnum:]' '-').md"
+f="$HOME/.local/state/dispatch/$(printf '%s' "$branch" | tr -c '[:alnum:]' '-').md"
 cat > "$f" << 'EOF'
 <prompt>
 EOF
@@ -60,8 +60,8 @@ wc -c "$f"
 **2. Create the worktrees** — after every prompt file exists.
 
 ```bash
-# prints {space, tab, terminal, pane, path}; keep `terminal`, it is the agent
-~/.config/herdr-app/scripts/worktree-create.sh --cwd "<repo-root>" --branch "$branch" --no-focus
+# prints {host, session, agent, path}
+worktree-create --cwd "<repo-root>" --branch "$branch" --no-focus
 ```
 
 **3. Confirm each prompt was consumed.** A file still on disk means a bare agent.

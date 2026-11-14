@@ -9,7 +9,7 @@ allowed-tools: Read, Bash, Glob, Grep, AskUserQuestion
 
 Check the arguments for flags:
 
-- `--keep`, `-k` → keep the worktree checkout and its Herdr space after merging
+- `--keep`, `-k` → keep the worktree checkout and its session after merging
 - `--no-verify`, `-n` → pass `--no-verify` to `git commit` (skip hooks)
 
 Strip all flags from arguments.
@@ -109,6 +109,6 @@ open and why.
 
 ## Interactive alternative
 
-The same flow exists as a keybinding for when you'd rather drive it yourself:
-`ctrl-b shift-m` in Herdr runs `~/.config/herdr-app/scripts/worktree-merge.sh` in a
-split below, which prompts at each step but does not fetch first.
+The same flow exists as a script for when you'd rather drive it yourself:
+`worktree-merge`, run from inside the worktree, prompts at each step but does not
+fetch first.

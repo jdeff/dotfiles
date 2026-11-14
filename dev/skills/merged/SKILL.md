@@ -9,7 +9,7 @@ allowed-tools: Read, Bash, Glob, Grep, AskUserQuestion
 
 Check the arguments for flags:
 
-- `--keep`, `-k` → keep the worktree checkout and its Herdr space
+- `--keep`, `-k` → keep the worktree checkout and its session
 
 Strip all flags from arguments.
 
