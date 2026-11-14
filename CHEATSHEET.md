@@ -119,7 +119,7 @@ themes, the `jdeff` layout). Prefix chords use **`C-b`** (`C-b C-b` sends a lite
 
 | Key | Action |
 |-----|--------|
-| `C-h/j/k/l` | Move between panes **and** nvim splits (the `vim-nav` mod; `jdeff` layout only) |
+| `C-h/j/k/l` | Move between panes **and** nvim splits (the `vim-nav` mod; `jdeff` layout only). Same keys in Rex (`rex/keys/vim_nav.lua`) |
 | `C-b \|` / `C-b -` | Split right / down |
 | `alt+1..9` / `alt+j`/`k` | Jump to / cycle spaces |
 | `C-b shift+j` / `shift+k` | Cycle agents |

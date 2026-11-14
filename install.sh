@@ -75,6 +75,8 @@ link "$REPO/starship/starship.toml" "$HOME/.config/starship.toml"
 link "$REPO/nvim"                   "$HOME/.config/nvim"
 # Ghostty
 link "$REPO/ghostty/config"         "$HOME/.config/ghostty/config"
+# Rex (whole config tree: init.lua + the files it requires)
+link "$REPO/rex"                    "$HOME/.config/rex"
 # Claude Code global guidance (the worktree/agent skills are tracked under
 # herdr-app/skills and linked below)
 link "$REPO/claude/CLAUDE.md"       "$HOME/.claude/CLAUDE.md"
