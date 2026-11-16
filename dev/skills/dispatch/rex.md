@@ -19,7 +19,7 @@ the session holds its prompt from the moment it exists.
 ```bash
 wt="<path>" f="<prompt file>"
 test -s "$f" \
-  && made=$(rex new "${wt#"$HOME"/src/.worktrees/}" -c "$wt" --window claude --json \
+  && made=$(rex new "${wt#"${SOURCE:-$HOME/src}"/.worktrees/}" -c "$wt" --window claude --json \
               -- claude "$(cat "$f")") \
   && rm "$f"
 session=$(jq -r .session_id <<<"$made")

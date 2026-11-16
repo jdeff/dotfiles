@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Add a worktree for a branch under ~/src/.worktrees/<repo>/<branch-slug> and
+# Add a worktree for a branch under $SOURCE/.worktrees/<repo>/<branch-slug> and
 # copy the repo's untracked files into it (worktree-copy-files). Git only:
 # opening a session for it is the caller's job.
 #
@@ -26,7 +26,7 @@ fi
 common=$(git -C "$cwd" rev-parse --path-format=absolute --git-common-dir)
 main=${common%/.git}
 slug=$(printf '%s' "$branch" | sed -E 's/[^A-Za-z0-9._-]+/-/g; s/^-+|-+$//g')
-path="$HOME/src/.worktrees/$(basename "$main")/$slug"
+path="${SOURCE:-$HOME/src}/.worktrees/$(basename "$main")/$slug"
 
 if git -C "$main" show-ref --verify --quiet "refs/heads/$branch"; then
   git -C "$main" worktree add "$path" "$branch" >&2

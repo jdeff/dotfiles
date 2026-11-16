@@ -1,4 +1,4 @@
--- New Task…: a floating Claude in ~/src that dispatches whatever you type into
+-- New Task…: a floating Claude in $SOURCE that dispatches whatever you type into
 -- worktree sessions (/ticket for a ticket key, /worktree otherwise), then closes
 -- itself. Its standing instructions are ../new-task.md.
 
@@ -23,9 +23,10 @@ rex.action{
         flavor = "com.superlogical.terminal.shell",
         label = "new task",
         options = {
-          cwd = HOME .. "/src",
+          -- Through sh so $SOURCE (zshenv) picks the directory, not this file.
           command = {
-            "claude", "--name", "new-task",
+            "sh", "-c", 'cd "${SOURCE:-$HOME/src}" && exec claude "$@"', "new-task",
+            "--name", "new-task",
             "--append-system-prompt-file", HOME .. "/.config/rex/new-task.md",
             "--allowedTools=" .. CLOSE_SELF,
           },

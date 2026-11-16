@@ -6,6 +6,9 @@
 export EDITOR="${EDITOR:-nvim}"
 export VISUAL="$EDITOR"
 
+# Where repos are cloned (<group>/<repo>, or <repo>) and worktrees go (.worktrees/).
+export SOURCE="${SOURCE:-$HOME/src}"
+
 # Machine-/work-specific env vars (secrets, API tokens, internal URLs, etc.)
 # Keep this file OUT of your dotfiles repo (it is .gitignored).
 [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"

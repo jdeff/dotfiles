@@ -14,16 +14,16 @@ ambiguous.
 - Anything else: use the skill `/worktree <task>`, passing each target repo's absolute
   path as `--cwd`.
 
-Repos, by the names the user uses for them:
+Find the repo the user names among the clones under `$SOURCE` (`<group>/<repo>` or
+`<repo>`; skip `.worktrees` and `*__worktrees`), plus `~/dotfiles`:
 
-| Name | Path |
-|---|---|
-| dotfiles | ~/dotfiles |
+```bash
+find "$SOURCE" -maxdepth 3 -name .git -not -path '*worktrees*' | sed 's|/.git$||'
+```
 
-Other repos under `~/src/<group>/<repo>` are fair game when named. A task that spans
-the API and the UI ("the stack", a feature touching both) gets one worktree per
-repo, linked as siblings per the dispatch skill's muster pin rules; `muster projects
---json` lists which repos share a project.
+A project name, or work that spans its repos (an API and its UI, "the stack"), gets
+one worktree per repo, linked as siblings per the dispatch skill's muster pin rules;
+`muster projects --json` lists which repos share a project.
 
 ## This panel's Rex session
 
