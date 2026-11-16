@@ -93,8 +93,7 @@
       "args": {
         "direction": "down",
         "argv": [
-          "bash",
-          "/Users/jdeff/.local/bin/worktree-merge"
+          "worktree-merge"
         ]
       }
     },
@@ -103,8 +102,7 @@
       "args": {
         "direction": "down",
         "argv": [
-          "bash",
-          "/Users/jdeff/.local/bin/worktree-open-pr"
+          "worktree-open-pr"
         ]
       }
     },
