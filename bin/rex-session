@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+# rex-session: bring Claude Code agents back after the Rex server restarts.
+#
+# Rex restores sessions, tabs, splits and labels on its own, and reopens each
+# pane as a login shell in its last directory, but it doesn't rerun the pane's
+# program. This fills that one gap for Claude:
+#
+#   hook start|end  Claude Code SessionStart/SessionEnd hooks. Record the Claude
+#                   session id running in each Rex pane ($REX_BLOCK), one file
+#                   per pane under ~/.local/state/rex-session. /clear and /new
+#                   overwrite it with the new id; a deliberate /exit or logout
+#                   deletes it; a server stop (reason "other") keeps it.
+#   restore [-n]    For each recorded pane still sitting at a shell prompt, type
+#                   `claude --resume <id>` into it (or plain `claude` if that
+#                   session has no transcript). Panes that no longer exist are
+#                   forgotten. -n / --dry-run only prints what it would do.
+#   list            Show the recorded panes.
+#   install         Add the two hooks to ~/.claude/settings.json (install.sh runs it).
+#   uninstall       Remove them again.
+#
+# To remove it entirely, once Rex resumes agents itself:
+#   rex-session uninstall
+#   delete this file and the `rex-session install` line in install.sh
+#   delete the rex-session line in CHEATSHEET.md
+#   rm -rf ~/.local/state/rex-session ~/.local/bin/rex-session
+
+set -euo pipefail
+
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/rex-session"
+SETTINGS="$HOME/.claude/settings.json"
+HOOK_TAG="rex-session hook"
+
+hook_start() {
+  local input; input=$(cat)
+  # Only an interactive Claude in a Rex pane; `claude -p` runs inside a pane
+  # inherit $REX_BLOCK but report the sdk-cli entrypoint.
+  [ -n "${REX_BLOCK:-}" ] && [ "${CLAUDE_CODE_ENTRYPOINT:-}" = cli ] || return 0
+  mkdir -p "$STATE"
+  local file="$STATE/${REX_BLOCK#block:}.json"
+  jq -c --arg block "$REX_BLOCK" --arg session "${REX_SESSION:-}" --arg server "${REX_SERVER:-}" \
+    '{block: $block, rex_session: $session, server: $server,
+      session_id, cwd, transcript_path, updated: (now | todate)}' \
+    <<<"$input" >"$file.tmp" && mv "$file.tmp" "$file"
+}
+
+hook_end() {
+  local input; input=$(cat)
+  [ -n "${REX_BLOCK:-}" ] || return 0
+  local file="$STATE/${REX_BLOCK#block:}.json"
+  [ -f "$file" ] || return 0
+  case $(jq -r .reason <<<"$input") in
+    prompt_input_exit|logout) ;;
+    *) return 0 ;;
+  esac
+  # Only if it's still this session's file.
+  if [ "$(jq -r .session_id <<<"$input")" = "$(jq -r .session_id "$file")" ]; then
+    rm -f "$file"
+  fi
+}
+
+rexs() { # rex against the entry's own server, never starting one
+  local server=$1; shift
+  if [ -n "$server" ]; then rex -S "$server" --autostart=false "$@"
+  else rex --autostart=false "$@"; fi
+}
+
+restore() {
+  local dry=0
+  case "${1:-}" in -n|--dry-run) dry=1 ;; "") ;; *) usage ;; esac
+  local f block server id cwd transcript proc rc fg cmd
+  for f in "$STATE"/*.json; do
+    [ -f "$f" ] || continue
+    IFS=$'\t' read -r block server id cwd transcript < <(
+      jq -r '[.block, .server, .session_id, .cwd, (.transcript_path // "")] | @tsv' "$f")
+    rc=0; proc=$(rexs "$server" block call -b "$block" process 2>/dev/null) || rc=$?
+    if [ "$rc" = 3 ]; then
+      echo "gone     $block  (forgetting ${id:0:8})"
+      [ "$dry" = 1 ] || rm -f "$f"
+      continue
+    elif [ "$rc" != 0 ]; then
+      echo "skip     $block  (server unreachable, exit $rc)"
+      continue
+    fi
+    # argv0, not name: Claude's binary is named after its version.
+    fg=$(jq -r '.foreground | (.argv0 // .name // "") | ltrimstr("-") | split("/") | last' <<<"$proc")
+    case "$fg" in
+      zsh|bash|sh|fish) ;;
+      *) echo "busy     $block  (running ${fg:-nothing}; left alone)"; continue ;;
+    esac
+    if [ -n "$transcript" ] && [ -f "$transcript" ]; then
+      cmd="cd $(printf %q "$cwd") && claude --resume $id"
+    else
+      cmd="cd $(printf %q "$cwd") && claude"
+    fi
+    echo "resume   $block  $cmd"
+    if [ "$dry" = 0 ]; then
+      rexs "$server" send -b "$block" "$cmd" && rexs "$server" send-key -b "$block" enter
+    fi
+  done
+}
+
+list() {
+  shopt -s nullglob
+  local files=("$STATE"/*.json)
+  [ ${#files[@]} -gt 0 ] || { echo "no agents recorded in $STATE"; return; }
+  jq -r '[.updated, .session_id[0:8], .block, .cwd] | @tsv' "${files[@]}" | sort
+}
+
+edit_settings() { # <jq filter>
+  [ -f "$SETTINGS" ] || echo '{}' >"$SETTINGS"
+  local tmp; tmp=$(mktemp "$SETTINGS.XXXXXX")
+  jq --arg tag "$HOOK_TAG" "$1" "$SETTINGS" >"$tmp" && mv "$tmp" "$SETTINGS"
+}
+
+# Drop our entries (an earlier install's) from every hook list, and empty lists.
+STRIP='
+  def strip: map(select(any(.hooks[]?; .command | contains($tag)) | not));
+  if .hooks then
+    .hooks |= (with_entries(.value |= strip) | with_entries(select(.value | length > 0)))
+  else . end'
+
+install() {
+  local hook
+  edit_settings "$STRIP
+    | def ours(e): {hooks: [{type: \"command\", timeout: 5,
+        command: (\"command -v rex-session >/dev/null && \" + \$tag + \" \" + e + \" || true\")}]};
+    .hooks.SessionStart += [ours(\"start\")]
+    | .hooks.SessionEnd += [ours(\"end\")]"
+  echo "  hooks  $SETTINGS (SessionStart, SessionEnd -> rex-session)"
+}
+
+uninstall() {
+  edit_settings "$STRIP"
+  echo "removed rex-session hooks from $SETTINGS"
+}
+
+usage() {
+  sed -n '2,/^$/{s/^# \{0,1\}//;p;}' "$0" >&2
+  exit 2
+}
+
+case "${1:-}" in
+  hook)
+    case "${2:-}" in
+      start) hook_start ;;
+      end) hook_end ;;
+      *) usage ;;
+    esac ;;
+  restore) shift; restore "$@" ;;
+  list) list ;;
+  install) install ;;
+  uninstall) uninstall ;;
+  *) usage ;;
+esac

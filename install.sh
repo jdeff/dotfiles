@@ -117,6 +117,11 @@ for _root in muster dev; do
   done
 done
 
+echo "==> Claude Code hooks"
+# Records each Rex pane's Claude session so `rex-session restore` can resume it
+# after a Rex server restart. Delete this line to remove it (see bin/rex-session).
+"$REPO/bin/rex-session" install
+
 echo "==> Generating Herdr's built-in agent skills"
 # `herdr-app --skill` and `hc --skill` print the manuals for driving the window
 # and herdr-core. They ship with the binaries, so they're generated (not tracked)
