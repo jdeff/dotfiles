@@ -12,7 +12,7 @@ rex.action{
   run = function(ctx)
     rex.session.new_layer{
       session_id = ctx.session_id,
-      bounds = { 0.15, 0.1, 0.7, 0.8 },
+      bounds = { 0.2, 0.25, 0.6, 0.5 }, -- x, y, width, height: fractions of the window
       focus = true,
       layout = rex.layout.block{
         flavor = "com.superlogical.terminal.shell",
