@@ -13,6 +13,8 @@
 -- Lives in ~/dotfiles/rex, linked whole to ~/.config/rex by install.sh.
 -- Apply changes with: rex config check && rex config reload
 
+require("actions.new_task")
+
 require("keys.global")
 require("keys.prefix")
 require("keys.vim_nav")

@@ -30,6 +30,9 @@ rex.bind(P .. "shift+n", "session.new")
 rex.bind(P .. "shift+w", "session.rename")
 rex.bind(P .. "shift+d", "session.close")
 
+-- New Task…: floating Claude that dispatches work to worktrees (actions/new_task.lua)
+rex.bind(P .. "t", "new_task")
+
 -- Picker and sidebar
 rex.bind(P .. "w", "pane.go_to")
 rex.bind(P .. "g", "pane.go_to")
