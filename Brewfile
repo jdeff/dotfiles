@@ -22,6 +22,7 @@ brew 'fd'          # find
 brew 'ripgrep'     # grep
 brew 'lazygit'     # terminal git UI (driven by nvim's lazygit.nvim)
 brew 'gh'          # GitHub CLI; also the git credential helper for github (see git/gitconfig)
+brew 'jq'          # JSON on the command line (the skills and bin/ scripts lean on it)
 brew 'yq'          # jq for YAML/TOML/XML
 
 # Agent tooling
