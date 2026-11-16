@@ -1,54 +1,38 @@
 #!/usr/bin/env bash
-# Create a worktree for a dispatched agent: add it under
-# ~/src/.worktrees/<repo>/<branch-slug>, copy the repo's untracked files, then
-# open it as a session in the current multiplexer (lib/host.sh) with Claude and
-# a shell. Claude gets the dispatch prompt for the branch
-# (~/.local/state/dispatch/<slug>.md) as its first message, and the file is
-# deleted once the session exists.
+# Add a worktree for a branch under ~/src/.worktrees/<repo>/<branch-slug> and
+# copy the repo's untracked files into it (worktree-copy-files). Git only:
+# opening a session for it is the caller's job.
 #
-# Usage: worktree-create --cwd <repo> --branch <name> [--base <ref>] [--focus]
-# Prints {host, session, agent, path} as JSON.
+# Usage: worktree-create --cwd <repo> --branch <name> [--base <ref>]
+# An existing branch is checked out; a new one starts from --base (HEAD).
+# Prints the worktree's path.
 
 set -euo pipefail
 
-bin=$(dirname "$(realpath "$0")")
-. "$bin/lib/host.sh"
-
-cwd="" branch="" base=HEAD focus=""
+cwd="" branch="" base=HEAD
 while [ $# -gt 0 ]; do
   case "$1" in
     --cwd) cwd=$2; shift 2 ;;
     --branch) branch=$2; shift 2 ;;
     --base) base=$2; shift 2 ;;
-    --focus) focus=1; shift ;;
-    --no-focus) shift ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
 if [ -z "$cwd" ] || [ -z "$branch" ]; then
-  echo "usage: $0 --cwd <repo> --branch <name> [--base <ref>] [--focus]" >&2
+  echo "usage: $0 --cwd <repo> --branch <name> [--base <ref>]" >&2
   exit 2
-fi
-if [ "$WT_HOST" = none ]; then
-  echo "worktree-create: not inside Herdr or Rex" >&2
-  exit 1
 fi
 
 common=$(git -C "$cwd" rev-parse --path-format=absolute --git-common-dir)
 main=${common%/.git}
-repo=$(basename "$main")
 slug=$(printf '%s' "$branch" | sed -E 's/[^A-Za-z0-9._-]+/-/g; s/^-+|-+$//g')
-path="$HOME/src/.worktrees/$repo/$slug"
+path="$HOME/src/.worktrees/$(basename "$main")/$slug"
 
 if git -C "$main" show-ref --verify --quiet "refs/heads/$branch"; then
   git -C "$main" worktree add "$path" "$branch" >&2
 else
   git -C "$main" worktree add -b "$branch" "$path" "$base" >&2
 fi
-"$bin/worktree-copy-files" "$path"
+"$(dirname "$(realpath "$0")")/worktree-copy-files" "$path"
 
-prompt="$HOME/.local/state/dispatch/$(printf '%s' "$branch" | tr -c '[:alnum:]' '-').md"
-opened=$(host_open "$path" "$repo/$slug" "$prompt" "$focus")
-rm -f "$prompt"
-
-jq --arg path "$path" '. + {path: $path}' <<<"$opened"
+printf '%s\n' "$path"

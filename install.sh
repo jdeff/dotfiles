@@ -91,8 +91,7 @@ done
 for _mod in "$REPO"/herdr-app/mods/*/; do
   link "${_mod%/}" "$HOME/.config/herdr-app/mods/$(basename "$_mod")"
 done
-# Commands the skills and keybindings run, on PATH. bin/lib holds what they
-# source (the per-multiplexer backends) and stays unlinked.
+# Commands the skills and keybindings run, on PATH.
 for _bin in "$REPO"/bin/*; do
   [[ -f "$_bin" && -x "$_bin" ]] || continue
   link "$_bin" "$HOME/.local/bin/$(basename "$_bin")"

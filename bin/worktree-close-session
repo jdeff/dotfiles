@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# Close the multiplexer session (Herdr space, Rex session) holding this
-# terminal. That ends this terminal too, so it is the last thing a retiring
-# agent runs.
-
-set -euo pipefail
-. "$(dirname "$(realpath "$0")")/lib/host.sh"
-host_close_session

@@ -65,7 +65,7 @@ isn't clear.
 The `dispatch` skill's sequence, with:
 
 - the branch from `branch_pattern`, e.g. `jdeff/abc-123`
-- `--focus` for a single ticket, `--no-focus` for more than one
+- for a single ticket, show its session; for more than one, stay put
 - a two-line prompt, since the agent re-fetches the ticket itself:
 
 ```

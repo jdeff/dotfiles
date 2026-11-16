@@ -16,10 +16,10 @@ messaging and waiting on terminals and agents, the `hc` skill. Both are generate
 from the installed binaries. My keybindings are in the Herdr section of
 `~/dotfiles/CHEATSHEET.md`.
 
-I also run Rex (the `rex` skill). The worktree skills work in either: the scripts
-they call in `~/dotfiles/bin/` detect the multiplexer and load its backend from
-`bin/lib/host-<name>.sh`. Keep Herdr- and Rex-specific mechanics in those
-backends, not in the skills.
+I also run Rex (the `rex` skill). The worktree skills work in either and drive each
+with its own CLI — `rex`, `herdr-app`, `hc` — never a wrapper around them. A skill
+keeps host-specific commands in one section, or in per-host reference files beside
+it (`dispatch/rex.md`, `dispatch/herdr.md`) when the commands run longer.
 
 ## Dotfiles
 

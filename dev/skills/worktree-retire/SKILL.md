@@ -66,7 +66,7 @@ file alone. Those untracked files make a plain remove refuse, which is why
 - **Mode `keep`:**
 
   ```bash
-  git -C "$main_root" worktree remove "$PWD" && worktree-close-session
+  git -C "$main_root" worktree remove "$PWD" && <close>
   ```
 
   If it refuses over untracked files, re-run with `--force` only when they are
@@ -80,10 +80,22 @@ file alone. Those untracked files make a plain remove refuse, which is why
   ```bash
   git -C "$main_root" worktree remove --force "$PWD" \
     && git -C "$main_root" branch -D "$branch" \
-    && worktree-close-session
+    && <close>
   ```
 
-`worktree-close-session` goes last because it ends this terminal; the checkout can
-go first because removing your own working directory leaves the shell running. It
-closes whichever multiplexer session holds this terminal. Outside one it only says
-so — then tell the user any session for the worktree is theirs to close.
+### Close the session
+
+`<close>` closes the multiplexer session holding this terminal, which ends the
+terminal too — so it rides last, and the checkout goes first (removing your own
+working directory leaves the shell running):
+
+- Rex (`REX_SESSION` set): `rex kill "$REX_SESSION"`
+- Herdr (`HC_TERMINAL_ID` set):
+
+  ```bash
+  herdr-app do space.close "$(herdr-app ls | jq -c --arg t "$HC_TERMINAL_ID" \
+    '{id: (.spaces[] | select(any(.tabs[].terminals[]; .terminal == $t)) | .id), confirmed: true}')"
+  ```
+
+- Neither: end the chain at the remove, and tell the user any session for the
+  worktree is theirs to close.
