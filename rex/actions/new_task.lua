@@ -4,6 +4,11 @@
 
 local HOME = os.getenv("HOME")
 
+-- Auto mode's classifier blocks a block close that only the system prompt asks
+-- for, so allow the panel's own close command, verbatim as new-task.md gives it,
+-- for this Claude alone. The = form matters: the flag is variadic.
+local CLOSE_SELF = 'Bash(rex block close -s "$REX_SESSION" "$REX_BLOCK")'
+
 rex.action{
   name = "new_task",
   title = "New Task…",
@@ -22,6 +27,7 @@ rex.action{
           command = {
             "claude", "--name", "new-task",
             "--append-system-prompt-file", HOME .. "/.config/rex/new-task.md",
+            "--allowedTools=" .. CLOSE_SELF,
           },
         },
       },
