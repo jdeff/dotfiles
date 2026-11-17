@@ -7,6 +7,8 @@
 #   as-bot restamp                     re-commit this branch with the bot as committer
 #   as-bot push [--force-with-lease]   push the current branch as the bot
 #   as-bot pr <create|edit|comment|ready|close|view> [gh args]
+#                                      the PR is the current branch's unless the
+#                                      first gh arg names one (number, URL, branch)
 #
 # Config: ~/.config/as-bot/config (see config.example beside this script).
 #
@@ -209,6 +211,10 @@ cmd_pr() {
   if [[ $sub == create ]]; then
     (( ${args[(I)--assignee*]} || ${args[(I)-a]} )) || extra+=(--assignee $assignee)
     (( ${args[(I)--head*]} || ${args[(I)-H]} )) || extra+=(--head $branch)
+  elif [[ -z ${args[2]:-} || ${args[2]} == -* ]]; then
+    # --repo stops gh inferring the PR, so name the current branch's unless the
+    # first argument after the subcommand already picks one.
+    extra+=($branch)
   fi
   mint_token
   GH_TOKEN=$TOKEN GH_HOST=github.com gh pr "$@" $extra --repo $org/$repo
