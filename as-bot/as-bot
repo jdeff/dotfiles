@@ -1,0 +1,231 @@
+#!/bin/zsh
+# as-bot: act on GitHub as a GitHub App's bot instead of as you.
+#
+#   as-bot import-key < key.pem        verify the App's private key and keep it in the Keychain
+#   as-bot whoami                      the bot identity commits and PRs carry
+#   as-bot commit [git commit args]    commit with you as author and the bot as committer
+#   as-bot restamp                     re-commit this branch with the bot as committer
+#   as-bot push [--force-with-lease]   push the current branch as the bot
+#   as-bot pr <create|edit|comment|ready|close|view> [gh args]
+#
+# Config: ~/.config/as-bot/config (see config.example beside this script).
+#
+# A token is minted per command, narrowed to the one repo and to contents +
+# pull_requests, handed to exactly one child process through its environment,
+# and revoked when the command exits. It is never printed, never on a command
+# line, never written to disk, and never offered to a credential helper.
+
+setopt err_exit pipe_fail no_unset
+unsetopt xtrace verbose
+umask 077
+
+CONFIG=${AS_BOT_CONFIG:-$HOME/.config/as-bot/config}
+CACHE=$HOME/.cache/as-bot
+KEYCHAIN_SERVICE=as-bot
+
+app_id= installation_id= org= assignee=
+repo= branch= default_branch=
+bot_login= bot_email=
+TOKEN=
+
+die() { print -u2 -r -- "as-bot: $*"; exit 1; }
+
+load_config() {
+  [[ -f $CONFIG ]] || die "no config at $CONFIG"
+  local k v
+  while IFS='=' read -r k v; do
+    case $k in
+      app_id) app_id=$v ;;
+      installation_id) installation_id=$v ;;
+      org) org=$v ;;
+      assignee) assignee=$v ;;
+      ''|'#'*) ;;
+      *) die "unknown key '$k' in $CONFIG" ;;
+    esac
+  done < $CONFIG
+  [[ -n $app_id && -n $installation_id && -n $org && -n $assignee ]] ||
+    die "$CONFIG needs app_id, installation_id, org and assignee"
+}
+
+b64url() { openssl base64 -A | tr '+/' '-_' | tr -d '=' }
+
+has_key() { security find-generic-password -s $KEYCHAIN_SERVICE -a $app_id >/dev/null 2>&1 }
+
+read_pem() {
+  if [[ -n ${IMPORTING_PEM_B64:-} ]]; then
+    print -rn -- $IMPORTING_PEM_B64 | openssl base64 -d -A
+  else
+    security find-generic-password -s $KEYCHAIN_SERVICE -a $app_id -w | openssl base64 -d -A
+  fi
+}
+
+app_jwt() {
+  local now header payload sig
+  now=$(date +%s)
+  header=$(print -rn -- '{"alg":"RS256","typ":"JWT"}' | b64url)
+  payload=$(printf '{"iat":%d,"exp":%d,"iss":"%s"}' $((now - 60)) $((now + 540)) $app_id | b64url)
+  sig=$(print -rn -- "$header.$payload" | openssl dgst -sha256 -binary -sign <(read_pem) | b64url)
+  [[ -n $sig ]] || die "could not sign with the App's key"
+  print -rn -- "$header.$payload.$sig"
+}
+
+# api <scheme> <credential> <method> <path> [json-body]
+# The Authorization header reaches curl on stdin, never on its command line.
+api() {
+  local scheme=$1 credential=$2 method=$3 endpoint=$4 body=${5:-} out http_status
+  local -a args=(-sS -X $method -H 'Accept: application/vnd.github+json'
+    -H 'X-GitHub-Api-Version: 2022-11-28' -H @- -w '\n%{http_code}')
+  [[ -n $body ]] && args+=(--data $body)
+  out=$(printf 'Authorization: %s %s\n' $scheme $credential | curl $args "https://api.github.com$endpoint")
+  http_status=${out##*$'\n'}
+  out=${out%$'\n'*}
+  if [[ $http_status != 2* ]]; then
+    die "GitHub $method $endpoint returned $http_status: $(print -rn -- $out | jq -r '.message // .' 2>/dev/null)"
+  fi
+  print -rn -- $out
+}
+
+identity_file() { print -rn -- "$CACHE/identity-$app_id" }
+
+resolve_identity() {
+  local app slug user_id
+  app=$(api Bearer "$(app_jwt)" GET /app)
+  [[ $(print -rn -- $app | jq -r .id) == $app_id ]] || die "that key signs for a different App"
+  slug=$(print -rn -- $app | jq -r .slug)
+  user_id=$(curl -sSf "https://api.github.com/users/${slug}%5Bbot%5D" | jq -r .id)
+  mkdir -p $CACHE
+  printf '%s[bot] %s+%s[bot]@users.noreply.github.com\n' $slug $user_id $slug > $(identity_file)
+}
+
+load_identity() {
+  [[ -f $(identity_file) ]] || { has_key || die "no key yet; run: as-bot import-key < key.pem"; resolve_identity; }
+  read -r bot_login bot_email < $(identity_file)
+}
+
+load_repo() {
+  local url
+  url=$(git remote get-url origin) || die "no origin remote"
+  case $url in
+    https://github.com/$org/*|git@github.com:$org/*|ssh://git@github.com/$org/*) ;;
+    *) die "origin ($url) is not a $org repo" ;;
+  esac
+  repo=${${url##*/}%.git}
+  branch=$(git symbolic-ref --short HEAD) || die "not on a branch"
+  default_branch=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) || default_branch=origin/main
+  default_branch=${default_branch#origin/}
+}
+
+mint_token() {
+  local body out
+  has_key || die "no key yet; run: as-bot import-key < key.pem"
+  body=$(jq -nc --arg r $repo '{repositories: [$r], permissions: {contents: "write", pull_requests: "write"}}')
+  out=$(api Bearer "$(app_jwt)" POST /app/installations/$installation_id/access_tokens $body)
+  TOKEN=$(print -rn -- $out | jq -r .token)
+  [[ -n $TOKEN && $TOKEN != null ]] || die "GitHub returned no token"
+}
+
+revoke_token() {
+  [[ -n $TOKEN ]] && { api token $TOKEN DELETE /installation/token >/dev/null 2>&1 || true }
+  TOKEN=
+}
+
+human_commits() {
+  local base
+  base=$(git merge-base HEAD origin/$default_branch) ||
+    die "no merge base with origin/$default_branch; fetch it first"
+  git log --format='%h %ce %s' "$base..HEAD" | awk -v bot=$bot_email '$2 != bot'
+}
+
+cmd_import_key() {
+  [[ -t 0 ]] && die "pipe the key in: op read 'op://…' | as-bot import-key"
+  IMPORTING_PEM_B64=$(openssl base64 -A)
+  [[ -n $IMPORTING_PEM_B64 ]] || die "no key on stdin"
+  resolve_identity
+  print -r -- "add-generic-password -U -s $KEYCHAIN_SERVICE -a $app_id -l as-bot-app-$app_id -w $IMPORTING_PEM_B64" |
+    security -i >/dev/null
+  IMPORTING_PEM_B64=
+  has_key || die "could not store the key in the Keychain"
+  cmd_whoami
+}
+
+cmd_whoami() {
+  load_identity
+  print -r -- "$bot_login <$bot_email> (app $app_id, PRs assigned to $assignee)"
+}
+
+cmd_commit() {
+  load_identity
+  GIT_COMMITTER_NAME=$bot_login GIT_COMMITTER_EMAIL=$bot_email git -c commit.gpgsign=false commit "$@"
+}
+
+cmd_restamp() {
+  load_identity
+  load_repo
+  GIT_COMMITTER_NAME=$bot_login GIT_COMMITTER_EMAIL=$bot_email \
+    git -c commit.gpgsign=false rebase --force-rebase --keep-base origin/$default_branch
+}
+
+cmd_push() {
+  local -a lease=()
+  local mixed=0 arg basic commits
+  for arg in "$@"; do
+    case $arg in
+      --force-with-lease) lease=(--force-with-lease) ;;
+      --mixed) mixed=1 ;;
+      *) die "push takes only --force-with-lease and --mixed" ;;
+    esac
+  done
+  load_identity
+  load_repo
+  case $branch in
+    $default_branch|main|master|production|staging) die "refusing to push $branch as the bot" ;;
+  esac
+  if (( ! mixed )); then
+    # An assignment, so a failed check stops the push (err_exit) instead of passing.
+    commits=$(human_commits)
+    [[ -z $commits ]] ||
+      die "these commits are not committed by $bot_login (as-bot restamp, or --mixed to push anyway):
+$commits"
+  fi
+  mint_token
+  basic=$(print -rn -- "x-access-token:$TOKEN" | openssl base64 -A)
+  GIT_TERMINAL_PROMPT=0 GIT_CONFIG_COUNT=4 \
+    GIT_CONFIG_KEY_0=credential.helper GIT_CONFIG_VALUE_0= \
+    GIT_CONFIG_KEY_1=credential.https://github.com.helper GIT_CONFIG_VALUE_1= \
+    GIT_CONFIG_KEY_2=remote.origin.pushurl GIT_CONFIG_VALUE_2=https://github.com/$org/$repo.git \
+    GIT_CONFIG_KEY_3=http.https://github.com/.extraheader GIT_CONFIG_VALUE_3="AUTHORIZATION: basic $basic" \
+    git push $lease -u origin HEAD:refs/heads/$branch
+}
+
+cmd_pr() {
+  (( $# )) || die "pr needs a subcommand"
+  local sub=$1
+  local -a args=("$@") extra=()
+  case $sub in
+    create|edit|comment|ready|close|view) ;;
+    *) die "pr $sub is not allowed as the bot" ;;
+  esac
+  load_repo
+  if [[ $sub == create ]]; then
+    (( ${args[(I)--assignee*]} || ${args[(I)-a]} )) || extra+=(--assignee $assignee)
+    (( ${args[(I)--head*]} || ${args[(I)-H]} )) || extra+=(--head $branch)
+  fi
+  mint_token
+  GH_TOKEN=$TOKEN GH_HOST=github.com gh pr "$@" $extra --repo $org/$repo
+}
+
+trap revoke_token EXIT
+trap 'revoke_token; exit 130' INT TERM
+load_config
+(( $# )) || die "usage: as-bot <import-key|whoami|commit|restamp|push|pr> …"
+cmd=$1
+shift
+case $cmd in
+  import-key) cmd_import_key ;;
+  whoami) cmd_whoami ;;
+  commit) cmd_commit "$@" ;;
+  restamp) cmd_restamp ;;
+  push) cmd_push "$@" ;;
+  pr) cmd_pr "$@" ;;
+  *) die "unknown command: $cmd" ;;
+esac

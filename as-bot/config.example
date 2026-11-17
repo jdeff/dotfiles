@@ -1,0 +1,6 @@
+# as-bot config. Copied to ~/.config/as-bot/config by install.sh; edit there.
+# app_id and installation_id are public: the App's settings page shows both.
+app_id=
+installation_id=
+org=
+assignee=

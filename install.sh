@@ -57,6 +57,16 @@ else
   echo "  ok    ~/.config/dev/workspace.toml (exists, left untouched)"
 fi
 
+# ~/.config/as-bot/config names the GitHub App as-bot acts as. Seeded, not
+# symlinked, for the same reason as workspace.toml.
+if [[ ! -f "$HOME/.config/as-bot/config" ]]; then
+  mkdir -p "$HOME/.config/as-bot"
+  cp "$REPO/as-bot/config.example" "$HOME/.config/as-bot/config"
+  echo "  seed  ~/.config/as-bot/config (edit it: set the App and your login)"
+else
+  echo "  ok    ~/.config/as-bot/config (exists, left untouched)"
+fi
+
 echo "==> Linking dotfiles"
 # Top-level zsh dotfiles
 link "$REPO/zsh/zshrc"            "$HOME/.zshrc"
@@ -69,6 +79,8 @@ link "$REPO/git/gitconfig"        "$HOME/.gitconfig"
 link "$REPO/git/gitignore_global" "$HOME/.gitignore_global"
 # mise (global runtime pins + idiomatic-version-file settings)
 link "$REPO/mise/config.toml"     "$HOME/.config/mise/config.toml"
+# as-bot: act on GitHub as a GitHub App's bot
+link "$REPO/as-bot/as-bot"          "$HOME/.local/bin/as-bot"
 # Starship
 link "$REPO/starship/starship.toml" "$HOME/.config/starship.toml"
 # Neovim (whole config tree: init.lua + lua/)
