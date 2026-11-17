@@ -135,6 +135,10 @@ In Rex, `C-b t` (or *New Task…* in the palette) floats a Claude in `~/src`: ty
 task or a ticket key and it dispatches worktrees to any repo, then closes itself
 (`rex/actions/new_task.lua`, instructions in `rex/new-task.md`).
 
+After a Rex server restart, Rex brings back sessions and panes but not the agents in
+them: `rex-session restore` resumes each pane's Claude (`-n` to preview, `list` to see
+what's recorded).
+
 Slash commands (tracked in `dev/skills/`, working in Herdr or Rex): `/worktree <tasks>`
 dispatches a worktree per task into `~/src/.worktrees`, `/ticket ABC-123` works a
 Linear ticket, `/open-pr` opens PRs
